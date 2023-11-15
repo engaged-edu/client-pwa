@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+INPUT_FILE=$1
+START_LINE=$(head -n1 "$INPUT_FILE")
+PATTERN="^(feat|fix|refactor|docs|chore): [a-zA-Z0-9 ]+ #[a-zA-Z0-9]{9}"
+DOCS_PATTERN="^docs: [a-zA-Z0-9 ]+"
+if ! [[ "$START_LINE" =~ $PATTERN ]] && ! [[ "$START_LINE" =~ $DOCS_PATTERN ]]; then
+  echo -e "\033[0;31mO formato de mensagem do commit está errado.\033[0m"
+  echo -e "Veja o formato correto em: \033[0;32mhttps://acesse.dev/SWHC2\033[0m"
+  exit 1
+fi
+
