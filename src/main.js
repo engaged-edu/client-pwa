@@ -1,5 +1,4 @@
 import 'primeflex/primeflex.css';
-import 'primevue/resources/themes/lara-dark-teal/theme.css';
 import 'primeicons/primeicons.css';
 
 import {createApp} from 'vue';

@@ -1,14 +1,11 @@
 <script setup>
-import {RouterLink, RouterView} from 'vue-router';
+import {useDarkMode} from '@/composables/darkMode';
+
+const {initTheme} = useDarkMode();
+
+initTheme();
 </script>
 
-<template>
-  <header>
-    <nav>
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
-    </nav>
-  </header>
-
-  <RouterView />
+<template lang="pug">
+RouterView
 </template>
