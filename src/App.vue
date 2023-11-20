@@ -7,5 +7,6 @@ initTheme();
 </script>
 
 <template lang="pug">
+h1 {{ $t('test') }}
 RouterView
 </template>
