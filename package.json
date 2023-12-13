@@ -10,6 +10,10 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore"
   },
   "dependencies": {
+    "@unhead/vue": "^1.8.8",
+    "@vueuse/core": "^10.7.0",
+    "mantis-equalizr": "^1.5.0",
+    "mantis-querist": "^0.5.0",
     "pinia": "^2.1.7",
     "primeflex": "^3.3.1",
     "primevue": "^3.40.1",
@@ -18,14 +22,20 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
+    "@apollo/client": "^3.8.8",
     "@iconify-json/mdi": "^1.1.55",
     "@vitejs/plugin-vue": "^4.4.0",
+    "@vue/apollo-composable": "^4.0.0-beta.12",
     "@vue/compiler-sfc": "^3.3.8",
     "eslint": "^8.49.0",
     "eslint-plugin-vue": "^9.17.0",
     "eslint-plugin-vue-pug": "^0.6.1",
+    "graphql": "^16.8.1",
+    "graphql-tag": "^2.12.6",
     "primeicons": "^6.0.1",
     "pug": "^3.0.2",
+    "stylus": "^0.62.0",
+    "unplugin-auto-import": "^0.17.1",
     "unplugin-icons": "^0.17.4",
     "unplugin-vue-components": "^0.25.2",
     "vite": "^4.4.11"

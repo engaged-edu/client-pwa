@@ -1,4 +1,6 @@
 root: true
+ignorePatterns:
+  - src/styles/**/*.js
 extends:
   - plugin:vue/vue3-recommended
   - plugin:vue-pug/vue3-recommended
@@ -58,9 +60,6 @@ rules:
   func-name-matching:
     - 2
     - never
-  func-names:
-    - 2
-    - as-needed
   func-style:
     - 2
     - declaration
@@ -104,7 +103,7 @@ rules:
     - 2
     - 5
   max-len:
-    - 1
+    - 0
     - code: 120
       tabWidth: 6
       ignoreComments: true
@@ -241,7 +240,7 @@ rules:
   no-this-before-super: 2
   no-throw-literal: 2
   no-trailing-spaces: 2
-  no-undef: 2
+  no-undef: 0
   no-undef-init: 2
   no-undefined: 2
   no-unexpected-multiline: 2
@@ -252,7 +251,7 @@ rules:
   no-unsafe-negation: 2
   no-unused-expressions: 2
   no-unused-labels: 2
-  no-unused-vars: 1
+  no-unused-vars: 0
   no-use-before-define: 2
   no-useless-call: 2
   no-useless-catch: 2
