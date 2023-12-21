@@ -1,5 +1,5 @@
-import {createRouter, createWebHistory} from 'vue-router';
-import {i18n} from '@/i18n';
+import { createRouter, createWebHistory } from 'vue-router';
+import { i18n } from '@/i18n';
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,7 +8,7 @@ const router = createRouter({
 			path: '/payment-link',
 			name: 'payment-link',
 			component: () => import('../views/PaymentLinkView.vue'),
-			meta: {title: i18n.t('paymentLink.title')}
+			meta: { title: i18n.t('paymentLink.title') }
 		}
 	]
 });

@@ -1,4 +1,4 @@
-import {usePrimeVue} from 'primevue/config';
+import { usePrimeVue } from 'primevue/config';
 
 export function useDarkMode() {
 	const PrimeVue = usePrimeVue(),

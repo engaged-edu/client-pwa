@@ -4,7 +4,7 @@ import {
 	InMemoryCache
 } from '@apollo/client/core';
 
-const httpLink = createHttpLink({uri: import.meta.env.VITE_API_URL}),
+const httpLink = createHttpLink({ uri: import.meta.env.VITE_API_URL }),
 	cache = new InMemoryCache(),
 	graphQLClient = new ApolloClient({
 		link: httpLink,

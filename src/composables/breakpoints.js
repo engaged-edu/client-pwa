@@ -1,4 +1,4 @@
-import {useBreakpoints as useBp} from '@vueuse/core';
+import { useBreakpoints as useBp } from '@vueuse/core';
 
 export function useBreakpoints() {
 	const breakpoints = useBp({
