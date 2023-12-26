@@ -12,7 +12,7 @@ import i18n from './i18n';
 const app = createApp(App),
 	head = createHead();
 
-app.use(PrimeVue, { ripple: true });
+app.use(PrimeVue, { ripple: false });
 app.use(head);
 app.use(router);
 app.use(i18n);

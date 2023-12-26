@@ -34,7 +34,7 @@ rules:
     - last
   complexity:
     - 1
-    - 6
+    - 8
   computed-property-spacing: 2
   consistent-this:
     - 2

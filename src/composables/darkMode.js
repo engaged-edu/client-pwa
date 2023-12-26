@@ -7,8 +7,8 @@ export function useDarkMode() {
 		systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
 	function applyTheme(dark = false) {
-		const lightTheme = 'lara-light-teal',
-			darkTheme = 'lara-dark-teal',
+		const lightTheme = 'lara-light-blue',
+			darkTheme = 'lara-dark-blue',
 			apply = dark ? [lightTheme, darkTheme] : [darkTheme, lightTheme];
 
 		PrimeVue.changeTheme(...apply, 'theme-link');
