@@ -1,6 +1,7 @@
 export default {
 	address: 'Endereço',
 	cnpj: 'CNPJ',
+	cpf: 'CPF',
 	companyName: 'Razão social',
 	country: 'País|Países',
 	email: 'E-mail',

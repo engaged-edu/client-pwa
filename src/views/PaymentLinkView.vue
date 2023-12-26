@@ -56,6 +56,18 @@ provide('userProfile', computed(() => {
 	const address = data.value?.invoice?.userPaymentProfile.address,
 		taxIds = data.value?.invoice?.userPaymentProfile.taxIds;
 
+	function makeAddress() {
+		if (!address) {
+			return null;
+		}
+
+		if (address.complement) {
+			return `${address.street}, ${address.number}, ${address.complement} - ${address.neighborhood}, ${address.city} - ${address.state}, ${address.zipcode}`;
+		}
+
+		return `${address.street}, ${address.number} - ${address.neighborhood}, ${address.city} - ${address.state}, ${address.zipcode}`;
+	}
+
 	return {
 		name: data.value?.invoice?.user.name,
 		email: data.value?.invoice?.user.email,
@@ -63,7 +75,7 @@ provide('userProfile', computed(() => {
 		country: data.value?.invoice?.userPaymentProfile.country,
 		type: data.value?.invoice?.userPaymentProfile.type,
 		taxId: taxIds.length ? taxIds[0] : null,
-		address: address ? `${address.street}, ${address.number} - ${address.neighborhood}, ${address.city} - ${address.state}, ${address.zipcode}` : null,
+		address: makeAddress(),
 		phone: data.value?.phoneNumber ? {
 			number: data.value?.phoneNumber,
 			country: data.value?.phoneNumberCountry

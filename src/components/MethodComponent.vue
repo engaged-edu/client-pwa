@@ -39,7 +39,7 @@
 			div(v-html="pixIcon")
 
 template(v-if="currentTab === methods.CreditCard")
-	form.formgrid(v-if="addCard" @submit.prevent="handleFormSubmit")
+	form.formgrid(v-if="addCard")
 		.field
 			label(for="name") {{ $t('paymentLink.creditCard.name') }}:
 			InputText#name.w-full(
@@ -111,7 +111,7 @@ template(v-if="currentTab === methods.CreditCard")
 
 			.flex.align-items-center.gap-2
 				i-mdi-list-box-outline.text-xl
-				.col.p-0.text-xs(v-html="$t('paymentLink.chargeName')")
+				.col.p-0.text-xs(v-html="$t('paymentLink.chargeName', { domain: 'CAMPLI.COM' })")
 </template>
 
 <script setup>
@@ -168,9 +168,6 @@ const { largeScreen } = useBreakpoints(),
 	}, form, { $lazy: true }),
 	flip = ref(false);
 
-function handleFormSubmit() {
-	console.log(form);
-}
 </script>
 
 <style lang="stylus">

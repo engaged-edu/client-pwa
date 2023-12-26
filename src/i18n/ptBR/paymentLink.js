@@ -1,6 +1,6 @@
 export default {
 	billingTaxData: 'Dados fiscais para faturamento',
-	chargeName: 'A cobrança aparecerá na sua fatura como: <strong class="font-bold">XYZ.MVI</strong>',
+	chargeName: 'A cobrança aparecerá na sua fatura como: <strong class="font-bold">{domain}</strong>',
 	creditCard: {
 		cvv: 'CVV',
 		expiration: 'Validade',
