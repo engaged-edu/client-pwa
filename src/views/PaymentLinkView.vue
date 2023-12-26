@@ -4,7 +4,7 @@ CheckoutLayout(:loading="loading")
 		IdentityComponent
 
 	template(#method)
-		.text-sm.font-bold.mb-4(class="lg:text-xl") {{ $t('general.payment') }}
+		MethodComponent
 
 	template(#summary)
 		.text-sm.font-bold.mb-4(class="lg:text-xl") {{ $t('paymentLink.itemsSummary') }}
@@ -12,14 +12,34 @@ CheckoutLayout(:loading="loading")
 
 <script setup>
 import { useQuery } from '@vue/apollo-composable';
-import { useLogo } from '@/composables/logo';
+import { useLogo } from '@/composables/utils';
 import IdentityComponent from '@/components/IdentityComponent.vue';
+import MethodComponent from '@/components/MethodComponent.vue';
 import { publicFetchInvoicePaymentLink } from '@/graphql/queries/invoice';
 
 const route = useRoute(),
 	logo = useLogo(),
 	{ result, loading } = useQuery(publicFetchInvoicePaymentLink, { accessToken: route.query.accessToken }),
-	data = computed(() => result.value?.publicFetchInvoicePaymentLink);
+	data = computed(() => result.value?.publicFetchInvoicePaymentLink),
+	products = computed(() => data.value?.invoice?.items.map((item) => {
+		const isProduct = item?.type === 'test';
+
+		if (isProduct) {
+			return {
+				name: item.name,
+				description: item.description,
+				quantity: item.quantity,
+				amount: item.prices.find((price) => price._id === data.productPrice)?.billingConfig.unitAmount * item.quantity
+			};
+		}
+
+		return {
+			name: item.name,
+			quantity: item.quantity,
+			amount: item.amount
+		};
+	}) || []),
+	discounts = computed(() => data.value?.invoice?.discounts || []);
 
 provide('organization', computed(() => {
 	const org = data.value?.organization;
@@ -49,5 +69,36 @@ provide('userProfile', computed(() => {
 			country: data.value?.phoneNumberCountry
 		} : null
 	};
+}));
+
+provide('invoice', computed(() => {
+	const amount = data.value?.amount || 0,
+		subtotal = products.value.reduce((acc, product) => acc + product.amount, 0),
+		total = subtotal - discounts.value.reduce((acc, discount) => acc + discount.amount, 0),
+		content = {
+			id: data.value?._id,
+			createdAt: data.value?.createdAt,
+			updatedAt: data.value?.updatedAt,
+			status: data.value?.status,
+			expirationDate: data.value?.expirationDate,
+			methods: {
+				creditCard: data.value?.creditCard.enabled || false,
+				bankSlip: data.value?.bankSlip.enabled || false,
+				pix: data.value?.pix.enabled || false
+			},
+			subtotal,
+			total,
+			amount
+		};
+
+	if (content.methods.creditCard) {
+		content.creditCard = data.value?.creditCard;
+	}
+
+	if (content.methods.bankSlip) {
+		content.bankSlip = data.value?.bankSlip;
+	}
+
+	return content;
 }));
 </script>

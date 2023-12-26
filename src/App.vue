@@ -1,6 +1,6 @@
 <script setup>
 import { ApolloClients } from '@vue/apollo-composable';
-import { useDarkMode } from '@/composables/darkMode';
+import { useDarkMode } from '@/composables/utils';
 import graphQLClient from '@/graphql';
 
 const { initTheme } = useDarkMode(),

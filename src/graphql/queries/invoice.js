@@ -11,6 +11,37 @@ query publicFetchInvoicePaymentLink(
 		invoice {
 			... on Invoice {
 				_id
+				items {
+					type
+					quantity
+					... on ProductInvoiceItem {
+						productPrice
+						product {
+							name
+							description
+							prices {
+								_id
+								billingConfig {
+									... on PerUnitProductPrice {
+										unitAmount
+									}
+								}
+							}
+						}
+					}
+					... on InlineInvoiceItem {
+						name
+						quantity
+						amount
+					}
+				}
+				discounts {
+					_id
+					... on InvoiceManualDiscount {
+						description
+						amount
+					}
+				}
 				user {
 					name
 					email
@@ -34,6 +65,65 @@ query publicFetchInvoicePaymentLink(
 						complement
 						zipcode
 					}
+				}
+			}
+		}
+		payments {
+			... on Payment {
+				_id
+				updatedAt
+				status
+				failCode
+				amount
+				currency
+				paymentMethod
+				... on CreditCardPayment {
+					createdAt
+					updatedAt
+					brand
+					installments
+					lastDigits
+				}
+				... on BankSlipPayment {
+					createdAt
+					updatedAt
+					code
+					expirationDate
+					pdfUrl
+				}
+				... on PixPayment {
+					createdAt
+					updatedAt
+					code
+					expirationDate
+					qrCodeUrl
+				}
+			}
+		}
+		pix {
+			enabled
+		}
+		creditCard {
+			enabled
+			installmentsRule {
+				type
+				... on InvoicePaymentLinkCreditCardUpToInstallmentsRule {
+					upTo
+				}
+				... on InvoicePaymentLinkCreditCardSpecificInstallmentsInstallmentsRule {
+					installments
+				}
+			}
+		}
+		bankSlip {
+			enabled
+			expirationRule {
+				type
+				... on InvoicePaymentLinkDaysAfterCreationExpirationRule {
+					days
+				}
+				... on InvoicePaymentLinkSpecificDateExpirationRule {
+					date
 				}
 			}
 		}

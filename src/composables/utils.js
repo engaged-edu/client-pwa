@@ -1,4 +1,9 @@
-export function useUtils() {
+export { useCreditCard } from './creditCard';
+export { useDarkMode } from './darkMode';
+export { useLogo } from './logo';
+export { useValidations } from './validations';
+
+export function useFormatText() {
 	const format = {
 		cpf(v) {
 			return String(v).replace(/(\d{3})(\d{3})(\d{3})(\d{2})/u, '$1.$2.$3-$4');
@@ -26,3 +31,14 @@ export function useUtils() {
 		}
 	};
 }
+
+export function useMasks() {
+	return {
+		masks: {
+			ccNumber: '9999 9999 9999? 9999 999',
+			ccExp: '99/99',
+			cvv: '999?9'
+		}
+	};
+}
+
