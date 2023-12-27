@@ -8,9 +8,15 @@ query publicFetchInvoicePaymentLink(
 		accessToken: $accessToken
 	) {
 		_id
+		createdAt
+		updatedAt
+		expirationDate
+		status
+		amount
 		invoice {
 			... on Invoice {
 				_id
+				currency
 				items {
 					type
 					quantity

@@ -10,6 +10,7 @@ export default {
 		selectInstallments: 'Selecione as partcelas'
 	},
 	cryptoSafe: 'Utilizamos criptografia para assegurar a proteção de seus dados de pagamento, garantindo o nível de segurança das instituições bancárias.',
+	installmentOption: '{0}x de {1} (sem juros)',
 	itemsSummary: 'Resumo dos itens',
 	methods: {
 		bankSlip: 'Boleto',

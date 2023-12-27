@@ -98,6 +98,7 @@ provide('invoice', computed(() => {
 				bankSlip: data.value?.bankSlip.enabled || false,
 				pix: data.value?.pix.enabled || false
 			},
+			currency: data.value.invoice.currency,
 			subtotal,
 			total,
 			amount

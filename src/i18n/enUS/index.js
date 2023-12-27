@@ -1,1 +1,3 @@
-export default { test: 'Test' };
+import general from './general';
+
+export default { general };

@@ -22,7 +22,7 @@ div(class="lg:flex lg:column-gap-2")
 
 		.text-xs(class="lg:text-sm")
 			.flex.column-gap-2.mb-3
-				.col-4.p-0.font-semibold {{ $t('general.companyName') }}
+				.col-4.p-0.font-semibold {{ userProfile.taxId.type === 'BR_CPF' ? $t('general.fullName') : $t('general.companyName') }}
 				.col-8.p-0.white-space-nowrap.overflow-hidden.text-overflow-ellipsis {{ userProfile.businessName }}
 			.flex.column-gap-2.mb-3
 				.col-4.p-0.font-semibold {{ $t(`enums.TaxIdType.${userProfile.taxId.type}`) }}

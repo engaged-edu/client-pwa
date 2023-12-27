@@ -83,7 +83,10 @@ template(v-if="currentTab === methods.CreditCard")
 					label(for="installments") {{ $t('paymentLink.creditCard.selectInstallments') }}:
 					Dropdown#installments.w-full(
 						v-model="$v.installments.$model"
+						option-label="name"
+						option-value="value"
 						:class="{ 'p-invalid': $v.installments.$invalid }"
+						:options="installments"
 						@focus="flip = false"
 					)
 
@@ -116,10 +119,13 @@ template(v-if="currentTab === methods.CreditCard")
 
 <script setup>
 import { useVuelidate } from '@vuelidate/core';
+import { i18n } from '@/i18n';
 import { useBreakpoints } from '@/composables/breakpoints';
 import { useMasks, useValidations } from '@/composables/utils';
 import pixIcon from '/icons/pix.svg?raw';
 import CreditCardComponent from '@/components/CreditCardComponent.vue';
+
+
 
 const { largeScreen } = useBreakpoints(),
 	{ masks } = useMasks(),
@@ -166,7 +172,26 @@ const { largeScreen } = useBreakpoints(),
 		},
 		installments: { required: required() }
 	}, form, { $lazy: true }),
-	flip = ref(false);
+	flip = ref(false),
+	makeInstallmentsArray = (ins) => ins.map((i) => ({
+		name: i18n.t('paymentLink.installmentOption', [i, i18n.n((invoice.value.amount || 0) / i / 100, invoice.value.currency)]),
+		value: i
+	})),
+	installments = computed(() => {
+		if (!invoice.value.creditCard?.enabled) {
+			return [];
+		}
+
+		const installmentsRule = invoice.value?.creditCard.installmentsRule,
+			installmentsArray = installmentsRule?.type === 'UP_TO' ? makeInstallmentsArray(Array.from({ length: installmentsRule.upTo }, (_, i) => i + 1)) : makeInstallmentsArray(installmentsRule?.installments);
+
+		if (installmentsArray.length) {
+			form.installments = installmentsArray[0].value;
+		}
+		console.log(invoice.value);
+
+		return installmentsArray;
+	});
 
 </script>
 
