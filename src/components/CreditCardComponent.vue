@@ -4,7 +4,7 @@
 		.card__row.card__row--1
 			img.card__front__flag(
 				v-if="flag"
-				:src="`/creditCards/${flag}.svg`"
+				:src="`/pwa/creditCards/${flag}.svg`"
 			)
 			i.pi.pi-credit-card.card__front__flag.card__front__flag--no-brand(v-else)
 		.card__row.card__row--2
@@ -22,7 +22,7 @@
 		.card__row.card__row--3
 			img.card__back__flag(
 				v-if="flag"
-				:src="`/creditCards/${flag}.svg`"
+				:src="`/pwa/creditCards/${flag}.svg`"
 			)
 			i.pi.pi-credit-card.card__back__flag.card__back__flag--no-brand(v-else)
 </template>

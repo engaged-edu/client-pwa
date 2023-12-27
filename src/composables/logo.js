@@ -1,6 +1,6 @@
-import defaultLogo from '/engaged-logo-200x82.png';
-import defaultLogo256 from '/engaged-logo-256x256.png';
-import defaultLogo32 from '/engaged-logo-32x32.png';
+import defaultLogo from '/pwa/engaged-logo-200x82.png';
+import defaultLogo256 from '/pwa/engaged-logo-256x256.png';
+import defaultLogo32 from '/pwa/engaged-logo-32x32.png';
 
 export function useLogo() {
 	function getLogo(appearance) {
