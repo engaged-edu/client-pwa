@@ -14,6 +14,7 @@ const globalStyl = path.resolve(__dirname, 'src/styles/global.styl');
 // https://vitejs.dev/config/shared-options.html
 export default defineConfig({
 	base: '/p/',
+	build: { outDir: 'dist/p' },
 	resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
 	plugins: [
 		vue(),
