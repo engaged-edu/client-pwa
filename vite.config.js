@@ -13,7 +13,7 @@ const globalStyl = path.resolve(__dirname, 'src/styles/global.styl');
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	build: { assetsDir: 'pwa/assets' },
+	base: '/p/',
 	resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
 	plugins: [
 		vue(),

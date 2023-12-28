@@ -122,7 +122,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { i18n } from '@/i18n';
 import { useBreakpoints } from '@/composables/breakpoints';
 import { useMasks, useValidations } from '@/composables/utils';
-import pixIcon from '/pwa/icons/pix.svg?raw';
+import pixIcon from '/icons/pix.svg?raw';
 import CreditCardComponent from '@/components/CreditCardComponent.vue';
 
 
@@ -188,6 +188,7 @@ const { largeScreen } = useBreakpoints(),
 		if (installmentsArray.length) {
 			form.installments = installmentsArray[0].value;
 		}
+		console.log(invoice.value);
 
 		return installmentsArray;
 	});
