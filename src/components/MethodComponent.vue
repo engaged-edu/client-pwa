@@ -125,8 +125,6 @@ import { useMasks, useValidations } from '@/composables/utils';
 import pixIcon from '/icons/pix.svg?raw';
 import CreditCardComponent from '@/components/CreditCardComponent.vue';
 
-
-
 const { largeScreen } = useBreakpoints(),
 	{ masks } = useMasks(),
 	{
@@ -188,7 +186,6 @@ const { largeScreen } = useBreakpoints(),
 		if (installmentsArray.length) {
 			form.installments = installmentsArray[0].value;
 		}
-		console.log(invoice.value);
 
 		return installmentsArray;
 	});
