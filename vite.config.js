@@ -11,7 +11,7 @@ import { unheadVueComposablesImports } from '@unhead/vue';
 
 const globalStyl = path.resolve(__dirname, 'src/styles/global.styl');
 
-// https://vitejs.dev/config/
+// https://vitejs.dev/config/shared-options.html
 export default defineConfig({
 	base: '/p/',
 	resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
