@@ -3,11 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "predev": "cp -a .hooks/. .git/hooks/",
+    "predev": "yarn hooks && yarn gql",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore",
+	"hooks": "cp -a .hooks/. .git/hooks/",
+    "gql": "cp $(grep '^SCHEMA_GQL' .env.local | cut -d '=' -f2) ./src/gql.ts"
   },
   "dependencies": {
     "@unhead/vue": "^1.8.8",

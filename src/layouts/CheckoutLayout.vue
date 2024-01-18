@@ -1,17 +1,17 @@
 <template lang="pug">
 .layout.my-0.mx-auto.px-3.w-full.overflow-hidden.flex.flex-column
-	ProgressSpinner.mt-8(v-if="loading")
+	ProgressSpinner.mt-8(v-if="$props.loading")
 	template(v-else)
 		img.layout__logo.mx-auto.my-3(
 			class="md:my-6"
 			:src="organization.logoUrl"
 		)
-		section.layout__resume
+		section.layout__resume(v-if="!largeScreen")
 			slot(name="resume")
 
 		main.layout__container.flex-grow-1
 			div(class="lg:col-8")
-				section.layout__identity.mb-4
+				section.layout__identity.mb-3
 					Card(:pt="{content: {class: 'py-0'}}")
 						template(#content)
 							slot(name="identity")
@@ -25,22 +25,75 @@
 				v-if="largeScreen"
 				class="lg:col-4"
 			)
-				Card(:pt="{content: {class: 'py-0'}}")
+				Card.mb-3(:pt="{content: {class: 'py-0'}}")
 					template(#content)
 						slot(name="summary")
 
+				Button.w-full.justify-content-center(
+					size="large"
+					icon-pos="right"
+					icon="pi pi-lock"
+					:label="$t('payment.finishPayment')"
+				)
+
+				.text-sm.text-color-secondary.text-center.my-3(v-html="$t('payment.terms', { name: organization.name })")
+				.text-sm.text-green-500.mt-6.flex.align-items-center.justify-content-center
+					i.pi.pi-lock.mr-2
+					| {{ $t('general.safeEnv') }}
+
 		footer.layout__footer.my-2.text-xs.text-center.text-gray-400(class="lg:my-5") {{ $t('general.poweredBy') }}
+
+Sidebar.border-round-top-lg(
+	v-if="!largeScreen"
+	v-model:visible="summaryVisible"
+	position="bottom"
+	style="height: auto"
+)
+	template(#container)
+		.p-3
+			.flex.justify-content-center.mb-2
+				Button(
+					text
+					plain
+					rounded
+					size="small"
+					severity="secondary"
+					icon-pos="right"
+					icon="pi pi-chevron-down"
+					:label="$t('payment.hideSummary')"
+					@click="summaryVisible = false"
+				)
+			slot(name="summary")
 </template>
 
-<script setup>
-const organization = inject('organization');
+<script>
+import { useBreakpoints } from '@/composables/breakpoints';
 
-defineProps({
-	loading: {
-		type: Boolean,
-		required: true
+export default {
+	props: {
+		loading: {
+			type: Boolean,
+			required: true
+		}
+	},
+	setup(props, { expose }) {
+		const organization = inject('organization'),
+			{ largeScreen } = useBreakpoints(),
+			summaryVisible = ref(false);
+
+		function showSummary(state = true) {
+			summaryVisible.value = state;
+		}
+
+		expose({ showSummary });
+
+		return {
+			organization,
+			largeScreen,
+			summaryVisible
+		};
 	}
-});
+};
 </script>
 
 <style lang="stylus">

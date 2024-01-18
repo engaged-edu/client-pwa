@@ -1,11 +1,13 @@
+import { i18n } from '@/i18n';
 import countries from './countries';
 import enums from './enums';
 import general from './general';
-import paymentLink from './paymentLink';
+import payment from './payment';
 
 export default {
 	countries,
 	enums,
 	general,
-	paymentLink
+	payment,
+	cur: ({ list }) => i18n.n(list(0) / 100, list(1))
 };

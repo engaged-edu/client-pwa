@@ -1,7 +1,7 @@
 <template lang="pug">
 div(class="lg:flex lg:column-gap-2")
 	.col-12.p-0(class="lg:col-6")
-		.text-sm.font-bold.mb-4(class="lg:text-xl") {{ $t('paymentLink.paymentResponsible') }}
+		.text-sm.font-bold.mb-4(class="lg:text-xl") {{ $t('payment.paymentResponsible') }}
 
 		.text-xs(class="lg:text-sm")
 			.flex.column-gap-2.mb-3
@@ -18,11 +18,11 @@ div(class="lg:flex lg:column-gap-2")
 		v-if="largeScreen || showBillingData"
 		class="lg:col-6 lg:mt-0"
 	)
-		.text-sm.font-bold.mb-4(class="lg:text-xl") {{ $t('paymentLink.billingTaxData') }}
+		.text-sm.font-bold.mb-4(class="lg:text-xl") {{ $t('payment.billingTaxData') }}
 
 		.text-xs(class="lg:text-sm")
 			.flex.column-gap-2.mb-3
-				.col-4.p-0.font-semibold {{ userProfile.taxId.type === 'BR_CPF' ? $t('general.fullName') : $t('general.companyName') }}
+				.col-4.p-0.font-semibold {{ userProfile.taxId.type === TaxIdType.BrCpf ? $t('general.fullName') : $t('general.companyName') }}
 				.col-8.p-0.white-space-nowrap.overflow-hidden.text-overflow-ellipsis {{ userProfile.businessName }}
 			.flex.column-gap-2.mb-3
 				.col-4.p-0.font-semibold {{ $t(`enums.TaxIdType.${userProfile.taxId.type}`) }}
@@ -51,6 +51,7 @@ div(class="lg:flex lg:column-gap-2")
 <script setup>
 import { useBreakpoints } from '@/composables/breakpoints';
 import { useFormatText } from '@/composables/utils';
+import { TaxIdType } from '@/gql.ts';
 
 const { largeScreen } = useBreakpoints(),
 	{ formatText } = useFormatText(),

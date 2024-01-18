@@ -1,3 +1,78 @@
+import { useVuelidate } from '@vuelidate/core';
+import { i18n } from '@/i18n';
+import { useMasks, useValidations } from '@/composables/utils';
+import { InvoicePaymentLinkCreditCardInstallmentRuleType } from '@/gql.ts';
+
+const addCard = ref(true),
+	saveCard = ref(true),
+	formInitialState = {
+		name: '',
+		number: '',
+		expiration: '',
+		cvv: '',
+		installments: null
+	},
+	form = reactive({ ...formInitialState });
+
+export function useCreditCardForm(invoice) {
+	const { masks } = useMasks(),
+		{
+			required,
+			minLength,
+			ccNumber,
+			ccExpiration,
+			ccCVV
+		} = useValidations(),
+		$v = useVuelidate({
+			name: {
+				required: required(),
+				minLength: minLength(5)
+			},
+			number: {
+				required: required(),
+				ccNumber: ccNumber()
+			},
+			expiration: {
+				required: required(),
+				ccExpiration: ccExpiration()
+			},
+			cvv: {
+				required: required(),
+				ccCVV: ccCVV()
+			},
+			installments: { required: required() }
+		}, form, { $lazy: true }),
+		makeInstallmentsArray = (ins) => ins.map((i) => ({
+			name: i18n.t('payment.installmentOption', [i, i18n.n((invoice.value.amount || 0) / i / 100, invoice.value.currency)]),
+			value: i
+		})),
+		installments = computed(() => {
+			if (!invoice.value.creditCard?.enabled) {
+				return [];
+			}
+
+			const installmentsRule = invoice.value?.creditCard.installmentsRule,
+				installmentsArray = installmentsRule?.type === InvoicePaymentLinkCreditCardInstallmentRuleType.UpTo ? makeInstallmentsArray(Array.from({ length: installmentsRule.upTo }, (_, i) => i + 1)) : makeInstallmentsArray(installmentsRule?.installments);
+
+			if (installmentsArray.length) {
+				form.installments = installmentsArray[0].value;
+			}
+
+			return installmentsArray;
+		}),
+		currentInstallment = computed(() => installments.value.find((i) => i.value === form.installments).name);
+
+	return {
+		addCard,
+		saveCard,
+		masks,
+		form,
+		$v,
+		installments,
+		currentInstallment
+	};
+}
+
 export function useCreditCard() {
 	function getCardFlag(number) {
 		const cardFlags = [

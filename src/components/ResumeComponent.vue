@@ -1,0 +1,29 @@
+<template lang="pug">
+.flex.flex-column.align-items-center.gap-3.mb-4
+	.text-xs {{ $t('payment.youArePaying') }}
+	.text-base.font-bold {{ $t('cur', [invoice.amount, invoice.currency]) }}
+	.text-xs {{ $t('payment.ofTotal', [$t('cur', [invoice.total, invoice.currency])]) }}
+	Button.surface-card(
+		text
+		plain
+		raised
+		size="small"
+		severity="secondary"
+		icon-pos="right"
+		icon="pi pi-chevron-down"
+		:label="$t('payment.showSummary')"
+		@click="handleShowSummary"
+	)
+</template>
+
+<script setup>
+const invoice = inject('invoice');
+
+defineProps({
+	handleShowSummary: {
+		type: Function,
+		required: true
+	}
+});
+
+</script>

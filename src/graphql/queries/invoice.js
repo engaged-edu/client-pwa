@@ -43,6 +43,7 @@ query publicFetchInvoicePaymentLink(
 				}
 				discounts {
 					_id
+					type
 					... on InvoiceManualDiscount {
 						description
 						amount
@@ -136,6 +137,11 @@ query publicFetchInvoicePaymentLink(
 		organization {
 			_id
 			name
+			payment {
+				creditCard {
+					softDescriptor
+				}
+			}
 			appearance {
 				primaryColor
 				logo {

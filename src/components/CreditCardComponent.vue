@@ -16,7 +16,7 @@
 		.card__row.card__row--1
 			.card__back__mag
 		.card__row.card__row--2
-			.card__back__cvv-title {{ $t('paymentLink.creditCard.cvv') }}
+			.card__back__cvv-title {{ $t('payment.creditCard.cvv') }}
 			.card__back__cvv
 				.card__back__cvv__number {{ props.cvv || '&nbsp;' }}
 		.card__row.card__row--3

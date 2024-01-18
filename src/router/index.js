@@ -8,7 +8,27 @@ const router = createRouter({
 			path: '/payment-link',
 			name: 'payment-link',
 			component: () => import('../views/PaymentLinkView.vue'),
-			meta: { title: i18n.t('paymentLink.title') }
+			meta: { title: i18n.t('payment.title') },
+			children: [
+				{
+					path: 'credit-card',
+					name: 'payment-link-method-credit-card',
+					component: () => import('../views/MethodCreditCard.vue'),
+					meta: { name: i18n.t('payment.methods.creditCard') }
+				},
+				{
+					path: 'bank-slip',
+					name: 'payment-link-method-bank-slip',
+					component: () => import('../views/MethodBankSlip.vue'),
+					meta: { name: i18n.t('payment.methods.bankSlip') }
+				},
+				{
+					path: 'pix',
+					name: 'payment-link-method-pix',
+					component: () => import('../views/MethodPix.vue'),
+					meta: { name: i18n.t('payment.methods.pix') }
+				}
+			]
 		}
 	]
 });

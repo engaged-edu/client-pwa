@@ -1,45 +1,61 @@
 <template lang="pug">
-CheckoutLayout(:loading="loading")
+CheckoutLayout(
+	ref="$CheckoutLayout"
+	:loading="loading"
+)
+	template(#resume)
+		ResumeComponent(:handle-show-summary="$CheckoutLayout.showSummary")
+
 	template(#identity)
 		IdentityComponent
 
 	template(#method)
 		MethodComponent
+		router-view
 
 	template(#summary)
-		.text-sm.font-bold.mb-4(class="lg:text-xl") {{ $t('paymentLink.itemsSummary') }}
+		SummaryComponent
 </template>
 
 <script setup>
 import { useQuery } from '@vue/apollo-composable';
 import { useLogo } from '@/composables/utils';
+import ResumeComponent from '@/components/ResumeComponent.vue';
 import IdentityComponent from '@/components/IdentityComponent.vue';
 import MethodComponent from '@/components/MethodComponent.vue';
+import SummaryComponent from '@/components/SummaryComponent.vue';
 import { publicFetchInvoicePaymentLink } from '@/graphql/queries/invoice';
+import { InvoiceItemType } from '@/gql.ts';
 
 const route = useRoute(),
 	logo = useLogo(),
 	{ result, loading } = useQuery(publicFetchInvoicePaymentLink, { accessToken: route.query.accessToken }),
 	data = computed(() => result.value?.publicFetchInvoicePaymentLink),
 	products = computed(() => data.value?.invoice?.items.map((item) => {
-		const isProduct = item?.type === 'test';
+		const isProduct = item?.type === InvoiceItemType.Product;
 
 		if (isProduct) {
 			return {
-				name: item.name,
-				description: item.description,
+				type: item.type,
+				name: item.product.name,
+				description: item.product.description,
 				quantity: item.quantity,
-				amount: item.prices.find((price) => price._id === data.productPrice)?.billingConfig.unitAmount * item.quantity
+				amount: item.product.prices.find((price) => price._id === item.productPrice)?.billingConfig.unitAmount * item.quantity
 			};
 		}
 
 		return {
+			type: item.type,
 			name: item.name,
 			quantity: item.quantity,
 			amount: item.amount
 		};
 	}) || []),
-	discounts = computed(() => data.value?.invoice?.discounts || []);
+	discounts = computed(() => data.value?.invoice?.discounts || []),
+	$CheckoutLayout = ref();
+
+provide('products', products);
+provide('discounts', discounts);
 
 provide('organization', computed(() => {
 	const org = data.value?.organization;
@@ -48,7 +64,8 @@ provide('organization', computed(() => {
 		id: org?._id,
 		name: org?.name,
 		logoUrl: logo.getLogo(org?.appearance),
-		color: org?.appearance?.primaryColor
+		color: org?.appearance?.primaryColor,
+		softDescriptor: `Pg *Ed ${org?.payment?.creditCard.softDescriptor || ''}`
 	};
 }));
 
@@ -86,7 +103,8 @@ provide('userProfile', computed(() => {
 provide('invoice', computed(() => {
 	const amount = data.value?.amount || 0,
 		subtotal = products.value.reduce((acc, product) => acc + product.amount, 0),
-		total = subtotal - discounts.value.reduce((acc, discount) => acc + discount.amount, 0),
+		totalDiscount = discounts.value.reduce((acc, discount) => acc + discount.amount, 0),
+		total = subtotal - totalDiscount,
 		content = {
 			id: data.value?._id,
 			createdAt: data.value?.createdAt,
@@ -99,6 +117,7 @@ provide('invoice', computed(() => {
 				pix: data.value?.pix.enabled || false
 			},
 			currency: data.value.invoice.currency,
+			discounts: totalDiscount,
 			subtotal,
 			total,
 			amount
