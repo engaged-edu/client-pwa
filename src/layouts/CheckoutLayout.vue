@@ -122,6 +122,9 @@ export default {
 	max-width unit($screens.xl, px)
 	min-height 100dvh
 
+	@media $to.lg
+		padding-bottom 115px
+
 	&__logo
 		display block
 		max-width 200px
