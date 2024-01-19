@@ -1,7 +1,7 @@
 <template lang="pug">
 .text-sm.font-bold.mb-4(class="lg:text-xl") {{ $t('payment.itemsSummary') }}
 
-.overflow-scroll
+ScrollPanel(:pt="{ bary: 'hover:bg-primary-500 surface-300 opacity-100' }")
 	table.w-full
 		tr.text-sm(
 			v-for="(item, index) in items"
@@ -69,9 +69,13 @@ const route = useRoute(),
 </script>
 
 <style lang="stylus">
-.overflow-scroll
+.p-scrollpanel
 	max-height 60dvh
 
 	@media $from.lg
 		max-height 530px
+
+	&-bar-y
+		width 2px !important
+		transform translateX(8px)
 </style>
