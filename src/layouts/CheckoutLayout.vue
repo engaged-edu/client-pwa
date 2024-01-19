@@ -64,6 +64,25 @@ Sidebar.border-round-top-lg(
 					@click="summaryVisible = false"
 				)
 			slot(name="summary")
+
+Sidebar.border-round-top-lg(
+	v-if="!largeScreen && invoice.total"
+	visible
+	position="bottom"
+	style="height: auto"
+	:pt="{ mask: { class: 'pointer-events-none', style: 'background: transparent !important' } }"
+)
+	template(#container)
+		.p-3
+			.text-sm.font-bold.flex.justify-content-between.mb-3
+				span {{ $t('payment.totalPayment') }}
+				span.cursor-pointer.flex.align-items-center(@click="summaryVisible = true") {{ $t('cur', [invoice.total, invoice.currency]) }}
+					i.pi.pi-chevron-down.ml-2
+			Button.w-full.justify-content-center(
+				icon-pos="right"
+				icon="pi pi-lock"
+				:label="$t('payment.finishPayment')"
+			)
 </template>
 
 <script>
@@ -77,8 +96,9 @@ export default {
 		}
 	},
 	setup(props, { expose }) {
-		const organization = inject('organization'),
-			{ largeScreen } = useBreakpoints(),
+		const { largeScreen } = useBreakpoints(),
+			organization = inject('organization'),
+			invoice = inject('invoice'),
 			summaryVisible = ref(false);
 
 		function showSummary(state = true) {
@@ -88,8 +108,9 @@ export default {
 		expose({ showSummary });
 
 		return {
-			organization,
 			largeScreen,
+			organization,
+			invoice,
 			summaryVisible
 		};
 	}
