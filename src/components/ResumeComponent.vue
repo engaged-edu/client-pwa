@@ -9,11 +9,11 @@
 		raised
 		size="small"
 		severity="secondary"
-		icon-pos="right"
-		icon="pi pi-chevron-down"
 		:label="$t('payment.showSummary')"
 		@click="handleShowSummary"
 	)
+		template(#icon)
+			IconDown.p-button-icon-right
 </template>
 
 <script setup>

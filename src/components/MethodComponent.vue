@@ -6,13 +6,14 @@
 		v-if="invoice.methods.creditCard"
 		outlined
 		class="lg:py-4"
-		icon="pi pi-credit-card"
 		icon-pos="top"
 		:label="$t('payment.methods.creditCard')"
 		:severity="$route.name === 'payment-link-method-credit-card' ? 'primary' : 'secondary'"
 		:size="largeScreen || 'small'"
 		@click="$router.push({ name: 'payment-link-method-credit-card', query: $route.query })"
 	)
+		template(#icon)
+			IconCreditCard
 	Button.flex-1.justify-content-around(
 		v-if="invoice.methods.bankSlip"
 		outlined
@@ -24,7 +25,7 @@
 		@click="$router.push({ name: 'payment-link-method-bank-slip', query: $route.query })"
 	)
 		template(#icon)
-			i-mdi-barcode
+			IconBankSlip
 	Button.flex-1.justify-content-around(
 		v-if="invoice.methods.pix"
 		outlined
@@ -36,13 +37,12 @@
 		@click="$router.push({ name: 'payment-link-method-pix', query: $route.query })"
 	)
 		template(#icon)
-			div(v-html="pixIcon")
+			IconPix
 </template>
 
 <script setup>
 import { i18n } from '@/i18n';
 import { useBreakpoints } from '@/composables/breakpoints';
-import pixIcon from '/icons/pix.svg?raw';
 
 const router = useRouter(),
 	route = useRoute(),

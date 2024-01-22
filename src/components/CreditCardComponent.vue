@@ -6,7 +6,7 @@
 				v-if="flag"
 				:src="`/p/creditCards/${flag}.svg`"
 			)
-			i.pi.pi-credit-card.card__front__flag.card__front__flag--no-brand(v-else)
+			IconCreditCard.card__front__flag.card__front__flag--no-brand(v-else)
 		.card__row.card__row--2
 			.card__front__number {{ formattedNumber }}
 		.card__row.card__row--3
@@ -24,7 +24,7 @@
 				v-if="flag"
 				:src="`/p/creditCards/${flag}.svg`"
 			)
-			i.pi.pi-credit-card.card__back__flag.card__back__flag--no-brand(v-else)
+			IconCreditCard.card__back__flag.card__back__flag--no-brand(v-else)
 </template>
 
 <script setup>

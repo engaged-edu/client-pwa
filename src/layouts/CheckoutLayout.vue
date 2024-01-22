@@ -31,14 +31,14 @@
 
 				Button.w-full.justify-content-center(
 					size="large"
-					icon-pos="right"
-					icon="pi pi-lock"
 					:label="$t('payment.finishPayment')"
 				)
+					template(#icon)
+						IconSafe.p-button-icon-right
 
 				.text-sm.text-color-secondary.text-center.my-3(v-html="$t('payment.terms', { name: organization.name })")
 				.text-sm.text-green-500.mt-6.flex.align-items-center.justify-content-center
-					i.pi.pi-lock.mr-2
+					IconSafe.mr-2
 					| {{ $t('general.safeEnv') }}
 
 		footer.layout__footer.my-2.text-xs.text-center.text-gray-400(class="lg:my-5") {{ $t('general.poweredBy') }}
@@ -58,11 +58,11 @@ Sidebar.border-round-top-lg(
 					rounded
 					size="small"
 					severity="secondary"
-					icon-pos="right"
-					icon="pi pi-chevron-down"
 					:label="$t('payment.hideSummary')"
 					@click="summaryVisible = false"
 				)
+					template(#icon)
+						IconDown.p-button-icon-right
 			slot(name="summary")
 
 Sidebar.border-round-top-lg(
@@ -77,12 +77,10 @@ Sidebar.border-round-top-lg(
 			.text-sm.font-bold.flex.justify-content-between.mb-3
 				span {{ $t('payment.totalPayment') }}
 				span.cursor-pointer.flex.align-items-center(@click="summaryVisible = true") {{ $t('cur', [invoice.total, invoice.currency]) }}
-					i.pi.pi-chevron-down.ml-2
-			Button.w-full.justify-content-center(
-				icon-pos="right"
-				icon="pi pi-lock"
-				:label="$t('payment.finishPayment')"
-			)
+					IconDown.ml-2
+			Button.w-full.justify-content-center(:label="$t('payment.finishPayment')")
+				template(#icon)
+					IconSafe.p-button-icon-right
 </template>
 
 <script>

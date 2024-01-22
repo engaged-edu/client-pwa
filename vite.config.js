@@ -20,9 +20,10 @@ export default defineConfig({
 		vue(),
 		Components({
 			dirs: [
-				'./src/layouts',
-				'./src/views',
-				'./src/components'
+				'src/components',
+				'src/layouts',
+				'src/views',
+				'src/icons'
 			],
 			resolvers: [
 				PrimeVueResolver(),

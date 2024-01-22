@@ -46,6 +46,9 @@ div(class="lg:flex lg:column-gap-2")
 			:label="showBillingData ? $t('general.hideAllData') : $t('general.showAllData')"
 			@click="showBillingData = !showBillingData"
 		)
+			template(#icon)
+				IconUp.p-button-icon-right(v-if="showBillingData")
+				IconDown.p-button-icon-right(v-else)
 </template>
 
 <script setup>

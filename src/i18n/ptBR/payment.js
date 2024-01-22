@@ -1,4 +1,6 @@
 export default {
+	amount: 'Valor',
+	bankSlipInstructions: 'Para pagar pelo Internet Banking, copie o código de barras que será gerado ou leia o código de barras. Para pagar em qualquer banco, caixa eletrônico ou lotérica, por favor, imprima o boleto.',
 	billingTaxData: 'Dados fiscais para faturamento',
 	chargeName: 'A cobrança aparecerá na sua fatura como: <strong class="font-bold">{domain}</strong>',
 	creditCard: {
@@ -25,6 +27,12 @@ export default {
 	ofTotal: 'De um total de {0}',
 	paymentMethod: 'Forma de pagamento',
 	paymentResponsible: 'Responsável pelo pagamento',
+	pixInstructions: [
+		'Gere o código e o QR Code',
+		'Acesse o app do seu banco ou internet banking de preferência',
+		'Escolha pagar com o PIX, cole o código e finalize o pagamento. Ou leia o qr code com a câmera do seu celular.',
+		'Seu pagamento será aprovado em alguns segundos'
+	],
 	showSummary: 'Ver resumo dos itens',
 	terms: 'A EngagED está processando o pagamento de {name}. <br /> Ao prosseguir você concorda com os <strong>Termos de Uso</strong> e <strong>Política de Privacidade</strong>.',
 	title: 'Link de Pagamento',

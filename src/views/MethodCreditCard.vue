@@ -10,7 +10,7 @@ form.formgrid(v-if="addCard")
 	.field
 		label(for="number") {{ $t('payment.creditCard.number') }}:
 		.p-input-icon-right.w-full
-			i.pi.pi-credit-card
+			IconCreditCard
 			InputMask#number.w-full(
 				v-model="$v.number.$model"
 				:class="{ 'p-invalid': $v.number.$invalid }"
