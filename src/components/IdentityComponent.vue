@@ -12,7 +12,7 @@ div(class="lg:flex lg:column-gap-2")
 				.col-8.p-0.white-space-nowrap.overflow-hidden.text-overflow-ellipsis {{ userProfile.email }}
 			.flex.column-gap-2(v-if="userProfile.phone")
 				.col-4.p-0.font-semibold {{ $t('general.phone') }}
-				.col-8.p-0.white-space-nowrap.overflow-hidden.text-overflow-ellipsis {{ userProfile.phone.number }}
+				.col-8.p-0.white-space-nowrap.overflow-hidden.text-overflow-ellipsis {{ userProfile.phone.parsed }}
 
 	.col-12.mt-5.p-0(
 		v-if="largeScreen || showBillingData"

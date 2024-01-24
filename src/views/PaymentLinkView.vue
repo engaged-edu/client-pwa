@@ -18,6 +18,7 @@ CheckoutLayout(
 </template>
 
 <script setup>
+import parsePhoneNumber from 'libphonenumber-js';
 import { useQuery } from '@vue/apollo-composable';
 import { useLogo } from '@/composables/utils';
 import ResumeComponent from '@/components/ResumeComponent.vue';
@@ -71,7 +72,8 @@ provide('organization', computed(() => {
 
 provide('userProfile', computed(() => {
 	const address = data.value?.invoice?.userPaymentProfile.address,
-		taxIds = data.value?.invoice?.userPaymentProfile.taxIds;
+		taxIds = data.value?.invoice?.userPaymentProfile.taxIds,
+		user = data.value?.invoice?.user;
 
 	function makeAddress() {
 		if (!address) {
@@ -85,6 +87,20 @@ provide('userProfile', computed(() => {
 		return `${address.street}, ${address.number} - ${address.neighborhood}, ${address.city} - ${address.state}, ${address.zipcode}`;
 	}
 
+	function makePhone() {
+		if (!user.phoneNumber) {
+			return null;
+		}
+
+		const phone = parsePhoneNumber(user.phoneNumber || '', user.phoneNumberCountry);
+
+		return {
+			number: user.phoneNumber,
+			country: user.phoneNumberCountry,
+			parsed: phone.formatNational()
+		};
+	}
+
 	return {
 		name: data.value?.invoice?.user.name,
 		email: data.value?.invoice?.user.email,
@@ -93,10 +109,7 @@ provide('userProfile', computed(() => {
 		type: data.value?.invoice?.userPaymentProfile.type,
 		taxId: taxIds.length ? taxIds[0] : null,
 		address: makeAddress(),
-		phone: data.value?.phoneNumber ? {
-			number: data.value?.phoneNumber,
-			country: data.value?.phoneNumberCountry
-		} : null
+		phone: makePhone()
 	};
 }));
 
