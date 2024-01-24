@@ -1,12 +1,8 @@
 <script setup>
 import { ApolloClients } from '@vue/apollo-composable';
-import { useDarkMode } from '@/composables/utils';
 import graphQLClient from '@/graphql';
 
-const { initTheme } = useDarkMode(),
-	route = useRoute();
-
-initTheme();
+const route = useRoute();
 
 watch(() => route.meta.title, (title) => {
 	if (title) {
