@@ -28,10 +28,10 @@ export default {
 	paymentMethod: 'Forma de pagamento',
 	paymentResponsible: 'Responsável pelo pagamento',
 	pixInstructions: [
-		'Gere o código e o QR Code',
-		'Acesse o app do seu banco ou internet banking de preferência',
-		'Escolha pagar com o PIX, cole o código e finalize o pagamento. Ou leia o qr code com a câmera do seu celular.',
-		'Seu pagamento será aprovado em alguns segundos'
+		'Clique em "<strong>Finalizar pagamento</strong>" para gerar o código e o QR Code.',
+		'Acesse o app do seu banco ou internet banking de preferência.',
+		'Escolha pagar com o PIX, cole o código e finalize o pagamento, ou leia o QR Code com a câmera do seu celular.',
+		'Seu pagamento será aprovado em alguns segundos.'
 	],
 	showSummary: 'Ver resumo dos itens',
 	terms: 'A EngagED está processando o pagamento de {name}. <br /> Ao prosseguir você concorda com os <strong>Termos de Uso</strong> e <strong>Política de Privacidade</strong>.',

@@ -10,7 +10,7 @@
 	.text-xs.text-color-secondary.flex.flex-column.max-w-30rem.gap-4
 		.flex.align-items-center
 			i-mdi-numeric-1-circle.w-1.h-2rem.p-1
-			.w-9 {{ $t('payment.pixInstructions[0]') }}
+			.w-9(v-html="$t('payment.pixInstructions[0]')")
 		.flex.align-items-center
 			i-mdi-numeric-2-circle.w-1.h-2rem.p-1
 			.w-9 {{ $t('payment.pixInstructions[1]') }}
