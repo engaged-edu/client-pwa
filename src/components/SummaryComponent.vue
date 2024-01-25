@@ -12,10 +12,11 @@ ScrollPanel(:pt="{ bary: 'hover:bg-primary-500 surface-300 opacity-100' }")
 				span(v-else) {{ item.quantity }}x
 
 			td.vertical-align-top.border-bottom-1.surface-border.py-4.px-2
-				.font-semibold(v-if="item.name") {{ item.name }}
+				.font-semibold(v-if="isDiscount(item)") {{ $t('payment.discount') }}
+				.font-semibold(v-else-if="item.name") {{ item.name }}
 				.font-light.ellipsis-2(
 					v-if="item.description"
-					:class="{ 'mt-2': item.name }"
+					:class="{ 'mt-2': isDiscount(item) || item.name }"
 				) {{ item.description }}
 			td.vertical-align-top.border-bottom-1.surface-border.py-4.font-semibold.white-space-nowrap.w-min
 				.text-right(
