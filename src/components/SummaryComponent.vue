@@ -26,15 +26,19 @@ ScrollPanel(:pt="{ bary: 'hover:bg-primary-500 surface-300 opacity-100' }")
 					| {{ $t('cur', [item.amount, invoice.currency]) }}
 
 .grid.text-sm.my-2
-	.col-6 {{ $t('payment.invoiceSubtotal') }}
-	.col-6.text-right {{ $t('cur', [invoice.subtotal, invoice.currency]) }}
+	template(v-if="invoice.subtotal !== invoice.total")
+		.col-6 {{ $t('payment.invoiceSubtotal') }}
+		.col-6.text-right {{ $t('cur', [invoice.subtotal, invoice.currency]) }}
 	template(v-if="invoice.discounts")
 		.col-6 {{ $t('payment.discount') }}
 		.col-6.text-right.text-green-500 -{{ $t('cur', [invoice.discounts, invoice.currency]) }}
 	.col-6.font-bold {{ $t('payment.invoiceTotal') }}
 	.col-6.text-right.font-bold {{ $t('cur', [invoice.total, invoice.currency]) }}
 
-Message.m-0(:closable="false")
+Message.m-0(
+	v-if="invoice.amount !== invoice.total"
+	:closable="false"
+)
 	.text-sm.font-light {{ $t('payment.youArePayingInfo', [$t('cur', [invoice.amount, invoice.currency]), $t('cur', [invoice.total, invoice.currency])]) }}
 
 template(v-if="largeScreen")

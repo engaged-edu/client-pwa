@@ -49,7 +49,7 @@ const route = useRoute(),
 			type: item.type,
 			name: item.name,
 			quantity: item.quantity,
-			amount: item.amount
+			amount: item.amount * item.quantity
 		};
 	}) || []),
 	discounts = computed(() => data.value?.invoice?.discounts || []),
