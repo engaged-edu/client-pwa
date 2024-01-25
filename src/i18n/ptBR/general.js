@@ -9,7 +9,7 @@ export default {
 	hideAllData: 'Ocultar todos os dados',
 	payment: 'Pagamento|Pagamentos',
 	phone: 'Telefone',
-	poweredBy: 'Powered by EngagED',
+	poweredBy: 'Powered by',
 	safeEnv: 'Ambiente 100% seguro',
 	showAllData: 'Ver todos os dados',
 	title: 'EngagED'

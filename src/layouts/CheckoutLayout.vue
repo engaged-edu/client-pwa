@@ -42,7 +42,11 @@
 					IconSafe.mr-2
 					| {{ $t('general.safeEnv') }}
 
-		footer.layout__footer.my-2.text-xs.text-center.text-gray-400(class="lg:my-5") {{ $t('general.poweredBy') }}
+		footer.layout__footer.my-2.text-xs.text-center.text-gray-400(class="lg:my-5") {{ $t('general.poweredBy') }}&nbsp;
+			a.no-underline.text-gray-400(
+				href="https://engaged.com.br"
+				target="_blank"
+			) {{ $t('campli') }}
 
 Sidebar.border-round-top-lg(
 	v-if="!largeScreen"

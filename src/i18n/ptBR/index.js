@@ -9,5 +9,6 @@ export default {
 	enums,
 	general,
 	payment,
+	campli: 'EngagED',
 	cur: ({ list }) => i18n.n(list(0) / 100, list(1))
 };
