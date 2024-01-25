@@ -13,7 +13,7 @@ ScrollPanel(:pt="{ bary: 'hover:bg-primary-500 surface-300 opacity-100' }")
 
 			td.vertical-align-top.border-bottom-1.surface-border.py-4.px-2
 				.font-semibold(v-if="item.name") {{ item.name }}
-				.font-light(
+				.font-light.ellipsis-2(
 					v-if="item.description"
 					:class="{ 'mt-2': item.name }"
 				) {{ item.description }}
@@ -33,7 +33,8 @@ ScrollPanel(:pt="{ bary: 'hover:bg-primary-500 surface-300 opacity-100' }")
 	.col-6.font-bold {{ $t('payment.invoiceTotal') }}
 	.col-6.text-right.font-bold {{ $t('cur', [invoice.total, invoice.currency]) }}
 
-Message.m-0(:closable="false") {{ $t('payment.youArePayingInfo', [$t('cur', [invoice.amount, invoice.currency]), $t('cur', [invoice.total, invoice.currency])]) }}
+Message.m-0(:closable="false")
+	.text-sm.font-light {{ $t('payment.youArePayingInfo', [$t('cur', [invoice.amount, invoice.currency]), $t('cur', [invoice.total, invoice.currency])]) }}
 
 template(v-if="largeScreen")
 	Divider
@@ -42,7 +43,7 @@ template(v-if="largeScreen")
 		.grid
 			.col {{ $t('payment.paymentMethod') }}
 			.col.text-right {{ $route.meta.name }}
-		.text-color-secondary.text-right(
+		.text-bluegray-400.text-right.font-light(
 			v-if="$route.name === 'payment-link-method-credit-card'"
 			v-html="currentInstallment"
 		)
