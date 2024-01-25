@@ -11,15 +11,16 @@
 
 		main.layout__container.flex-grow-1
 			div(class="lg:col-8")
-				section.layout__identity.mb-3
-					Card(:pt="{content: {class: 'py-0'}}")
-						template(#content)
-							slot(name="identity")
+				template(v-if="invoice.status === InvoicePaymentLinkStatus.Pending")
+					section.layout__identity.mb-3
+						Card(:pt="{content: {class: 'py-0'}}")
+							template(#content)
+								slot(name="identity")
 
-				section.layout__method
-					Card(:pt="{content: {class: 'py-0'}}")
-						template(#content)
-							slot(name="method")
+					section.layout__method
+						Card(:pt="{content: {class: 'py-0'}}")
+							template(#content)
+								slot(name="method")
 
 			section.layout__summary(
 				v-if="largeScreen"
@@ -34,7 +35,7 @@
 					:label="$t('payment.finishPayment')"
 				)
 					template(#icon)
-						IconSafe.p-button-icon-right
+						IconCheck.p-button-icon-right
 
 				.text-sm.text-color-secondary.text-center.my-3(v-html="$t('payment.terms', { name: organization.name })")
 				.text-sm.text-green-500.mt-6.flex.align-items-center.justify-content-center
@@ -80,11 +81,12 @@ Sidebar.border-round-top-lg(
 					IconDown.ml-2
 			Button.w-full.justify-content-center(:label="$t('payment.finishPayment')")
 				template(#icon)
-					IconSafe.p-button-icon-right
+					IconCheck.p-button-icon-right
 </template>
 
 <script>
 import { useBreakpoints } from '@/composables/breakpoints';
+import { InvoicePaymentLinkStatus } from '@/gql.ts';
 
 export default {
 	props: {
@@ -106,6 +108,7 @@ export default {
 		expose({ showSummary });
 
 		return {
+			InvoicePaymentLinkStatus,
 			largeScreen,
 			organization,
 			invoice,

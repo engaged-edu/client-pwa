@@ -9,7 +9,7 @@ export default {
 		name: 'Nome impresso no cartão',
 		number: 'Número do cartão',
 		saveCard: 'Salvar os dados para os próximos pagamentos?',
-		selectInstallments: 'Selecione as partcelas'
+		selectInstallments: 'Selecione as parcelas'
 	},
 	cryptoSafe: 'Utilizamos criptografia para assegurar a proteção de seus dados de pagamento, garantindo o nível de segurança das instituições bancárias.',
 	discount: 'Desconto|Descontos',
