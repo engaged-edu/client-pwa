@@ -7,7 +7,7 @@
 		.text-sm {{ $t('payment.amount') }}:&nbsp;
 			span.font-bold {{ $t('cur', [invoice.amount, invoice.currency]) }}
 
-	.text-sm.text-color-secondary.max-w-30rem.text-center.line-height-3 {{ $t('payment.bankSlipInstructions') }}
+	.text-sm.text-color-secondary.max-w-30rem.text-center.line-height-3(v-html="$t('payment.bankSlipInstructions')")
 </template>
 
 <script setup>

@@ -1,6 +1,6 @@
 export default {
 	amount: 'Valor',
-	bankSlipInstructions: 'Para pagar pelo Internet Banking, copie o código de barras que será gerado ou leia o código de barras. Para pagar em qualquer banco, caixa eletrônico ou lotérica, por favor, imprima o boleto.',
+	bankSlipInstructions: 'Clique em "<strong>Finalizar pagamento</strong>" para pagar pelo Internet Banking. Copie o código de barras que será gerado ou leia o código de barras. Para pagar em qualquer banco, caixa eletrônico ou lotérica, por favor, imprima o boleto.',
 	billingTaxData: 'Dados fiscais para faturamento',
 	chargeName: 'A cobrança aparecerá na sua fatura como: <strong class="font-bold">{domain}</strong>',
 	creditCard: {
