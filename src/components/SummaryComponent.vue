@@ -33,7 +33,7 @@ ScrollPanel(:pt="{ bary: 'hover:bg-primary-500 surface-300 opacity-100' }")
 		.col-6 {{ $t('payment.discount') }}
 		.col-6.text-right.text-green-500 -{{ $t('cur', [invoice.discounts, invoice.currency]) }}
 	.col-6.font-bold {{ $t('payment.invoiceTotal') }}
-	.col-6.text-right.font-bold {{ $t('cur', [invoice.total, invoice.currency]) }}
+	.col-6.text-right.font-bold {{ $t('cur', [invoice.amount, invoice.currency]) }}
 
 Message.m-0(
 	v-if="invoice.amount !== invoice.total"
@@ -53,9 +53,9 @@ template(v-if="largeScreen")
 			v-html="currentInstallment"
 		)
 
-	.grid.text-lg.font-bold.mt-4
+	.grid.text-lg.font-bold.mt-2
 		.col.pb-0.white-space-nowrap {{ $t('payment.totalPayment') }}
-		.col.pb-0.text-right {{ $t('cur', [invoice.total, invoice.currency]) }}
+		.col.pb-0.text-right {{ $t('cur', [invoice.amount, invoice.currency]) }}
 </template>
 
 <script setup>
@@ -79,7 +79,7 @@ const route = useRoute(),
 	max-height 60dvh
 
 	@media $from.lg
-		max-height 530px
+		max-height 350px
 
 	&-content
 		max-height 58dvh
@@ -89,7 +89,7 @@ const route = useRoute(),
 		background-attachment local, local, scroll, scroll
 
 		@media $from.lg
-			max-height 530px
+			max-height 350px
 
 	&-bar-y
 		width 2px !important

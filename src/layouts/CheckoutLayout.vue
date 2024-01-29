@@ -2,10 +2,7 @@
 .layout.my-0.mx-auto.px-3.w-full.overflow-hidden.flex.flex-column
 	ProgressSpinner.mt-8(v-if="$props.loading")
 	template(v-else)
-		img.layout__logo.mx-auto.my-3(
-			class="md:my-6"
-			:src="organization.logoUrl"
-		)
+		img.layout__logo.mx-auto.my-3(:src="organization.logoUrl")
 		section.layout__resume(v-if="!largeScreen")
 			slot(name="resume")
 
