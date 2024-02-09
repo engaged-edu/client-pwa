@@ -35,7 +35,7 @@ export function useFormatText() {
 export function useMasks() {
 	return {
 		masks: {
-			ccNumber: '9999 9999 9999? 9999 999',
+			ccNumber: '9999 9999 9999? 9999',
 			ccExp: '99/99',
 			cvv: '999?9'
 		}
