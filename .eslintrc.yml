@@ -145,7 +145,7 @@ rules:
   no-compare-neg-zero: 2
   no-cond-assign: 2
   no-console:
-    - 1
+    - 2
     - allow:
       - warn
       - error
@@ -199,7 +199,7 @@ rules:
   no-mixed-requires: 2
   no-mixed-spaces-and-tabs: 2
   no-multi-spaces: 2
-  no-multi-str: 1
+  no-multi-str: 0
   no-multiple-empty-lines:
     - warn
     - max: 1
@@ -364,4 +364,6 @@ rules:
     - 2
     - both
   yoda: 2
+  # vue
+  vue/no-v-html: 0
 
