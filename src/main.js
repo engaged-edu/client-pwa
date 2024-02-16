@@ -3,6 +3,7 @@ import 'primeicons/primeicons.css';
 
 import { createApp } from 'vue';
 import PrimeVue from 'primevue/config';
+import ConfirmationService from 'primevue/confirmationservice';
 import { createHead } from '@unhead/vue';
 
 import App from './App.vue';
@@ -13,6 +14,7 @@ const app = createApp(App),
 	head = createHead();
 
 app.use(PrimeVue, { ripple: false });
+app.use(ConfirmationService);
 app.use(head);
 app.use(router);
 app.use(i18n);

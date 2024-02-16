@@ -480,6 +480,8 @@ export type BankSlipPayment = EntityCommonFieldsInterface & Payment & {
   __typename?: 'BankSlipPayment';
   _id: Scalars['ObjectId'];
   amount: Scalars['Int'];
+  checkout?: Maybe<Checkout>;
+  checkoutId?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<User>;
@@ -506,6 +508,8 @@ export type BankSlipPayment = EntityCommonFieldsInterface & Payment & {
   planConfig?: Maybe<PlanConfig>;
   planConfigId?: Maybe<Scalars['String']>;
   planConfigSharedId: Scalars['String'];
+  purchase?: Maybe<Purchase>;
+  purchaseId?: Maybe<Scalars['String']>;
   refundedAmount?: Maybe<Scalars['Float']>;
   refunds: Array<Refund>;
   scheduleInstallment?: Maybe<Scalars['Int']>;
@@ -918,6 +922,150 @@ export enum ChapterStatus {
   Draft = 'DRAFT',
   Published = 'PUBLISHED'
 }
+
+export type Checkout = {
+  __typename?: 'Checkout';
+  _id: Scalars['ObjectId'];
+  accessToken: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  createdBy?: Maybe<AdminUser>;
+  createdById?: Maybe<Scalars['String']>;
+  currency: Currency;
+  description?: Maybe<Scalars['String']>;
+  expirationDate?: Maybe<Scalars['DateTime']>;
+  invoiceDiscountedAmount: Scalars['Int'];
+  invoiceDiscounts?: Maybe<Array<InvoiceDiscount>>;
+  invoiceItems: Array<InvoiceItem>;
+  invoiceItemsAmount: Scalars['Int'];
+  invoiceTotalAmount: Scalars['Int'];
+  latest: Scalars['Boolean'];
+  organization: Organization;
+  organizationId?: Maybe<Scalars['String']>;
+  paymentMethodsConfig: CheckoutPaymentMethodsConfig;
+  sharedId: Scalars['String'];
+  splitConfig: SplitConfig;
+  splitConfigId?: Maybe<Scalars['String']>;
+  status?: Maybe<CheckoutStatus>;
+  updatedAt: Scalars['DateTime'];
+  updatedBy?: Maybe<AdminUser>;
+  updatedById?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+};
+
+export type CheckoutBankSlipConfig = {
+  __typename?: 'CheckoutBankSlipConfig';
+  enabled?: Maybe<Scalars['Boolean']>;
+  expirationRule?: Maybe<InvoicePaymentLinkExpirationRule>;
+};
+
+export type CheckoutBankSlipConfigInput = {
+  enabled?: Maybe<Scalars['Boolean']>;
+  expirationRule?: Maybe<InvoicePaymentLinkBankSlipExpirationRuleDiscriminatorInput>;
+};
+
+export type CheckoutCreditCardConfig = {
+  __typename?: 'CheckoutCreditCardConfig';
+  enabled?: Maybe<Scalars['Boolean']>;
+  installmentsRule?: Maybe<InvoicePaymentLinkCreditCardInstallmentsRule>;
+};
+
+export type CheckoutCreditCardConfigInput = {
+  enabled?: Maybe<Scalars['Boolean']>;
+  installmentsRule?: Maybe<InvoicePaymentLinkCreditCardInstallmentsRuleDiscriminatorInput>;
+};
+
+export type CheckoutInvoiceItemWhereInput = {
+  type?: Maybe<InvoiceItemStatusEnumFilterInput>;
+};
+
+export type CheckoutLogState = {
+  __typename?: 'CheckoutLogState';
+  checkout: Checkout;
+};
+
+export type CheckoutOrderByInput = {
+  createdAt?: Maybe<OrderByDirection>;
+  currency?: Maybe<OrderByDirection>;
+  invoiceDiscountedAmount?: Maybe<OrderByDirection>;
+  invoiceItemsAmount?: Maybe<OrderByDirection>;
+  invoiceTotalAmount?: Maybe<OrderByDirection>;
+  status?: Maybe<OrderByDirection>;
+  updatedAt?: Maybe<OrderByDirection>;
+};
+
+export type CheckoutPaymentCreationInput = {
+  cardId?: Maybe<Scalars['String']>;
+  cardToken?: Maybe<Scalars['String']>;
+  installments?: Maybe<Scalars['Float']>;
+  paymentMethod: PaymentMethod;
+  saveUserCard?: Maybe<Scalars['Boolean']>;
+};
+
+export type CheckoutPaymentMethodsConfig = {
+  __typename?: 'CheckoutPaymentMethodsConfig';
+  bankSlip?: Maybe<CheckoutBankSlipConfig>;
+  creditCard?: Maybe<CheckoutCreditCardConfig>;
+  pix?: Maybe<CheckoutPixConfig>;
+};
+
+export type CheckoutPaymentMethodsConfigInput = {
+  bankSlip?: Maybe<CheckoutBankSlipConfigInput>;
+  creditCard?: Maybe<CheckoutCreditCardConfigInput>;
+  pix?: Maybe<CheckoutPixConfigInput>;
+};
+
+export type CheckoutPixConfig = {
+  __typename?: 'CheckoutPixConfig';
+  enabled?: Maybe<Scalars['Boolean']>;
+  expirationRule?: Maybe<InvoicePaymentLinkExpirationRule>;
+};
+
+export type CheckoutPixConfigInput = {
+  enabled?: Maybe<Scalars['Boolean']>;
+  expirationRule?: Maybe<InvoicePaymentLinkPixExpirationRuleDiscriminatorInput>;
+};
+
+export enum CheckoutStatus {
+  Active = 'ACTIVE',
+  Inactive = 'INACTIVE'
+}
+
+export type CheckoutStatusEnumFilterInput = {
+  eq?: Maybe<CheckoutStatus>;
+  exists?: Maybe<Scalars['Boolean']>;
+  in?: Maybe<Array<CheckoutStatus>>;
+};
+
+export type CheckoutUpsertStudentInput = {
+  email: Scalars['String'];
+  name: Scalars['String'];
+  phoneNumber?: Maybe<Scalars['String']>;
+  phoneNumberCountry?: Maybe<CountryIsoCode>;
+};
+
+export type CheckoutUpsertUserPProfileInput = {
+  address?: Maybe<AddressInput>;
+  country: CountryIsoCode;
+  currency: Currency;
+  name: Scalars['String'];
+  taxIds?: Maybe<Array<TaxIdInput>>;
+  type: LegalPersonType;
+};
+
+export type CheckoutWhereInput = {
+  and?: Maybe<Array<CheckoutWhereInput>>;
+  createdAt?: Maybe<DateFilterInput>;
+  currency?: Maybe<CurrencyEnumFilterInput>;
+  description?: Maybe<StringFilterInput>;
+  invoiceDiscountedAmount?: Maybe<NumberFilterInput>;
+  invoiceItems?: Maybe<CheckoutInvoiceItemWhereInput>;
+  invoiceItemsAmount?: Maybe<NumberFilterInput>;
+  invoiceTotalAmount?: Maybe<NumberFilterInput>;
+  latest?: Maybe<BooleanFilterInput>;
+  or?: Maybe<Array<CheckoutWhereInput>>;
+  status?: Maybe<CheckoutStatusEnumFilterInput>;
+  updatedAt?: Maybe<DateFilterInput>;
+};
 
 export type CohortProductAccess = ProductAccess & {
   __typename?: 'CohortProductAccess';
@@ -1383,6 +1531,17 @@ export type CreateCertificateTemplateFromCopyLogMetadata = {
   fromTemplateSharedId: Scalars['String'];
 };
 
+export type CreateCheckoutLog = EntityCommonFieldsInterface & Log & {
+  __typename?: 'CreateCheckoutLog';
+  _id: Scalars['ObjectId'];
+  after: CheckoutLogState;
+  createdAt: Scalars['DateTime'];
+  source?: Maybe<LogSource>;
+  targets: Array<LogTarget>;
+  type: LogType;
+  updatedAt: Scalars['DateTime'];
+};
+
 export type CreateImportLog = EntityCommonFieldsInterface & Log & {
   __typename?: 'CreateImportLog';
   _id: Scalars['ObjectId'];
@@ -1487,6 +1646,17 @@ export type CreateProductLog = EntityCommonFieldsInterface & Log & {
   __typename?: 'CreateProductLog';
   _id: Scalars['ObjectId'];
   after: ProductLogState;
+  createdAt: Scalars['DateTime'];
+  source?: Maybe<LogSource>;
+  targets: Array<LogTarget>;
+  type: LogType;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type CreatePurchaseLog = EntityCommonFieldsInterface & Log & {
+  __typename?: 'CreatePurchaseLog';
+  _id: Scalars['ObjectId'];
+  after: PurchaseLogState;
   createdAt: Scalars['DateTime'];
   source?: Maybe<LogSource>;
   targets: Array<LogTarget>;
@@ -1599,6 +1769,8 @@ export type CreditCardPayment = EntityCommonFieldsInterface & Payment & {
   card?: Maybe<Card>;
   cardExpirationDate: Scalars['String'];
   cardId?: Maybe<Scalars['String']>;
+  checkout?: Maybe<Checkout>;
+  checkoutId?: Maybe<Scalars['String']>;
   country?: Maybe<CountryIsoCode>;
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<User>;
@@ -1627,6 +1799,8 @@ export type CreditCardPayment = EntityCommonFieldsInterface & Payment & {
   planConfig?: Maybe<PlanConfig>;
   planConfigId?: Maybe<Scalars['String']>;
   planConfigSharedId: Scalars['String'];
+  purchase?: Maybe<Purchase>;
+  purchaseId?: Maybe<Scalars['String']>;
   refundedAmount?: Maybe<Scalars['Float']>;
   refunds: Array<Refund>;
   scheduleInstallment?: Maybe<Scalars['Int']>;
@@ -2167,6 +2341,18 @@ export type FeatureConfigWPaymentFeeInput = {
   paymentFee?: Maybe<PaymentFeeInput>;
 };
 
+export type FetchCheckoutPurchaseSummaryResponse = {
+  __typename?: 'FetchCheckoutPurchaseSummaryResponse';
+  inflowAmount: Scalars['Float'];
+  inflowCount: Scalars['Float'];
+  outflowAmount: Scalars['Float'];
+  outflowCount: Scalars['Float'];
+  totalAmount: Scalars['Float'];
+  totalCount: Scalars['Float'];
+  waitingPaymentAmount: Scalars['Float'];
+  waitingPaymentCount: Scalars['Float'];
+};
+
 export type FetchOrganizationCurrentDateResponse = {
   __typename?: 'FetchOrganizationCurrentDateResponse';
   currentDate: Scalars['DateTime'];
@@ -2405,6 +2591,8 @@ export type Invoice = {
   accesses: Array<InvoiceAccess>;
   /** The enabled payment methods of this invoice active payment links. */
   activePaymentLinkPaymentMethods: Array<PaymentMethod>;
+  checkout?: Maybe<Checkout>;
+  checkoutId?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<AdminUser>;
   createdById?: Maybe<Scalars['String']>;
@@ -2420,6 +2608,8 @@ export type Invoice = {
   organization: Organization;
   organizationId?: Maybe<Scalars['String']>;
   paidAmount: Scalars['Int'];
+  purchase?: Maybe<Purchase>;
+  purchaseId?: Maybe<Scalars['ObjectId']>;
   refundedAmount: Scalars['Int'];
   splitConfig: SplitConfig;
   splitConfigId?: Maybe<Scalars['String']>;
@@ -2438,6 +2628,8 @@ export type Invoice = {
 export type InvoiceAccess = {
   __typename?: 'InvoiceAccess';
   _id: Scalars['ObjectId'];
+  checkout?: Maybe<Checkout>;
+  checkoutId?: Maybe<Scalars['ObjectId']>;
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<AdminUser>;
   createdById?: Maybe<Scalars['String']>;
@@ -2490,6 +2682,7 @@ export type InvoiceAccessOrderByInput = {
 };
 
 export enum InvoiceAccessOrigin {
+  Checkout = 'CHECKOUT',
   Direct = 'DIRECT',
   Invitation = 'INVITATION'
 }
@@ -2674,9 +2867,15 @@ export type InvoicePaymentLinkBankSlip = {
   expirationRule?: Maybe<InvoicePaymentLinkExpirationRule>;
 };
 
+export type InvoicePaymentLinkBankSlipExpirationRuleDiscriminatorInput = {
+  daysAfterCreation?: Maybe<InvoicePaymentLinkDaysAfterCreationExpirationRuleInput>;
+  specificDate?: Maybe<InvoicePaymentLinkSpecificDateExpirationRuleInput>;
+  type: InvoicePaymentLinkExpirationRuleType;
+};
+
 export type InvoicePaymentLinkBankSlipInput = {
   enabled?: Maybe<Scalars['Boolean']>;
-  expirationRule?: Maybe<InvoicePaymentLinkExpirationRuleDiscriminatorInput>;
+  expirationRule?: Maybe<InvoicePaymentLinkBankSlipExpirationRuleDiscriminatorInput>;
 };
 
 export type InvoicePaymentLinkCreditCard = {
@@ -2742,20 +2941,26 @@ export type InvoicePaymentLinkExpirationRule = {
   type: InvoicePaymentLinkExpirationRuleType;
 };
 
-export type InvoicePaymentLinkExpirationRuleDiscriminatorInput = {
-  daysAfterCreation?: Maybe<InvoicePaymentLinkDaysAfterCreationExpirationRuleInput>;
-  specificDate?: Maybe<InvoicePaymentLinkSpecificDateExpirationRuleInput>;
-  type: InvoicePaymentLinkExpirationRuleType;
-};
-
 export enum InvoicePaymentLinkExpirationRuleType {
   DaysAfterCreation = 'DAYS_AFTER_CREATION',
+  MinutesAfterCreation = 'MINUTES_AFTER_CREATION',
   SpecificDate = 'SPECIFIC_DATE'
 }
 
 export type InvoicePaymentLinkLogState = {
   __typename?: 'InvoicePaymentLinkLogState';
   invoicePaymentLink: InvoicePaymentLink;
+};
+
+export type InvoicePaymentLinkMinutesAfterCreationExpirationRule = InvoicePaymentLinkExpirationRule & {
+  __typename?: 'InvoicePaymentLinkMinutesAfterCreationExpirationRule';
+  minutes: Scalars['Int'];
+  type: InvoicePaymentLinkExpirationRuleType;
+};
+
+export type InvoicePaymentLinkMinutesAfterCreationExpirationRuleInput = {
+  minutes: Scalars['Int'];
+  type?: Maybe<InvoicePaymentLinkExpirationRuleType>;
 };
 
 export type InvoicePaymentLinkOrderByInput = {
@@ -2773,9 +2978,16 @@ export type InvoicePaymentLinkPix = {
   expirationRule?: Maybe<InvoicePaymentLinkExpirationRule>;
 };
 
+export type InvoicePaymentLinkPixExpirationRuleDiscriminatorInput = {
+  daysAfterCreation?: Maybe<InvoicePaymentLinkDaysAfterCreationExpirationRuleInput>;
+  minutesAfterCreation?: Maybe<InvoicePaymentLinkMinutesAfterCreationExpirationRuleInput>;
+  specificDate?: Maybe<InvoicePaymentLinkSpecificDateExpirationRuleInput>;
+  type: InvoicePaymentLinkExpirationRuleType;
+};
+
 export type InvoicePaymentLinkPixInput = {
   enabled?: Maybe<Scalars['Boolean']>;
-  expirationRule?: Maybe<InvoicePaymentLinkExpirationRuleDiscriminatorInput>;
+  expirationRule?: Maybe<InvoicePaymentLinkPixExpirationRuleDiscriminatorInput>;
 };
 
 export type InvoicePaymentLinkSpecificDateExpirationRule = InvoicePaymentLinkExpirationRule & {
@@ -2981,16 +3193,22 @@ export enum LogSource {
   AdminCancelInvoicePaymentLink = 'ADMIN_CANCEL_INVOICE_PAYMENT_LINK',
   AdminCancelPayment = 'ADMIN_CANCEL_PAYMENT',
   AdminCancelPaymentSchedule = 'ADMIN_CANCEL_PAYMENT_SCHEDULE',
+  AdminCreateCheckout = 'ADMIN_CREATE_CHECKOUT',
   AdminDetachPaymentFromInvoice = 'ADMIN_DETACH_PAYMENT_FROM_INVOICE',
   AdminDetachPaymentScheduleFromInvoice = 'ADMIN_DETACH_PAYMENT_SCHEDULE_FROM_INVOICE',
   AdminGeneratePaymentSchedules = 'ADMIN_GENERATE_PAYMENT_SCHEDULES',
   AdminRefundPayment = 'ADMIN_REFUND_PAYMENT',
   AdminRetryPaymentSchedule = 'ADMIN_RETRY_PAYMENT_SCHEDULE',
+  AdminUpdateCheckout = 'ADMIN_UPDATE_CHECKOUT',
   AdminUpdatePayment = 'ADMIN_UPDATE_PAYMENT',
   AdminUpdatePaymentSchedule = 'ADMIN_UPDATE_PAYMENT_SCHEDULE',
   AdminUpdateUserPaymentProfile = 'ADMIN_UPDATE_USER_PAYMENT_PROFILE',
+  CreateCheckoutInvoiceAccessesJob = 'CREATE_CHECKOUT_INVOICE_ACCESSES_JOB',
   CreateScheduledPaymentsJob = 'CREATE_SCHEDULED_PAYMENTS_JOB',
+  ProcessCheckoutPaymentJob = 'PROCESS_CHECKOUT_PAYMENT_JOB',
   PublicCancelInvoicePaymentLinkPayment = 'PUBLIC_CANCEL_INVOICE_PAYMENT_LINK_PAYMENT',
+  PublicCreateCheckoutPayment = 'PUBLIC_CREATE_CHECKOUT_PAYMENT',
+  SyncExpiredCheckoutsJob = 'SYNC_EXPIRED_CHECKOUTS_JOB',
   SyncExpiredPaymentsJob = 'SYNC_EXPIRED_PAYMENTS_JOB',
   SyncPagarmePaymentJob = 'SYNC_PAGARME_PAYMENT_JOB'
 }
@@ -3019,6 +3237,7 @@ export enum LogTargetType {
   Certificate = 'CERTIFICATE',
   CertificateTemplate = 'CERTIFICATE_TEMPLATE',
   Chapter = 'CHAPTER',
+  Checkout = 'CHECKOUT',
   Course = 'COURSE',
   Dispute = 'DISPUTE',
   Enrolment = 'ENROLMENT',
@@ -3037,6 +3256,7 @@ export enum LogTargetType {
   PlanConfig = 'PLAN_CONFIG',
   Policy = 'POLICY',
   Product = 'PRODUCT',
+  Purchase = 'PURCHASE',
   Questionnaire = 'QUESTIONNAIRE',
   Recipient = 'RECIPIENT',
   Refund = 'REFUND',
@@ -3064,6 +3284,7 @@ export enum LogType {
   CreateCard = 'CREATE_CARD',
   CreateCertificate = 'CREATE_CERTIFICATE',
   CreateCertificateTemplateFromCopy = 'CREATE_CERTIFICATE_TEMPLATE_FROM_COPY',
+  CreateCheckout = 'CREATE_CHECKOUT',
   CreateImport = 'CREATE_IMPORT',
   CreateInvoice = 'CREATE_INVOICE',
   CreateInvoiceAccess = 'CREATE_INVOICE_ACCESS',
@@ -3074,6 +3295,7 @@ export enum LogType {
   CreatePlanConfig = 'CREATE_PLAN_CONFIG',
   CreatePolicy = 'CREATE_POLICY',
   CreateProduct = 'CREATE_PRODUCT',
+  CreatePurchase = 'CREATE_PURCHASE',
   CreateRecipient = 'CREATE_RECIPIENT',
   CreateRefund = 'CREATE_REFUND',
   CreateSplitConfig = 'CREATE_SPLIT_CONFIG',
@@ -3096,6 +3318,7 @@ export enum LogType {
   UpdateAnticipationStatus = 'UPDATE_ANTICIPATION_STATUS',
   UpdateBankAccount = 'UPDATE_BANK_ACCOUNT',
   UpdateCertificate = 'UPDATE_CERTIFICATE',
+  UpdateCheckout = 'UPDATE_CHECKOUT',
   UpdateImport = 'UPDATE_IMPORT',
   UpdateInvoice = 'UPDATE_INVOICE',
   UpdateInvoiceAccess = 'UPDATE_INVOICE_ACCESS',
@@ -3108,6 +3331,7 @@ export enum LogType {
   UpdatePolicy = 'UPDATE_POLICY',
   UpdateProduct = 'UPDATE_PRODUCT',
   UpdateProductPrice = 'UPDATE_PRODUCT_PRICE',
+  UpdatePurchase = 'UPDATE_PURCHASE',
   UpdateRecipient = 'UPDATE_RECIPIENT',
   UpdateRefund = 'UPDATE_REFUND',
   UpdateUserPaymentProfile = 'UPDATE_USER_PAYMENT_PROFILE',
@@ -3174,6 +3398,8 @@ export type MoneyPayment = EntityCommonFieldsInterface & Payment & {
   __typename?: 'MoneyPayment';
   _id: Scalars['ObjectId'];
   amount: Scalars['Int'];
+  checkout?: Maybe<Checkout>;
+  checkoutId?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<User>;
   createdById?: Maybe<Scalars['String']>;
@@ -3197,6 +3423,8 @@ export type MoneyPayment = EntityCommonFieldsInterface & Payment & {
   planConfig?: Maybe<PlanConfig>;
   planConfigId?: Maybe<Scalars['String']>;
   planConfigSharedId: Scalars['String'];
+  purchase?: Maybe<Purchase>;
+  purchaseId?: Maybe<Scalars['String']>;
   refundedAmount?: Maybe<Scalars['Float']>;
   refunds: Array<Refund>;
   scheduleInstallment?: Maybe<Scalars['Int']>;
@@ -3245,6 +3473,7 @@ export type Mutation = {
   adminCreateCertificate: Certificate;
   adminCreateCertificateTemplate: CertificateTemplate;
   adminCreateChapter: Chapter;
+  adminCreateCheckout: Checkout;
   adminCreateCourse: AdminCreateCourseResponse;
   adminCreateEnrolment: Enrolment;
   adminCreateFilestackS3File: FilestackS3File;
@@ -3316,6 +3545,7 @@ export type Mutation = {
   adminUpdateCertificate: Certificate;
   adminUpdateCertificateTemplate: CertificateTemplate;
   adminUpdateChapter: Chapter;
+  adminUpdateCheckout: Checkout;
   adminUpdateCourse: Course;
   adminUpdateFile: FilestackS3File;
   adminUpdateInvoice: Invoice;
@@ -3345,6 +3575,7 @@ export type Mutation = {
   authenticateMagicToken: StudentUserAuthResponse;
   logOut: Session;
   publicCancelInvoicePaymentLinkPayment: PublicCancelInvoicePaymentLinkPaymentResponse;
+  publicCreateCheckoutPayment: PublicCreateCheckoutPaymentResponse;
   publicCreatePaymentFromInvoicePaymentLink: PublicCreatePaymentFromInvoicePaymentLinkResponse;
   studentChangeEmail: StudentUser;
   studentChangePassword: StudentUser;
@@ -3540,6 +3771,18 @@ export type MutationAdminCreateChapterArgs = {
   courseId: Scalars['String'];
   name: Scalars['String'];
   organizationId: Scalars['String'];
+};
+
+
+export type MutationAdminCreateCheckoutArgs = {
+  currency: Currency;
+  description?: Maybe<Scalars['String']>;
+  expirationDate?: Maybe<Scalars['DateTime']>;
+  invoiceDiscounts?: Maybe<Array<InvoiceDiscountDiscriminatorInput>>;
+  invoiceItems: Array<InvoiceItemDiscriminatorInput>;
+  organizationId: Scalars['String'];
+  paymentMethodsConfig: CheckoutPaymentMethodsConfigInput;
+  splitConfigId: Scalars['String'];
 };
 
 
@@ -4106,6 +4349,20 @@ export type MutationAdminUpdateChapterArgs = {
 };
 
 
+export type MutationAdminUpdateCheckoutArgs = {
+  checkoutId: Scalars['String'];
+  currency?: Maybe<Currency>;
+  description?: Maybe<Scalars['String']>;
+  expirationDate?: Maybe<Scalars['DateTime']>;
+  invoiceDiscountMethods?: Maybe<Array<InvoiceDiscountMethodInput>>;
+  invoiceItems?: Maybe<Array<InvoiceItemDiscriminatorInput>>;
+  organizationId: Scalars['String'];
+  paymentMethodsConfig?: Maybe<CheckoutPaymentMethodsConfigInput>;
+  splitConfigId?: Maybe<Scalars['String']>;
+  status?: Maybe<CheckoutStatus>;
+};
+
+
 export type MutationAdminUpdateCourseArgs = {
   backgroundImageId?: Maybe<Scalars['String']>;
   certificateTemplateSharedId?: Maybe<Scalars['String']>;
@@ -4376,6 +4633,14 @@ export type MutationAuthenticateMagicTokenArgs = {
 
 export type MutationPublicCancelInvoicePaymentLinkPaymentArgs = {
   accessToken: Scalars['String'];
+};
+
+
+export type MutationPublicCreateCheckoutPaymentArgs = {
+  accessToken: Scalars['String'];
+  paymentCreationArgs: CheckoutPaymentCreationInput;
+  upsertStudentUserArgs: CheckoutUpsertStudentInput;
+  upsertUserPaymentProfileArgs: CheckoutUpsertUserPProfileInput;
 };
 
 
@@ -4748,6 +5013,15 @@ export type PaginatedChapterResponse = {
   totalResultCount: Scalars['Int'];
 };
 
+export type PaginatedCheckoutResponse = {
+  __typename?: 'PaginatedCheckoutResponse';
+  currentPage: Scalars['Int'];
+  hasNextPage: Scalars['Boolean'];
+  results: Array<Checkout>;
+  totalPageCount: Scalars['Int'];
+  totalResultCount: Scalars['Int'];
+};
+
 export type PaginatedCourseResponse = {
   __typename?: 'PaginatedCourseResponse';
   currentPage: Scalars['Int'];
@@ -4892,6 +5166,15 @@ export type PaginatedProductResponse = {
   totalResultCount: Scalars['Int'];
 };
 
+export type PaginatedPurchaseResponse = {
+  __typename?: 'PaginatedPurchaseResponse';
+  currentPage: Scalars['Int'];
+  hasNextPage: Scalars['Boolean'];
+  results: Array<Purchase>;
+  totalPageCount: Scalars['Int'];
+  totalResultCount: Scalars['Int'];
+};
+
 export type PaginatedQuestionnaireResponse = {
   __typename?: 'PaginatedQuestionnaireResponse';
   currentPage: Scalars['Int'];
@@ -5032,6 +5315,8 @@ export enum PayableType {
 export type Payment = {
   _id: Scalars['ObjectId'];
   amount: Scalars['Int'];
+  checkout?: Maybe<Checkout>;
+  checkoutId?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<User>;
   createdById?: Maybe<Scalars['String']>;
@@ -5055,6 +5340,8 @@ export type Payment = {
   planConfig?: Maybe<PlanConfig>;
   planConfigId?: Maybe<Scalars['String']>;
   planConfigSharedId: Scalars['String'];
+  purchase?: Maybe<Purchase>;
+  purchaseId?: Maybe<Scalars['String']>;
   refundedAmount?: Maybe<Scalars['Float']>;
   refunds: Array<Refund>;
   scheduleInstallment?: Maybe<Scalars['Int']>;
@@ -5334,6 +5621,8 @@ export type PixPayment = EntityCommonFieldsInterface & Payment & {
   __typename?: 'PixPayment';
   _id: Scalars['ObjectId'];
   amount: Scalars['Int'];
+  checkout?: Maybe<Checkout>;
+  checkoutId?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<User>;
@@ -5359,6 +5648,8 @@ export type PixPayment = EntityCommonFieldsInterface & Payment & {
   planConfig?: Maybe<PlanConfig>;
   planConfigId?: Maybe<Scalars['String']>;
   planConfigSharedId: Scalars['String'];
+  purchase?: Maybe<Purchase>;
+  purchaseId?: Maybe<Scalars['String']>;
   qrCodeUrl: Scalars['String'];
   refundedAmount?: Maybe<Scalars['Float']>;
   refunds: Array<Refund>;
@@ -5737,11 +6028,80 @@ export type PublicCancelInvoicePaymentLinkPaymentResponse = {
   payment: Payment;
 };
 
+export type PublicCreateCheckoutPaymentResponse = {
+  __typename?: 'PublicCreateCheckoutPaymentResponse';
+  checkout: Checkout;
+  payment: Payment;
+};
+
 export type PublicCreatePaymentFromInvoicePaymentLinkResponse = {
   __typename?: 'PublicCreatePaymentFromInvoicePaymentLinkResponse';
   invoice: Invoice;
   invoicePaymentLink: InvoicePaymentLink;
   payment: Payment;
+};
+
+export type Purchase = {
+  __typename?: 'Purchase';
+  _id: Scalars['ObjectId'];
+  checkout: Checkout;
+  checkoutId?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  createdBy?: Maybe<StudentUser>;
+  createdById?: Maybe<Scalars['String']>;
+  invoiceDiscountedAmount?: Maybe<Scalars['Int']>;
+  invoiceDueAmount?: Maybe<Scalars['Int']>;
+  invoiceItemsAmount?: Maybe<Scalars['Int']>;
+  invoicePaidAmount?: Maybe<Scalars['Int']>;
+  invoiceRefundedAmount?: Maybe<Scalars['Int']>;
+  invoiceTotalAmount?: Maybe<Scalars['Int']>;
+  organization: Organization;
+  organizationId?: Maybe<Scalars['String']>;
+  status: PurchaseStatus;
+  studentUserId?: Maybe<Scalars['String']>;
+  updatedAt: Scalars['DateTime'];
+  updatedBy?: Maybe<StudentUser>;
+  updatedById?: Maybe<Scalars['String']>;
+  user: StudentUser;
+};
+
+export type PurchaseLogState = {
+  __typename?: 'PurchaseLogState';
+  purchase: Purchase;
+};
+
+export type PurchaseOrderByInput = {
+  createdAt?: Maybe<OrderByDirection>;
+  status?: Maybe<OrderByDirection>;
+  updatedAt?: Maybe<OrderByDirection>;
+};
+
+export enum PurchaseStatus {
+  Draft = 'DRAFT',
+  Expired = 'EXPIRED',
+  Failed = 'FAILED',
+  Late = 'LATE',
+  Open = 'OPEN',
+  Paid = 'PAID',
+  PartiallyPaid = 'PARTIALLY_PAID',
+  PartiallyRefunded = 'PARTIALLY_REFUNDED',
+  Refunded = 'REFUNDED',
+  Refused = 'REFUSED',
+  Void = 'VOID'
+}
+
+export type PurchaseStatusEnumFilterInput = {
+  eq?: Maybe<PurchaseStatus>;
+  exists?: Maybe<Scalars['Boolean']>;
+  in?: Maybe<Array<PurchaseStatus>>;
+};
+
+export type PurchaseWhereInput = {
+  and?: Maybe<Array<PurchaseWhereInput>>;
+  createdAt?: Maybe<DateFilterInput>;
+  or?: Maybe<Array<PurchaseWhereInput>>;
+  status?: Maybe<PurchaseStatusEnumFilterInput>;
+  updatedAt?: Maybe<DateFilterInput>;
 };
 
 export type Query = {
@@ -5756,6 +6116,9 @@ export type Query = {
   adminFetchCertificates: PaginatedCertificateResponse;
   adminFetchChapter?: Maybe<Chapter>;
   adminFetchChapters: PaginatedChapterResponse;
+  adminFetchCheckout?: Maybe<Checkout>;
+  adminFetchCheckoutPurchaseSummary?: Maybe<FetchCheckoutPurchaseSummaryResponse>;
+  adminFetchCheckouts: PaginatedCheckoutResponse;
   adminFetchCourse?: Maybe<Course>;
   adminFetchCourses: PaginatedCourseResponse;
   adminFetchDenormalizedEnrolments: PaginatedDenormalizedEnrolmentResponse;
@@ -5792,6 +6155,8 @@ export type Query = {
   adminFetchPolicy?: Maybe<Policy>;
   adminFetchProduct?: Maybe<Product>;
   adminFetchProducts: PaginatedProductResponse;
+  adminFetchPurchase?: Maybe<Purchase>;
+  adminFetchPurchases: PaginatedPurchaseResponse;
   adminFetchQuestionnaire?: Maybe<Questionnaire>;
   adminFetchQuestionnaireAnswer?: Maybe<UserQuestionnaireAnswer>;
   adminFetchQuestionnaireAnswers: PaginatedUserQuestionnaireAnswerResponse;
@@ -5824,6 +6189,7 @@ export type Query = {
   adminUser: AdminUser;
   fetchCertificate?: Maybe<Certificate>;
   fetchOrganization: Organization;
+  publicFetchCheckout?: Maybe<Checkout>;
   publicFetchInvoicePaymentLink?: Maybe<InvoicePaymentLink>;
   publicFetchInvoicePaymentLinkUserCards: PaginatedCardResponse;
   studentFetchCertificate?: Maybe<Certificate>;
@@ -5936,6 +6302,31 @@ export type QueryAdminFetchChaptersArgs = {
   orderBy?: Maybe<Array<ChapterOrderByInput>>;
   organizationId: Scalars['String'];
   paginationArgs?: Maybe<PagePaginationInput>;
+};
+
+
+export type QueryAdminFetchCheckoutArgs = {
+  checkoutId?: Maybe<Scalars['String']>;
+  checkoutSharedId?: Maybe<Scalars['String']>;
+  organizationId: Scalars['String'];
+};
+
+
+export type QueryAdminFetchCheckoutPurchaseSummaryArgs = {
+  checkoutId?: Maybe<Scalars['String']>;
+  checkoutSharedId?: Maybe<Scalars['String']>;
+  organizationId: Scalars['String'];
+};
+
+
+export type QueryAdminFetchCheckoutsArgs = {
+  checkoutIds?: Maybe<Array<Scalars['String']>>;
+  filterArgs?: Maybe<CheckoutWhereInput>;
+  filterInputText?: Maybe<Scalars['String']>;
+  orderBy?: Maybe<Array<CheckoutOrderByInput>>;
+  organizationId: Scalars['String'];
+  paginationArgs?: Maybe<PagePaginationInput>;
+  splitConfigIds?: Maybe<Array<Scalars['String']>>;
 };
 
 
@@ -6222,6 +6613,23 @@ export type QueryAdminFetchProductsArgs = {
 };
 
 
+export type QueryAdminFetchPurchaseArgs = {
+  organizationId: Scalars['String'];
+  purchaseId: Scalars['String'];
+};
+
+
+export type QueryAdminFetchPurchasesArgs = {
+  checkoutIds?: Maybe<Array<Scalars['String']>>;
+  filterArgs?: Maybe<PurchaseWhereInput>;
+  filterInputText?: Maybe<Scalars['String']>;
+  orderBy?: Maybe<Array<PurchaseOrderByInput>>;
+  organizationId: Scalars['String'];
+  paginationArgs?: Maybe<PagePaginationInput>;
+  purchaseIds?: Maybe<Array<Scalars['String']>>;
+};
+
+
 export type QueryAdminFetchQuestionnaireArgs = {
   organizationId: Scalars['String'];
   questionnaireId?: Maybe<Scalars['String']>;
@@ -6463,6 +6871,11 @@ export type QueryFetchCertificateArgs = {
 export type QueryFetchOrganizationArgs = {
   hostname?: Maybe<Scalars['String']>;
   organizationId?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryPublicFetchCheckoutArgs = {
+  accessToken: Scalars['String'];
 };
 
 
@@ -7474,6 +7887,18 @@ export type UpdateCertificateLog = EntityCommonFieldsInterface & Log & {
   updatedAt: Scalars['DateTime'];
 };
 
+export type UpdateCheckoutLog = EntityCommonFieldsInterface & Log & {
+  __typename?: 'UpdateCheckoutLog';
+  _id: Scalars['ObjectId'];
+  after: CheckoutLogState;
+  before: CheckoutLogState;
+  createdAt: Scalars['DateTime'];
+  source?: Maybe<LogSource>;
+  targets: Array<LogTarget>;
+  type: LogType;
+  updatedAt: Scalars['DateTime'];
+};
+
 export type UpdateImportLog = EntityCommonFieldsInterface & Log & {
   __typename?: 'UpdateImportLog';
   _id: Scalars['ObjectId'];
@@ -7611,6 +8036,18 @@ export type UpdateProductPriceLog = EntityCommonFieldsInterface & Log & {
   _id: Scalars['ObjectId'];
   after: ProductLogState;
   before: ProductLogState;
+  createdAt: Scalars['DateTime'];
+  source?: Maybe<LogSource>;
+  targets: Array<LogTarget>;
+  type: LogType;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type UpdatePurchaseLog = EntityCommonFieldsInterface & Log & {
+  __typename?: 'UpdatePurchaseLog';
+  _id: Scalars['ObjectId'];
+  after: PurchaseLogState;
+  before: PurchaseLogState;
   createdAt: Scalars['DateTime'];
   source?: Maybe<LogSource>;
   targets: Array<LogTarget>;
@@ -9657,6 +10094,48 @@ export type AdminGetHubspotTokenMutation = (
   & Pick<Mutation, 'adminUserGetHubspotToken'>
 );
 
+export type AdminCreateCheckoutMutationVariables = Exact<{
+  description?: Maybe<Scalars['String']>;
+  expirationDate?: Maybe<Scalars['DateTime']>;
+  invoiceDiscounts: Array<InvoiceDiscountDiscriminatorInput> | InvoiceDiscountDiscriminatorInput;
+  splitConfigId: Scalars['String'];
+  organizationId: Scalars['String'];
+  currency: Currency;
+  invoiceItems: Array<InvoiceItemDiscriminatorInput> | InvoiceItemDiscriminatorInput;
+  paymentMethodsConfig: CheckoutPaymentMethodsConfigInput;
+}>;
+
+
+export type AdminCreateCheckoutMutation = (
+  { __typename?: 'Mutation' }
+  & { adminCreateCheckout: (
+    { __typename?: 'Checkout' }
+    & Pick<Checkout, '_id'>
+  ) }
+);
+
+export type AdminUpdateCheckoutMutationVariables = Exact<{
+  description?: Maybe<Scalars['String']>;
+  expirationDate?: Maybe<Scalars['DateTime']>;
+  splitConfigId?: Maybe<Scalars['String']>;
+  currency?: Maybe<Currency>;
+  status?: Maybe<CheckoutStatus>;
+  invoiceItems?: Maybe<Array<InvoiceItemDiscriminatorInput> | InvoiceItemDiscriminatorInput>;
+  invoiceDiscountMethods?: Maybe<Array<InvoiceDiscountMethodInput> | InvoiceDiscountMethodInput>;
+  paymentMethodsConfig?: Maybe<CheckoutPaymentMethodsConfigInput>;
+  checkoutId: Scalars['String'];
+  organizationId: Scalars['String'];
+}>;
+
+
+export type AdminUpdateCheckoutMutation = (
+  { __typename?: 'Mutation' }
+  & { adminUpdateCheckout: (
+    { __typename?: 'Checkout' }
+    & Pick<Checkout, '_id'>
+  ) }
+);
+
 export type AdminCreateInvoiceMutationVariables = Exact<{
   organizationId: Scalars['String'];
   expirationDate?: Maybe<Scalars['DateTime']>;
@@ -11116,6 +11595,169 @@ export type StudentFetchLessonQuery = (
   )> }
 );
 
+export type AdminFetchCheckoutsQueryVariables = Exact<{
+  filterArgs?: Maybe<CheckoutWhereInput>;
+  paginationArgs?: Maybe<PagePaginationInput>;
+  orderBy?: Maybe<Array<CheckoutOrderByInput> | CheckoutOrderByInput>;
+  checkoutIds?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+  splitConfigIds?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+  organizationId: Scalars['String'];
+  filterInputText?: Maybe<Scalars['String']>;
+}>;
+
+
+export type AdminFetchCheckoutsQuery = (
+  { __typename?: 'Query' }
+  & { adminFetchCheckouts: (
+    { __typename?: 'PaginatedCheckoutResponse' }
+    & Pick<PaginatedCheckoutResponse, 'currentPage' | 'totalPageCount' | 'totalResultCount' | 'hasNextPage'>
+    & { results: Array<(
+      { __typename?: 'Checkout' }
+      & Pick<Checkout, '_id' | 'createdAt' | 'updatedAt' | 'expirationDate' | 'description' | 'status' | 'currency' | 'invoiceItemsAmount' | 'invoiceTotalAmount' | 'invoiceDiscountedAmount' | 'accessToken' | 'sharedId' | 'latest' | 'organizationId' | 'splitConfigId' | 'updatedById' | 'createdById' | 'url'>
+      & { splitConfig: (
+        { __typename?: 'SplitConfig' }
+        & { rules: Array<(
+          { __typename?: 'SplitRule' }
+          & { recipient?: Maybe<(
+            { __typename?: 'Recipient' }
+            & Pick<Recipient, '_id' | 'name'>
+            & { taxIds?: Maybe<Array<(
+              { __typename?: 'TaxId' }
+              & Pick<TaxId, 'country' | 'type' | 'value'>
+            )>> }
+          )> }
+        )> }
+      ), paymentMethodsConfig: (
+        { __typename?: 'CheckoutPaymentMethodsConfig' }
+        & { creditCard?: Maybe<(
+          { __typename?: 'CheckoutCreditCardConfig' }
+          & Pick<CheckoutCreditCardConfig, 'enabled'>
+          & { installmentsRule?: Maybe<(
+            { __typename?: 'InvoicePaymentLinkCreditCardSpecificInstallmentsInstallmentsRule' }
+            & Pick<InvoicePaymentLinkCreditCardSpecificInstallmentsInstallmentsRule, 'installments' | 'type'>
+          ) | (
+            { __typename?: 'InvoicePaymentLinkCreditCardUpToInstallmentsRule' }
+            & Pick<InvoicePaymentLinkCreditCardUpToInstallmentsRule, 'upTo' | 'type'>
+          )> }
+        )>, pix?: Maybe<(
+          { __typename?: 'CheckoutPixConfig' }
+          & Pick<CheckoutPixConfig, 'enabled'>
+          & { expirationRule?: Maybe<(
+            { __typename?: 'InvoicePaymentLinkDaysAfterCreationExpirationRule' }
+            & Pick<InvoicePaymentLinkDaysAfterCreationExpirationRule, 'days' | 'type'>
+          ) | (
+            { __typename?: 'InvoicePaymentLinkMinutesAfterCreationExpirationRule' }
+            & Pick<InvoicePaymentLinkMinutesAfterCreationExpirationRule, 'minutes' | 'type'>
+          ) | (
+            { __typename?: 'InvoicePaymentLinkSpecificDateExpirationRule' }
+            & Pick<InvoicePaymentLinkSpecificDateExpirationRule, 'date' | 'type'>
+          )> }
+        )>, bankSlip?: Maybe<(
+          { __typename?: 'CheckoutBankSlipConfig' }
+          & Pick<CheckoutBankSlipConfig, 'enabled'>
+          & { expirationRule?: Maybe<(
+            { __typename?: 'InvoicePaymentLinkDaysAfterCreationExpirationRule' }
+            & Pick<InvoicePaymentLinkDaysAfterCreationExpirationRule, 'days' | 'type'>
+          ) | (
+            { __typename?: 'InvoicePaymentLinkMinutesAfterCreationExpirationRule' }
+            & Pick<InvoicePaymentLinkMinutesAfterCreationExpirationRule, 'type'>
+          ) | (
+            { __typename?: 'InvoicePaymentLinkSpecificDateExpirationRule' }
+            & Pick<InvoicePaymentLinkSpecificDateExpirationRule, 'date' | 'type'>
+          )> }
+        )> }
+      ) }
+    )> }
+  ) }
+);
+
+export type AdminFetchCheckoutQueryVariables = Exact<{
+  checkoutId?: Maybe<Scalars['String']>;
+  checkoutSharedId?: Maybe<Scalars['String']>;
+  organizationId: Scalars['String'];
+}>;
+
+
+export type AdminFetchCheckoutQuery = (
+  { __typename?: 'Query' }
+  & { adminFetchCheckout?: Maybe<(
+    { __typename?: 'Checkout' }
+    & Pick<Checkout, '_id' | 'createdAt' | 'updatedAt' | 'expirationDate' | 'description' | 'status' | 'currency' | 'invoiceItemsAmount' | 'invoiceTotalAmount' | 'invoiceDiscountedAmount' | 'accessToken' | 'sharedId' | 'latest' | 'organizationId' | 'splitConfigId' | 'updatedById' | 'createdById' | 'url'>
+    & { splitConfig: (
+      { __typename?: 'SplitConfig' }
+      & { rules: Array<(
+        { __typename?: 'SplitRule' }
+        & { recipient?: Maybe<(
+          { __typename?: 'Recipient' }
+          & Pick<Recipient, '_id' | 'name'>
+          & { taxIds?: Maybe<Array<(
+            { __typename?: 'TaxId' }
+            & Pick<TaxId, 'country' | 'type' | 'value'>
+          )>> }
+        )> }
+      )> }
+    ), paymentMethodsConfig: (
+      { __typename?: 'CheckoutPaymentMethodsConfig' }
+      & { creditCard?: Maybe<(
+        { __typename?: 'CheckoutCreditCardConfig' }
+        & Pick<CheckoutCreditCardConfig, 'enabled'>
+        & { installmentsRule?: Maybe<(
+          { __typename?: 'InvoicePaymentLinkCreditCardSpecificInstallmentsInstallmentsRule' }
+          & Pick<InvoicePaymentLinkCreditCardSpecificInstallmentsInstallmentsRule, 'installments' | 'type'>
+        ) | (
+          { __typename?: 'InvoicePaymentLinkCreditCardUpToInstallmentsRule' }
+          & Pick<InvoicePaymentLinkCreditCardUpToInstallmentsRule, 'upTo' | 'type'>
+        )> }
+      )>, pix?: Maybe<(
+        { __typename?: 'CheckoutPixConfig' }
+        & Pick<CheckoutPixConfig, 'enabled'>
+        & { expirationRule?: Maybe<(
+          { __typename?: 'InvoicePaymentLinkDaysAfterCreationExpirationRule' }
+          & Pick<InvoicePaymentLinkDaysAfterCreationExpirationRule, 'days' | 'type'>
+        ) | (
+          { __typename?: 'InvoicePaymentLinkMinutesAfterCreationExpirationRule' }
+          & Pick<InvoicePaymentLinkMinutesAfterCreationExpirationRule, 'minutes' | 'type'>
+        ) | (
+          { __typename?: 'InvoicePaymentLinkSpecificDateExpirationRule' }
+          & Pick<InvoicePaymentLinkSpecificDateExpirationRule, 'date' | 'type'>
+        )> }
+      )>, bankSlip?: Maybe<(
+        { __typename?: 'CheckoutBankSlipConfig' }
+        & Pick<CheckoutBankSlipConfig, 'enabled'>
+        & { expirationRule?: Maybe<(
+          { __typename?: 'InvoicePaymentLinkDaysAfterCreationExpirationRule' }
+          & Pick<InvoicePaymentLinkDaysAfterCreationExpirationRule, 'days' | 'type'>
+        ) | (
+          { __typename?: 'InvoicePaymentLinkMinutesAfterCreationExpirationRule' }
+          & Pick<InvoicePaymentLinkMinutesAfterCreationExpirationRule, 'type'>
+        ) | (
+          { __typename?: 'InvoicePaymentLinkSpecificDateExpirationRule' }
+          & Pick<InvoicePaymentLinkSpecificDateExpirationRule, 'date' | 'type'>
+        )> }
+      )> }
+    ), invoiceDiscounts?: Maybe<Array<(
+      { __typename?: 'InvoiceManualDiscount' }
+      & Pick<InvoiceManualDiscount, '_id' | 'description' | 'amount'>
+    ) | { __typename?: 'InvoiceVoucherDiscount' }>>, invoiceItems: Array<(
+      { __typename?: 'InlineInvoiceItem' }
+      & Pick<InlineInvoiceItem, 'quantity' | 'name' | 'amount' | 'type'>
+    ) | (
+      { __typename?: 'ProductInvoiceItem' }
+      & Pick<ProductInvoiceItem, 'quantity' | 'productPrice' | 'type'>
+      & { attachedInvoiceAccesses?: Maybe<Array<(
+        { __typename?: 'InvoiceAccess' }
+        & Pick<InvoiceAccess, '_id'>
+      )>>, product: (
+        { __typename?: 'AccessProduct' }
+        & FetchProductFragment_AccessProduct_Fragment
+      ) | (
+        { __typename?: 'OtherProduct' }
+        & FetchProductFragment_OtherProduct_Fragment
+      ) }
+    )> }
+  )> }
+);
+
 export type AdminFetchInvoiceQueryVariables = Exact<{
   organizationId: Scalars['String'];
   invoiceId: Scalars['String'];
@@ -11260,6 +11902,13 @@ export type AdminFetchInvoiceLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'CreateCheckoutLog' }
+      & Pick<CreateCheckoutLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'CreateImportLog' }
       & Pick<CreateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -11335,6 +11984,13 @@ export type AdminFetchInvoiceLogsQuery = (
     ) | (
       { __typename?: 'CreateProductLog' }
       & Pick<CreateProductLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreatePurchaseLog' }
+      & Pick<CreatePurchaseLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -11494,6 +12150,13 @@ export type AdminFetchInvoiceLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'UpdateCheckoutLog' }
+      & Pick<UpdateCheckoutLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'UpdateImportLog' }
       & Pick<UpdateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -11598,6 +12261,13 @@ export type AdminFetchInvoiceLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'UpdatePurchaseLog' }
+      & Pick<UpdatePurchaseLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'UpdateRecipientLog' }
       & Pick<UpdateRecipientLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -11664,6 +12334,9 @@ export type AdminFetchInvoicePaymentLinksQuery = (
           { __typename?: 'InvoicePaymentLinkDaysAfterCreationExpirationRule' }
           & Pick<InvoicePaymentLinkDaysAfterCreationExpirationRule, 'days' | 'type'>
         ) | (
+          { __typename?: 'InvoicePaymentLinkMinutesAfterCreationExpirationRule' }
+          & Pick<InvoicePaymentLinkMinutesAfterCreationExpirationRule, 'type'>
+        ) | (
           { __typename?: 'InvoicePaymentLinkSpecificDateExpirationRule' }
           & Pick<InvoicePaymentLinkSpecificDateExpirationRule, 'date' | 'type'>
         )> }
@@ -11673,6 +12346,9 @@ export type AdminFetchInvoicePaymentLinksQuery = (
         & { expirationRule?: Maybe<(
           { __typename?: 'InvoicePaymentLinkDaysAfterCreationExpirationRule' }
           & Pick<InvoicePaymentLinkDaysAfterCreationExpirationRule, 'days' | 'type'>
+        ) | (
+          { __typename?: 'InvoicePaymentLinkMinutesAfterCreationExpirationRule' }
+          & Pick<InvoicePaymentLinkMinutesAfterCreationExpirationRule, 'type'>
         ) | (
           { __typename?: 'InvoicePaymentLinkSpecificDateExpirationRule' }
           & Pick<InvoicePaymentLinkSpecificDateExpirationRule, 'date' | 'type'>
@@ -12078,6 +12754,13 @@ export type AdminFetchPaymentLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'CreateCheckoutLog' }
+      & Pick<CreateCheckoutLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'CreateImportLog' }
       & Pick<CreateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -12174,6 +12857,13 @@ export type AdminFetchPaymentLogsQuery = (
     ) | (
       { __typename?: 'CreateProductLog' }
       & Pick<CreateProductLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreatePurchaseLog' }
+      & Pick<CreatePurchaseLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -12333,6 +13023,13 @@ export type AdminFetchPaymentLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'UpdateCheckoutLog' }
+      & Pick<UpdateCheckoutLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'UpdateImportLog' }
       & Pick<UpdateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -12474,6 +13171,13 @@ export type AdminFetchPaymentLogsQuery = (
     ) | (
       { __typename?: 'UpdateProductPriceLog' }
       & Pick<UpdateProductPriceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdatePurchaseLog' }
+      & Pick<UpdatePurchaseLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -12612,6 +13316,13 @@ export type AdminFetchPaymentScheduleLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'CreateCheckoutLog' }
+      & Pick<CreateCheckoutLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'CreateImportLog' }
       & Pick<CreateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -12708,6 +13419,13 @@ export type AdminFetchPaymentScheduleLogsQuery = (
     ) | (
       { __typename?: 'CreateProductLog' }
       & Pick<CreateProductLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreatePurchaseLog' }
+      & Pick<CreatePurchaseLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -12867,6 +13585,13 @@ export type AdminFetchPaymentScheduleLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'UpdateCheckoutLog' }
+      & Pick<UpdateCheckoutLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'UpdateImportLog' }
       & Pick<UpdateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -13008,6 +13733,13 @@ export type AdminFetchPaymentScheduleLogsQuery = (
     ) | (
       { __typename?: 'UpdateProductPriceLog' }
       & Pick<UpdateProductPriceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdatePurchaseLog' }
+      & Pick<UpdatePurchaseLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -13850,6 +14582,13 @@ export type AdminFetchWithdrawalLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'CreateCheckoutLog' }
+      & Pick<CreateCheckoutLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'CreateImportLog' }
       & Pick<CreateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -13946,6 +14685,13 @@ export type AdminFetchWithdrawalLogsQuery = (
     ) | (
       { __typename?: 'CreateProductLog' }
       & Pick<CreateProductLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreatePurchaseLog' }
+      & Pick<CreatePurchaseLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -14105,6 +14851,13 @@ export type AdminFetchWithdrawalLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'UpdateCheckoutLog' }
+      & Pick<UpdateCheckoutLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'UpdateImportLog' }
       & Pick<UpdateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -14246,6 +14999,13 @@ export type AdminFetchWithdrawalLogsQuery = (
     ) | (
       { __typename?: 'UpdateProductPriceLog' }
       & Pick<UpdateProductPriceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdatePurchaseLog' }
+      & Pick<UpdatePurchaseLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -14440,6 +15200,13 @@ export type AdminFetchAnticipationLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'CreateCheckoutLog' }
+      & Pick<CreateCheckoutLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'CreateImportLog' }
       & Pick<CreateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -14536,6 +15303,13 @@ export type AdminFetchAnticipationLogsQuery = (
     ) | (
       { __typename?: 'CreateProductLog' }
       & Pick<CreateProductLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreatePurchaseLog' }
+      & Pick<CreatePurchaseLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -14695,6 +15469,13 @@ export type AdminFetchAnticipationLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'UpdateCheckoutLog' }
+      & Pick<UpdateCheckoutLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'UpdateImportLog' }
       & Pick<UpdateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -14836,6 +15617,13 @@ export type AdminFetchAnticipationLogsQuery = (
     ) | (
       { __typename?: 'UpdateProductPriceLog' }
       & Pick<UpdateProductPriceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdatePurchaseLog' }
+      & Pick<UpdatePurchaseLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -15037,6 +15825,13 @@ export type AdminFetchProductLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'CreateCheckoutLog' }
+      & Pick<CreateCheckoutLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'CreateImportLog' }
       & Pick<CreateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -15112,6 +15907,13 @@ export type AdminFetchProductLogsQuery = (
           & Pick<OtherProduct, '_id' | 'name'>
         ) }
       ), targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreatePurchaseLog' }
+      & Pick<CreatePurchaseLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
@@ -15279,6 +16081,13 @@ export type AdminFetchProductLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'UpdateCheckoutLog' }
+      & Pick<UpdateCheckoutLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'UpdateImportLog' }
       & Pick<UpdateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -15376,6 +16185,13 @@ export type AdminFetchProductLogsQuery = (
     ) | (
       { __typename?: 'UpdateProductPriceLog' }
       & Pick<UpdateProductPriceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdatePurchaseLog' }
+      & Pick<UpdatePurchaseLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>

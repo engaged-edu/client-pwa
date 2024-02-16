@@ -3,7 +3,8 @@ import { i18n } from '@/i18n';
 import { useMasks, useValidations } from '@/composables/utils';
 import { InvoicePaymentLinkCreditCardInstallmentRuleType } from '@/gql.ts';
 
-const addCard = ref(true),
+const PAGARME_KEY = import.meta.env.VITE_PAGARME_KEY,
+	addCard = ref(true),
 	saveCard = ref(true),
 	formInitialState = {
 		name: '',
@@ -167,7 +168,29 @@ export function useCreditCard() {
 		return true;
 	}
 
+	function usePagarmeClient() {
+		// eslint-disable-next-line
+		return pagarme.client.connect({ encryption_key: PAGARME_KEY });
+	}
+
+	async function getCardHash(
+		number,
+		holder,
+		expiration,
+		cvv
+	) {
+		/* eslint-disable */
+		return (await usePagarmeClient()).security.encrypt({
+			card_number: number,
+			card_holder_name: holder,
+			card_expiration_date: expiration,
+			card_cvv: cvv
+		}); 
+		/* eslint-enable */
+	}
+
 	return {
+		getCardHash,
 		getCardFlag,
 		getCardFlagShort,
 		luhnCheck,

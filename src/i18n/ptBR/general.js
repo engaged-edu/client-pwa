@@ -4,13 +4,18 @@ export default {
 	cpf: 'CPF',
 	companyName: 'Razão social',
 	country: 'País|Países',
+	waitDontLeave: 'Por favor, aguarde. Não feche ou saia desta página!',
 	email: 'E-mail',
+	fillFormCorrectly: 'Preencha o formulário corretamente!',
 	fullName: 'Nome completo',
 	hideAllData: 'Ocultar todos os dados',
+	no: 'Não',
+	notSupported: 'Não suportado',
 	payment: 'Pagamento|Pagamentos',
 	phone: 'Telefone',
 	poweredBy: 'Powered by',
 	safeEnv: 'Ambiente 100% seguro',
 	showAllData: 'Ver todos os dados',
-	title: 'EngagED'
+	title: 'EngagED',
+	yes: 'Sim'
 };

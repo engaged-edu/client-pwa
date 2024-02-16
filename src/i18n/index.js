@@ -17,6 +17,23 @@ const i18n = createI18n({
 					notation: 'standard'
 				}
 			}
+		},
+		datetimeFormats: {
+			'pt-BR': {
+				short: {
+					year: 'numeric',
+					month: 'numeric',
+					day: 'numeric'
+				},
+				full: {
+					year: 'numeric',
+					month: 'numeric',
+					day: 'numeric',
+					hour: 'numeric',
+					minute: 'numeric',
+					second: 'numeric'
+				}
+			}
 		}
 	}),
 	{ global } = i18n;

@@ -76,35 +76,34 @@ query publicFetchInvoicePaymentLink(
 			}
 		}
 		payments {
-			... on Payment {
-				_id
+			_id
+			updatedAt
+			status
+			failCode
+			failMessage
+			amount
+			currency
+			paymentMethod
+			... on CreditCardPayment {
+				createdAt
 				updatedAt
-				status
-				failCode
-				amount
-				currency
-				paymentMethod
-				... on CreditCardPayment {
-					createdAt
-					updatedAt
-					brand
-					installments
-					lastDigits
-				}
-				... on BankSlipPayment {
-					createdAt
-					updatedAt
-					code
-					expirationDate
-					pdfUrl
-				}
-				... on PixPayment {
-					createdAt
-					updatedAt
-					code
-					expirationDate
-					qrCodeUrl
-				}
+				brand
+				installments
+				lastDigits
+			}
+			... on BankSlipPayment {
+				createdAt
+				updatedAt
+				code
+				expirationDate
+				pdfUrl
+			}
+			... on PixPayment {
+				createdAt
+				updatedAt
+				code
+				expirationDate
+				qrCodeUrl
 			}
 		}
 		pix {

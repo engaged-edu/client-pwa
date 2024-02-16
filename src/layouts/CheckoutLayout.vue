@@ -8,7 +8,7 @@
 
 		main.layout__container.flex-grow-1
 			div(class="lg:col-8")
-				template(v-if="invoice.status === InvoicePaymentLinkStatus.Pending")
+				template(v-if="isStatus(InvoicePaymentLinkStatus.Pending)")
 					section.layout__identity.mb-3
 						Card(:pt="{content: {class: 'py-0'}}")
 							template(#content)
@@ -19,6 +19,9 @@
 							template(#content)
 								slot(name="method")
 
+				section.layout__status(v-else)
+					slot(name="status")
+
 			section.layout__summary(
 				v-if="largeScreen"
 				class="lg:col-4"
@@ -28,8 +31,10 @@
 						slot(name="summary")
 
 				Button.w-full.justify-content-center(
+					v-if="isStatus(InvoicePaymentLinkStatus.Pending)"
 					size="large"
 					:label="$t('payment.finishPayment')"
+					@click="$emit('submit')"
 				)
 					template(#icon)
 						IconCheck.p-button-icon-right
@@ -76,13 +81,32 @@ Sidebar.border-round-top-lg(
 )
 	template(#container)
 		.p-3
-			.text-sm.font-bold.flex.justify-content-between.mb-3
+			.text-sm.font-bold.flex.justify-content-between
 				span {{ $t('payment.totalPayment') }}
-				span.cursor-pointer.flex.align-items-center(@click="summaryVisible = true") {{ $t('cur', [invoice.total, invoice.currency]) }}
+				span.cursor-pointer.flex.align-items-center(@click="summaryVisible = true") {{ $t('cur', [invoice.amount, invoice.currency]) }}
 					IconDown.ml-2
-			Button.w-full.justify-content-center(:label="$t('payment.finishPayment')")
+
+			Button.w-full.justify-content-center.mt-3(
+				v-if="isStatus(InvoicePaymentLinkStatus.Pending)"
+				:label="$t('payment.finishPayment')"
+				@click="$emit('submit')"
+			)
 				template(#icon)
 					IconCheck.p-button-icon-right
+
+Dialog(
+	v-model:visible="dialogVisible"
+	modal
+	:closable="false"
+	:pt="{ root: 'flex flex-column gap-3 w-22rem py-5 px-3 text-center' }"
+)
+	template(#container)
+		IconSpinner.text-7xl(v-if="dialogContent.type === 'loading'")
+		IconError.text-7xl.text-red-500(v-if="dialogContent.type === 'error'")
+		IconOk.text-7xl.text-green-500(v-if="dialogContent.type === 'success'")
+
+		.font-semibold.text-xs.text-600(v-if="dialogContent.title") {{ dialogContent.title }}
+		.font-semibold.text-xs.text-color-secondary(v-if="dialogContent.description") {{ dialogContent.description }}
 </template>
 
 <script>
@@ -96,24 +120,53 @@ export default {
 			required: true
 		}
 	},
+	emits: ['submit'],
 	setup(props, { expose }) {
 		const { largeScreen } = useBreakpoints(),
+			status = inject('status'),
 			organization = inject('organization'),
 			invoice = inject('invoice'),
-			summaryVisible = ref(false);
+			summaryVisible = ref(false),
+			dialogVisible = ref(false),
+			dialogContent = ref({
+				type: '',
+				title: '',
+				description: ''
+			});
 
 		function showSummary(state = true) {
 			summaryVisible.value = state;
 		}
 
-		expose({ showSummary });
+		function showDialog(state, content, timer) {
+			dialogContent.value = content;
+			dialogVisible.value = state;
+
+			if (!timer) {
+				return;
+			}
+
+			window.setTimeout(() => {
+				dialogVisible.value = false;
+			}, timer);
+		}
+
+		expose({
+			showSummary,
+			showDialog
+		});
 
 		return {
 			InvoicePaymentLinkStatus,
 			largeScreen,
 			organization,
 			invoice,
-			summaryVisible
+			summaryVisible,
+			dialogVisible,
+			dialogContent,
+			isStatus(invoiceStatus) {
+				return status.value === invoiceStatus;
+			}
 		};
 	}
 };

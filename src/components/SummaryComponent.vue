@@ -2,7 +2,7 @@
 .text-sm.font-bold.mb-4(class="lg:text-xl") {{ $t('payment.itemsSummary') }}
 
 ScrollPanel(:pt="{ bary: 'hover:bg-primary-500 surface-300 opacity-100' }")
-	table.w-full
+	table.summary-list.w-full.relative
 		tr.text-sm(
 			v-for="(item, index) in items"
 			:key="index"
@@ -75,6 +75,9 @@ const route = useRoute(),
 </script>
 
 <style lang="stylus">
+.summary-list
+	z-index -1
+
 .p-scrollpanel
 	max-height 60dvh
 
@@ -85,7 +88,7 @@ const route = useRoute(),
 		max-height 58dvh
 		background unquote('linear-gradient(var(--surface-card) 30%, rgba(255,255,255,0)), linear-gradient(rgba(255,255,255,0), var(--surface-card) 70%) 0 100%, radial-gradient(farthest-side at 50% 0, rgba(0,0,0,.35), rgba(0,0,0,0)), radial-gradient(farthest-side at 50% 100%, rgba(0,0,0,.35), rgba(0,0,0,0)) 0 100%')
 		background-repeat no-repeat
-		background-size 100% 40px, 100% 40px, 100% 14px, 100% 14px
+		background-size 100% 30px, 100% 30px, 100% 14px, 100% 14px
 		background-attachment local, local, scroll, scroll
 
 		@media $from.lg

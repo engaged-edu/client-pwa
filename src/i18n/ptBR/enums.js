@@ -1,4 +1,34 @@
 export default {
+	PaymentMethod: {
+		BANK_SLIP: 'Boleto',
+		CREDIT_CARD: 'Cartão de Crédito',
+		MONEY: 'Dinheiro',
+		PIX: 'PIX'
+	},
+	PaymentStatus: {
+		PARTIALLY_REFUNDED: 'Parcialmente reembolsado',
+		WAITING_PAYMENT: 'Aguardando pagamento',
+		PENDING_REFUND: 'Reembolso pendente',
+		PENDING_REVIEW: 'Revisão pendente',
+		AUTHORIZED: 'Autorizado',
+		PROCESSING: 'Processando',
+		ANALYZING: 'Analisando',
+		PENDING: 'Pendente',
+		FAILED: 'Falhou',
+		PAID: 'Pago',
+		CHARGEDBACK: 'Contestado',
+		REFUNDED: 'Reembolsado',
+		REFUSED: 'Recusado',
+		EXPIRED: 'Expirado',
+		CANCELED: 'Cancelado'
+	},
+	InvoicePaymentLinkStatus: {
+		PAYMENT_GENERATED: 'Aguardando pagamento',
+		CANCELED: 'Cancelado',
+		EXPIRED: 'Expirado',
+		PENDING: 'Pendente',
+		PAID: 'Pago'
+	},
 	TaxIdType: {
 		AU_ABN: '',
 		EU_VAT: '',

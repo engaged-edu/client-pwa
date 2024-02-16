@@ -1,7 +1,10 @@
 <template lang="pug">
+ConfirmDialog
+
 CheckoutLayout(
 	ref="$CheckoutLayout"
-	:loading="loading"
+	:loading="isLoading"
+	@submit="handleSubmit"
 )
 	template(#resume)
 		ResumeComponent(:handle-show-summary="$CheckoutLayout.showSummary")
@@ -15,24 +18,66 @@ CheckoutLayout(
 
 	template(#summary)
 		SummaryComponent
+
+	template(#status)
+		PaymentStatusComponent(
+			v-if="payment?._id"
+			:handle-cancel-payment="handleCancelPayment"
+		)
 </template>
 
 <script setup>
 import parsePhoneNumber from 'libphonenumber-js';
-import { useQuery } from '@vue/apollo-composable';
+import { useConfirm } from 'primevue/useconfirm';
+import ConfirmDialog from 'primevue/confirmdialog';
+import { useMutation, useQuery } from '@vue/apollo-composable';
+import { i18n } from '@/i18n';
 import { useLogo } from '@/composables/utils';
+import { useCreditCard, useCreditCardForm } from '@/composables/creditCard';
+import { useValidations } from '@/composables/validations';
 import ResumeComponent from '@/components/ResumeComponent.vue';
 import IdentityComponent from '@/components/IdentityComponent.vue';
 import MethodComponent from '@/components/MethodComponent.vue';
 import SummaryComponent from '@/components/SummaryComponent.vue';
+import PaymentStatusComponent from '@/components/PaymentStatusComponent.vue';
 import { publicFetchInvoicePaymentLink } from '@/graphql/queries/invoice';
-import { InvoiceItemType } from '@/gql.ts';
+import {
+	publicCreatePaymentFromInvoicePaymentLink,
+	publicCancelInvoicePaymentLinkPayment
+} from '@/graphql/mutations/invoice';
+import {
+	PaymentMethod,
+	PaymentStatus,
+	InvoiceItemType
+} from '@/gql.ts';
 
 const route = useRoute(),
 	logo = useLogo(),
-	{ result, loading } = useQuery(publicFetchInvoicePaymentLink, { accessToken: route.query.accessToken }),
-	data = computed(() => result.value?.publicFetchInvoicePaymentLink),
-	products = computed(() => data.value?.invoice?.items.map((item) => {
+	confirmDialog = useConfirm(),
+	{ validateForm } = useValidations(),
+	{ getCardHash } = useCreditCard(),
+	{ accessToken } = route.query,
+	currentPaymentMethod = computed(() => {
+		const methods = {
+			'payment-link-method-credit-card': PaymentMethod.CreditCard,
+			'payment-link-method-bank-slip': PaymentMethod.BankSlip,
+			'payment-link-method-pix': PaymentMethod.Pix
+		};
+
+		return methods[route.name];
+	}),
+	$CheckoutLayout = ref(),
+
+	// Fetch Payment Link
+	{
+		result: paymentLinkResult,
+		loading: loadingPaymentLink,
+		onResult: onFetchPaymentLink
+	} = useQuery(publicFetchInvoicePaymentLink, { accessToken }),
+	status = ref(null),
+	payment = ref(null),
+	paymentLinkData = computed(() => paymentLinkResult.value?.publicFetchInvoicePaymentLink),
+	products = computed(() => paymentLinkData.value?.invoice?.items.map((item) => {
 		const isProduct = item?.type === InvoiceItemType.Product;
 
 		if (isProduct) {
@@ -52,14 +97,156 @@ const route = useRoute(),
 			amount: item.amount * item.quantity
 		};
 	}) || []),
-	discounts = computed(() => data.value?.invoice?.discounts || []),
-	$CheckoutLayout = ref();
+	discounts = computed(() => paymentLinkData.value?.invoice?.discounts || []),
+	invoice = computed(() => {
+		const amount = paymentLinkData.value?.amount || 0,
+			subtotal = products.value.reduce((acc, product) => acc + product.amount, 0),
+			totalDiscount = discounts.value.reduce((acc, discount) => acc + discount.amount, 0),
+			total = subtotal - totalDiscount,
+			content = {
+				id: paymentLinkData.value?._id,
+				createdAt: paymentLinkData.value?.createdAt,
+				updatedAt: paymentLinkData.value?.updatedAt,
+				status: paymentLinkData.value?.status,
+				expirationDate: paymentLinkData.value?.expirationDate,
+				methods: {
+					creditCard: paymentLinkData.value?.creditCard.enabled || false,
+					bankSlip: paymentLinkData.value?.bankSlip.enabled || false,
+					pix: paymentLinkData.value?.pix.enabled || false
+				},
+				currency: paymentLinkData.value?.invoice?.currency,
+				discounts: totalDiscount,
+				subtotal,
+				total,
+				amount
+			};
 
+		if (content.methods.creditCard) {
+			content.creditCard = paymentLinkData.value?.creditCard;
+		}
+
+		if (content.methods.bankSlip) {
+			content.bankSlip = paymentLinkData.value?.bankSlip;
+		}
+
+		return content;
+	}),
+
+	// Create Payment
+	{
+		addCard,
+		saveCard,
+		form,
+		$v
+	} = useCreditCardForm(invoice.value),
+	{
+		mutate: createPayment,
+		loading: loadingCreatePayment,
+		onDone: onCreatedPayment,
+		onError: onPaymentFail
+	} = useMutation(publicCreatePaymentFromInvoicePaymentLink),
+
+	// Cancel Payment
+	{
+		mutate: cancelPayment,
+		loading: loadingCancelPayment
+	} = useMutation(publicCancelInvoicePaymentLinkPayment, { variables: { accessToken } }),
+	isLoading = computed(() => loadingPaymentLink.value || loadingCreatePayment.value || loadingCancelPayment.value);
+
+async function handleSubmit() {
+	let params = {
+		accessToken,
+		paymentMethod: currentPaymentMethod.value
+	};
+
+	$CheckoutLayout.value.showDialog(true, {
+		type: 'loading',
+		title: i18n.t('general.waitDontLeave'),
+		description: i18n.t('payment.processingPurchase')
+	});
+
+	if (currentPaymentMethod.value === PaymentMethod.CreditCard) {
+		try {
+			await validateForm($v);
+		} catch (e) {
+			$CheckoutLayout.value.showDialog(true, {
+				type: 'error',
+				title: i18n.t('general.fillFormCorrectly'),
+				description: i18n.t('payment.errorAtField', [i18n.t(`payment.creditCard.${$v.value.$errors[0].$property}`)])
+			}, 3000);
+
+			return;
+		}
+
+		params = {
+			...params,
+			installments: form.installments,
+			cardToken: await getCardHash(
+				form.number,
+				form.name,
+				form.expiration,
+				form.cvv
+			)
+		};
+	}
+
+	createPayment({ ...params });
+}
+
+function handleCancelPayment() {
+	confirmDialog.require({
+		header: i18n.t('payment.confirCancelPayment'),
+		message: i18n.t('payment.confirCancelPaymentDescription'),
+		accept: async () => {
+			await cancelPayment();
+			status.value = PaymentStatus.Pending;
+		},
+		acceptLabel: i18n.t('general.yes'),
+		rejectLabel: i18n.t('general.no'),
+		rejectClass: 'p-button-secondary p-button-outlined',
+		acceptClass: 'p-button-danger'
+	});
+}
+
+onCreatedPayment((result) => {
+	if (result.loading) {
+		return;
+	}
+
+	const data = result.data.publicCreatePaymentFromInvoicePaymentLink;
+
+	status.value = data.invoicePaymentLink.status;
+	payment.value = data.payment;
+
+	$CheckoutLayout.value.showDialog(false);
+});
+
+onPaymentFail((result) => {
+	$CheckoutLayout.value.showDialog(true, {
+		type: 'error',
+		title: result.message
+	}, 3000);
+});
+
+onFetchPaymentLink((result) => {
+	if (result.loading) {
+		return;
+	}
+
+	const data = result.data.publicFetchInvoicePaymentLink;
+
+	status.value = data.status;
+	payment.value = [...data.payments].pop();
+});
+
+provide('status', status);
+provide('invoice', invoice);
+provide('payment', payment);
 provide('products', products);
 provide('discounts', discounts);
 
 provide('organization', computed(() => {
-	const org = data.value?.organization;
+	const org = paymentLinkData.value?.organization;
 
 	return {
 		id: org?._id,
@@ -71,9 +258,9 @@ provide('organization', computed(() => {
 }));
 
 provide('userProfile', computed(() => {
-	const address = data.value?.invoice?.userPaymentProfile.address,
-		taxIds = data.value?.invoice?.userPaymentProfile.taxIds,
-		user = data.value?.invoice?.user;
+	const address = paymentLinkData.value?.invoice?.userPaymentProfile.address,
+		taxIds = paymentLinkData.value?.invoice?.userPaymentProfile.taxIds,
+		user = paymentLinkData.value?.invoice?.user;
 
 	function makeAddress() {
 		if (!address) {
@@ -102,48 +289,14 @@ provide('userProfile', computed(() => {
 	}
 
 	return {
-		name: data.value?.invoice?.user.name,
-		email: data.value?.invoice?.user.email,
-		businessName: data.value?.invoice?.userPaymentProfile.name,
-		country: data.value?.invoice?.userPaymentProfile.country,
-		type: data.value?.invoice?.userPaymentProfile.type,
+		name: paymentLinkData.value?.invoice?.user.name,
+		email: paymentLinkData.value?.invoice?.user.email,
+		businessName: paymentLinkData.value?.invoice?.userPaymentProfile.name,
+		country: paymentLinkData.value?.invoice?.userPaymentProfile.country,
+		type: paymentLinkData.value?.invoice?.userPaymentProfile.type,
 		taxId: taxIds.length ? taxIds[0] : null,
 		address: makeAddress(),
 		phone: makePhone()
 	};
-}));
-
-provide('invoice', computed(() => {
-	const amount = data.value?.amount || 0,
-		subtotal = products.value.reduce((acc, product) => acc + product.amount, 0),
-		totalDiscount = discounts.value.reduce((acc, discount) => acc + discount.amount, 0),
-		total = subtotal - totalDiscount,
-		content = {
-			id: data.value?._id,
-			createdAt: data.value?.createdAt,
-			updatedAt: data.value?.updatedAt,
-			status: data.value?.status,
-			expirationDate: data.value?.expirationDate,
-			methods: {
-				creditCard: data.value?.creditCard.enabled || false,
-				bankSlip: data.value?.bankSlip.enabled || false,
-				pix: data.value?.pix.enabled || false
-			},
-			currency: data.value?.invoice?.currency,
-			discounts: totalDiscount,
-			subtotal,
-			total,
-			amount
-		};
-
-	if (content.methods.creditCard) {
-		content.creditCard = data.value?.creditCard;
-	}
-
-	if (content.methods.bankSlip) {
-		content.bankSlip = data.value?.bankSlip;
-	}
-
-	return content;
 }));
 </script>
