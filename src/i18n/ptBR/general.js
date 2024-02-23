@@ -9,6 +9,17 @@ export default {
 	fillFormCorrectly: 'Preencha o formulário corretamente!',
 	fullName: 'Nome completo',
 	hideAllData: 'Ocultar todos os dados',
+	identity: {
+		cnpj: 'Insira seu CNPJ',
+		companyName: 'Razão social',
+		confirmEmail: 'Confirme seu email',
+		country: 'Selecione seu país',
+		cpf: 'Insira seu CPF',
+		email: 'Seu e-mail',
+		fullName: 'Nome completo',
+		legal: 'Você é',
+		phone: 'Seu telefone'
+	},
 	no: 'Não',
 	notSupported: 'Não suportado',
 	payment: 'Pagamento|Pagamentos',
@@ -17,5 +28,6 @@ export default {
 	safeEnv: 'Ambiente 100% seguro',
 	showAllData: 'Ver todos os dados',
 	title: 'EngagED',
+	typeYourInfo: 'Digite seus dados',
 	yes: 'Sim'
 };

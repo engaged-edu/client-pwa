@@ -1,4 +1,10 @@
 export default {
+	LegalPersonType: {
+		COMPANY: 'Empresa',
+		GOVERNMENT_ENTITY: 'Entidade governamental',
+		INDIVIDUAL: 'Pessoa física',
+		NON_PROFIT: 'Entidade sem fins lucrativos'
+	},
 	PaymentMethod: {
 		BANK_SLIP: 'Boleto',
 		CREDIT_CARD: 'Cartão de Crédito',

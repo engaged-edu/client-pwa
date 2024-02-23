@@ -5,6 +5,7 @@ export default {
 	barCode: 'Código de barras',
 	billingTaxData: 'Dados fiscais para faturamento',
 	chargeName: 'A cobrança aparecerá na sua fatura como: <strong class="font-bold">{domain}</strong>',
+	checkout: 'Checkout',
 	confirCancelPayment: 'Excluir método de pagamento',
 	confirCancelPaymentDescription: 'Tem certeza que deseja excluir o método de pagamento atual?',
 	copyBarCode: 'Copiar código de barras',
