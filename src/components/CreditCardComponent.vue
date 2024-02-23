@@ -31,17 +31,17 @@
 import { useCreditCard } from '@/composables/utils';
 
 const props = defineProps({
-		number: { type: String, default: '' },
-		name: { type: String, default: '' },
-		exp: { type: String, default: '' },
-		cvv: { type: String, default: '' },
-		flip: { type: Boolean, default: false }
-	}),
-	{ getCardFlagShort } = useCreditCard(),
-	cleanedNumber = computed(() => props.number.replace(/\D/gu, '')),
-	formattedNumber = computed(() => cleanedNumber.value.match(/.{0,4}/gu)?.join(' ')
-		.substring(0, 23)),
-	flag = computed(() => getCardFlagShort(cleanedNumber.value));
+	number: { type: String, default: '' },
+	name: { type: String, default: '' },
+	exp: { type: String, default: '' },
+	cvv: { type: String, default: '' },
+	flip: { type: Boolean, default: false }
+});
+const { getCardFlagShort } = useCreditCard();
+const cleanedNumber = computed(() => props.number.replace(/\D/gu, ''));
+const formattedNumber = computed(() => cleanedNumber.value.match(/.{0,4}/gu)?.join(' ')
+	.substring(0, 23));
+const flag = computed(() => getCardFlagShort(cleanedNumber.value));
 
 </script>
 

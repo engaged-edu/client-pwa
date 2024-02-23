@@ -1,3 +1,5 @@
+import { AsYouType } from 'libphonenumber-js';
+import numberExamples from 'libphonenumber-js/examples.mobile.json';
 export { useCreditCard } from './creditCard';
 export { useDarkMode } from './darkMode';
 export { useLogo } from './logo';
@@ -37,7 +39,26 @@ export function useMasks() {
 		masks: {
 			ccNumber: '9999 9999 9999? 9999',
 			ccExp: '99/99',
-			cvv: '999?9'
+			cvv: '999?9',
+			phone(country) {
+				const ayt = new AsYouType(country);
+				let lengths = ayt.metadata.possibleLengths();
+				let numberExample = numberExamples[country];
+				let template;
+
+				numberExample += '9'.repeat(lengths.at(-1) - numberExample.length);
+
+				ayt.input(numberExample);
+				template = ayt.getTemplate().replace(/x/gu, '9');
+
+				if (lengths.length > 1) {
+					let i = 0;
+
+					template = template.replace(/9/gu, (match) => i++ === lengths[0] ? `?${match}` : match);
+				}
+
+				return template;
+			}
 		}
 	};
 }

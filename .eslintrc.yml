@@ -274,7 +274,7 @@ rules:
     - always
   one-var:
     - 2
-    - always
+    - initialized: never
   one-var-declaration-per-line:
     - 2
     - initializations
@@ -290,12 +290,31 @@ rules:
   padding-line-between-statements:
     - 2
     - blankLine: always
+      prev:
+        - const
+        - let
+        - var
+      next: "*"
+    - blankLine: always
       prev: "*"
+      next:
+        - return
+        - block-like
+        - function
+    - blankLine: always
+      prev:
+        - block-like
+        - function
+      next: "*"
+    - blankLine: any
+      prev:
+        - const
+        - let
+        - var
       next:
         - const
         - let
         - var
-        - return
   prefer-arrow-callback: 2
   prefer-destructuring: 2
   prefer-object-spread: 2
@@ -363,4 +382,5 @@ rules:
   yoda: 2
   # vue
   vue/no-v-html: 0
+  vue-pug/no-pug-control-flow: 0
 

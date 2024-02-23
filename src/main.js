@@ -10,8 +10,8 @@ import App from './App.vue';
 import router from './router';
 import i18n from './i18n';
 
-const app = createApp(App),
-	head = createHead();
+const app = createApp(App);
+const head = createHead();
 
 app.use(PrimeVue, { ripple: false });
 app.use(ConfirmationService);

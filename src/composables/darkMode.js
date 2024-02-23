@@ -1,15 +1,15 @@
 import { usePrimeVue } from 'primevue/config';
 
 export function useDarkMode() {
-	const PrimeVue = usePrimeVue(),
-		storageKey = 'darkmode',
-		localTheme = window.localStorage.getItem(storageKey),
-		systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+	const PrimeVue = usePrimeVue();
+	const storageKey = 'darkmode';
+	const localTheme = window.localStorage.getItem(storageKey);
+	const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
 	function applyTheme(dark = false) {
-		const lightTheme = 'aura-light-blue',
-			darkTheme = 'aura-dark-blue',
-			apply = dark ? [lightTheme, darkTheme] : [darkTheme, lightTheme];
+		const lightTheme = 'aura-light-blue';
+		const darkTheme = 'aura-dark-blue';
+		const apply = dark ? [lightTheme, darkTheme] : [darkTheme, lightTheme];
 
 		PrimeVue.changeTheme(...apply, 'theme-link');
 	}

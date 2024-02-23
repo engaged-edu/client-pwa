@@ -49,7 +49,7 @@ template(v-if="largeScreen")
 			.col {{ $t('payment.paymentMethod') }}
 			.col.text-right {{ $route.meta.name }}
 		.text-bluegray-400.text-right.font-light(
-			v-if="$route.name === 'payment-link-method-credit-card'"
+			v-if="$route.name.includes('credit-card')"
 			v-html="currentInstallment"
 		)
 
@@ -63,14 +63,14 @@ import { useBreakpoints } from '@/composables/breakpoints';
 import { useCreditCardForm } from '@/composables/creditCard';
 import { InvoiceDiscountType } from '@/gql.ts';
 
-const route = useRoute(),
-	invoice = inject('invoice'),
-	products = inject('products'),
-	discounts = inject('discounts'),
-	{ largeScreen } = useBreakpoints(),
-	{ currentInstallment } = useCreditCardForm(invoice),
-	items = [...products.value, ...discounts.value],
-	isDiscount = (item) => item.type === InvoiceDiscountType.Manual;
+const route = useRoute();
+const invoice = inject('invoice');
+const products = inject('products');
+const discounts = inject('discounts');
+const { largeScreen } = useBreakpoints();
+const { currentInstallment } = useCreditCardForm(invoice);
+const items = [...products.value, ...discounts.value];
+const isDiscount = (item) => item.type === InvoiceDiscountType.Manual;
 
 </script>
 

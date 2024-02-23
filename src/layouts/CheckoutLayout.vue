@@ -122,17 +122,17 @@ export default {
 	},
 	emits: ['submit'],
 	setup(props, { expose }) {
-		const { largeScreen } = useBreakpoints(),
-			status = inject('status'),
-			organization = inject('organization'),
-			invoice = inject('invoice'),
-			summaryVisible = ref(false),
-			dialogVisible = ref(false),
-			dialogContent = ref({
-				type: '',
-				title: '',
-				description: ''
-			});
+		const { largeScreen } = useBreakpoints();
+		const status = inject('status');
+		const organization = inject('organization');
+		const invoice = inject('invoice');
+		const summaryVisible = ref(false);
+		const dialogVisible = ref(false);
+		const dialogContent = ref({
+			type: '',
+			title: '',
+			description: ''
+		});
 
 		function showSummary(state = true) {
 			summaryVisible.value = state;

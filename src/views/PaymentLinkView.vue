@@ -13,7 +13,10 @@ CheckoutLayout(
 		IdentityComponent
 
 	template(#method)
-		MethodComponent
+		MethodComponent(
+			type="payment-link"
+			:methods="invoice.methods"
+		)
 		router-view
 
 	template(#summary)
@@ -51,107 +54,107 @@ import {
 	InvoiceItemType
 } from '@/gql.ts';
 
-const route = useRoute(),
-	logo = useLogo(),
-	confirmDialog = useConfirm(),
-	{ validateForm } = useValidations(),
-	{ getCardHash } = useCreditCard(),
-	{ accessToken } = route.query,
-	currentPaymentMethod = computed(() => {
-		const methods = {
-			'payment-link-method-credit-card': PaymentMethod.CreditCard,
-			'payment-link-method-bank-slip': PaymentMethod.BankSlip,
-			'payment-link-method-pix': PaymentMethod.Pix
-		};
+const route = useRoute();
+const logo = useLogo();
+const confirmDialog = useConfirm();
+const { validateForm } = useValidations();
+const { getCardHash } = useCreditCard();
+const { accessToken } = route.query;
+const currentPaymentMethod = computed(() => {
+	const methods = {
+		'payment-link-method-credit-card': PaymentMethod.CreditCard,
+		'payment-link-method-bank-slip': PaymentMethod.BankSlip,
+		'payment-link-method-pix': PaymentMethod.Pix
+	};
 
-		return methods[route.name];
-	}),
-	$CheckoutLayout = ref(),
+	return methods[route.name];
+});
+const $CheckoutLayout = ref();
 
-	// Fetch Payment Link
-	{
-		result: paymentLinkResult,
-		loading: loadingPaymentLink,
-		onResult: onFetchPaymentLink
-	} = useQuery(publicFetchInvoicePaymentLink, { accessToken }),
-	status = ref(null),
-	payment = ref(null),
-	paymentLinkData = computed(() => paymentLinkResult.value?.publicFetchInvoicePaymentLink),
-	products = computed(() => paymentLinkData.value?.invoice?.items.map((item) => {
-		const isProduct = item?.type === InvoiceItemType.Product;
+// Fetch Payment Link
+const {
+	result: paymentLinkResult,
+	loading: loadingPaymentLink,
+	onResult: onFetchPaymentLink
+} = useQuery(publicFetchInvoicePaymentLink, { accessToken });
+const status = ref(null);
+const payment = ref(null);
+const paymentLinkData = computed(() => paymentLinkResult.value?.publicFetchInvoicePaymentLink);
+const products = computed(() => paymentLinkData.value?.invoice?.items.map((item) => {
+	const isProduct = item?.type === InvoiceItemType.Product;
 
-		if (isProduct) {
-			return {
-				type: item.type,
-				name: item.product.name,
-				description: item.product.description,
-				quantity: item.quantity,
-				amount: item.product.prices.find((price) => price._id === item.productPrice)?.billingConfig.unitAmount * item.quantity
-			};
-		}
-
+	if (isProduct) {
 		return {
 			type: item.type,
-			name: item.name,
+			name: item.product.name,
+			description: item.product.description,
 			quantity: item.quantity,
-			amount: item.amount * item.quantity
+			amount: item.product.prices.find((price) => price._id === item.productPrice)?.billingConfig.unitAmount * item.quantity
 		};
-	}) || []),
-	discounts = computed(() => paymentLinkData.value?.invoice?.discounts || []),
-	invoice = computed(() => {
-		const amount = paymentLinkData.value?.amount || 0,
-			subtotal = products.value.reduce((acc, product) => acc + product.amount, 0),
-			totalDiscount = discounts.value.reduce((acc, discount) => acc + discount.amount, 0),
-			total = subtotal - totalDiscount,
-			content = {
-				id: paymentLinkData.value?._id,
-				createdAt: paymentLinkData.value?.createdAt,
-				updatedAt: paymentLinkData.value?.updatedAt,
-				status: paymentLinkData.value?.status,
-				expirationDate: paymentLinkData.value?.expirationDate,
-				methods: {
-					creditCard: paymentLinkData.value?.creditCard.enabled || false,
-					bankSlip: paymentLinkData.value?.bankSlip.enabled || false,
-					pix: paymentLinkData.value?.pix.enabled || false
-				},
-				currency: paymentLinkData.value?.invoice?.currency,
-				discounts: totalDiscount,
-				subtotal,
-				total,
-				amount
-			};
+	}
 
-		if (content.methods.creditCard) {
-			content.creditCard = paymentLinkData.value?.creditCard;
-		}
+	return {
+		type: item.type,
+		name: item.name,
+		quantity: item.quantity,
+		amount: item.amount * item.quantity
+	};
+}) || []);
+const discounts = computed(() => paymentLinkData.value?.invoice?.discounts || []);
+const invoice = computed(() => {
+	const amount = paymentLinkData.value?.amount || 0;
+	const subtotal = products.value.reduce((acc, product) => acc + product.amount, 0);
+	const totalDiscount = discounts.value.reduce((acc, discount) => acc + discount.amount, 0);
+	const total = subtotal - totalDiscount;
+	const content = {
+		id: paymentLinkData.value?._id,
+		createdAt: paymentLinkData.value?.createdAt,
+		updatedAt: paymentLinkData.value?.updatedAt,
+		status: paymentLinkData.value?.status,
+		expirationDate: paymentLinkData.value?.expirationDate,
+		methods: {
+			creditCard: paymentLinkData.value?.creditCard.enabled || false,
+			bankSlip: paymentLinkData.value?.bankSlip.enabled || false,
+			pix: paymentLinkData.value?.pix.enabled || false
+		},
+		currency: paymentLinkData.value?.invoice?.currency,
+		discounts: totalDiscount,
+		subtotal,
+		total,
+		amount
+	};
 
-		if (content.methods.bankSlip) {
-			content.bankSlip = paymentLinkData.value?.bankSlip;
-		}
+	if (content.methods.creditCard) {
+		content.creditCard = paymentLinkData.value?.creditCard;
+	}
 
-		return content;
-	}),
+	if (content.methods.bankSlip) {
+		content.bankSlip = paymentLinkData.value?.bankSlip;
+	}
 
-	// Create Payment
-	{
-		addCard,
-		saveCard,
-		form,
-		$v
-	} = useCreditCardForm(invoice.value),
-	{
-		mutate: createPayment,
-		loading: loadingCreatePayment,
-		onDone: onCreatedPayment,
-		onError: onPaymentFail
-	} = useMutation(publicCreatePaymentFromInvoicePaymentLink),
+	return content;
+});
 
-	// Cancel Payment
-	{
-		mutate: cancelPayment,
-		loading: loadingCancelPayment
-	} = useMutation(publicCancelInvoicePaymentLinkPayment, { variables: { accessToken } }),
-	isLoading = computed(() => loadingPaymentLink.value || loadingCreatePayment.value || loadingCancelPayment.value);
+// Create Payment
+const {
+	addCard,
+	saveCard,
+	form,
+	$v
+} = useCreditCardForm(invoice.value);
+const {
+	mutate: createPayment,
+	loading: loadingCreatePayment,
+	onDone: onCreatedPayment,
+	onError: onPaymentFail
+} = useMutation(publicCreatePaymentFromInvoicePaymentLink);
+
+// Cancel Payment
+const {
+	mutate: cancelPayment,
+	loading: loadingCancelPayment
+} = useMutation(publicCancelInvoicePaymentLinkPayment, { variables: { accessToken } });
+const isLoading = computed(() => loadingPaymentLink.value || loadingCreatePayment.value || loadingCancelPayment.value);
 
 async function handleSubmit() {
 	let params = {
@@ -258,9 +261,9 @@ provide('organization', computed(() => {
 }));
 
 provide('userProfile', computed(() => {
-	const address = paymentLinkData.value?.invoice?.userPaymentProfile.address,
-		taxIds = paymentLinkData.value?.invoice?.userPaymentProfile.taxIds,
-		user = paymentLinkData.value?.invoice?.user;
+	const address = paymentLinkData.value?.invoice?.userPaymentProfile.address;
+	const taxIds = paymentLinkData.value?.invoice?.userPaymentProfile.taxIds;
+	const user = paymentLinkData.value?.invoice?.user;
 
 	function makeAddress() {
 		if (!address) {

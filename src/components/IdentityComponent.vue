@@ -56,9 +56,9 @@ import { useBreakpoints } from '@/composables/breakpoints';
 import { useFormatText } from '@/composables/utils';
 import { TaxIdType } from '@/gql.ts';
 
-const { largeScreen } = useBreakpoints(),
-	{ formatText } = useFormatText(),
-	showBillingData = ref(false),
-	userProfile = inject('userProfile');
+const { largeScreen } = useBreakpoints();
+const { formatText } = useFormatText();
+const showBillingData = ref(false);
+const userProfile = inject('userProfile');
 
 </script>

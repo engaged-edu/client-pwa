@@ -89,18 +89,18 @@ import { useCreditCardForm } from '@/composables/creditCard';
 import pixIcon from '/icons/pix.svg?raw';
 import CreditCardComponent from '@/components/CreditCardComponent.vue';
 
-const { largeScreen } = useBreakpoints(),
-	organization = inject('organization'),
-	invoice = inject('invoice'),
-	flip = ref(false),
-	{
-		addCard,
-		saveCard,
-		masks,
-		form,
-		$v,
-		installments,
-		currentInstallment
-	} = useCreditCardForm(invoice);
+const { largeScreen } = useBreakpoints();
+const organization = inject('organization');
+const invoice = inject('invoice');
+const flip = ref(false);
+const {
+	addCard,
+	saveCard,
+	masks,
+	form,
+	$v,
+	installments,
+	currentInstallment
+} = useCreditCardForm(invoice);
 
 </script>

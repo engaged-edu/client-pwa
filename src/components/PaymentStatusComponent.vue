@@ -148,15 +148,15 @@ import { useBreakpoints } from '@/composables/breakpoints';
 import { useCreditCardForm } from '@/composables/creditCard';
 import { PaymentMethod, PaymentStatus } from '@/gql.ts';
 
-const { largeScreen } = useBreakpoints(),
-	payment = inject('payment'),
-	invoice = inject('invoice'),
-	percentage = invoice.value.amount / invoice.value.total * 100,
-	{ currentInstallment } = useCreditCardForm(invoice),
-	{
-		copy: handleCopyCode,
-		isSupported: copyIsSupported
-	} = useClipboard({ source: payment.value?.code });
+const { largeScreen } = useBreakpoints();
+const payment = inject('payment');
+const invoice = inject('invoice');
+const percentage = invoice.value.amount / invoice.value.total * 100;
+const { currentInstallment } = useCreditCardForm(invoice);
+const {
+	copy: handleCopyCode,
+	isSupported: copyIsSupported
+} = useClipboard({ source: payment.value?.code });
 
 defineProps({
 	handleCancelPayment: {

@@ -6044,8 +6044,8 @@ export type PublicCreatePaymentFromInvoicePaymentLinkResponse = {
 export type Purchase = {
   __typename?: 'Purchase';
   _id: Scalars['ObjectId'];
-  checkout: Checkout;
-  checkoutId?: Maybe<Scalars['String']>;
+  checkout?: Maybe<Checkout>;
+  checkoutSharedId: Scalars['String'];
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<StudentUser>;
   createdById?: Maybe<Scalars['String']>;
@@ -6057,6 +6057,8 @@ export type Purchase = {
   invoiceTotalAmount?: Maybe<Scalars['Int']>;
   organization: Organization;
   organizationId?: Maybe<Scalars['String']>;
+  /** The latest purchase payment */
+  payment: Payment;
   status: PurchaseStatus;
   studentUserId?: Maybe<Scalars['String']>;
   updatedAt: Scalars['DateTime'];
@@ -6192,6 +6194,7 @@ export type Query = {
   publicFetchCheckout?: Maybe<Checkout>;
   publicFetchInvoicePaymentLink?: Maybe<InvoicePaymentLink>;
   publicFetchInvoicePaymentLinkUserCards: PaginatedCardResponse;
+  publicFetchStudentCheckoutPurchase?: Maybe<Purchase>;
   studentFetchCertificate?: Maybe<Certificate>;
   studentFetchCertificates: Array<Certificate>;
   studentFetchChapter?: Maybe<Chapter>;
@@ -6620,7 +6623,7 @@ export type QueryAdminFetchPurchaseArgs = {
 
 
 export type QueryAdminFetchPurchasesArgs = {
-  checkoutIds?: Maybe<Array<Scalars['String']>>;
+  checkoutSharedIds?: Maybe<Array<Scalars['String']>>;
   filterArgs?: Maybe<PurchaseWhereInput>;
   filterInputText?: Maybe<Scalars['String']>;
   orderBy?: Maybe<Array<PurchaseOrderByInput>>;
@@ -6888,6 +6891,13 @@ export type QueryPublicFetchInvoicePaymentLinkUserCardsArgs = {
   accessToken: Scalars['String'];
   orderBy?: Maybe<Array<CardOrderByInput>>;
   paginationArgs?: Maybe<PagePaginationInput>;
+};
+
+
+export type QueryPublicFetchStudentCheckoutPurchaseArgs = {
+  accessToken: Scalars['String'];
+  studentUserEmail?: Maybe<Scalars['String']>;
+  studentUserId?: Maybe<Scalars['String']>;
 };
 
 
@@ -11595,6 +11605,21 @@ export type StudentFetchLessonQuery = (
   )> }
 );
 
+export type AdminFetchCheckoutPurchaseSummaryQueryVariables = Exact<{
+  checkoutId?: Maybe<Scalars['String']>;
+  checkoutSharedId?: Maybe<Scalars['String']>;
+  organizationId: Scalars['String'];
+}>;
+
+
+export type AdminFetchCheckoutPurchaseSummaryQuery = (
+  { __typename?: 'Query' }
+  & { adminFetchCheckoutPurchaseSummary?: Maybe<(
+    { __typename?: 'FetchCheckoutPurchaseSummaryResponse' }
+    & Pick<FetchCheckoutPurchaseSummaryResponse, 'totalAmount' | 'totalCount' | 'inflowAmount' | 'inflowCount' | 'waitingPaymentAmount' | 'waitingPaymentCount' | 'outflowAmount' | 'outflowCount'>
+  )> }
+);
+
 export type AdminFetchCheckoutsQueryVariables = Exact<{
   filterArgs?: Maybe<CheckoutWhereInput>;
   paginationArgs?: Maybe<PagePaginationInput>;
@@ -11756,6 +11781,575 @@ export type AdminFetchCheckoutQuery = (
       ) }
     )> }
   )> }
+);
+
+export type AdminFetchCheckoutLogsQueryVariables = Exact<{
+  checkoutId: Scalars['String'];
+  organizationId: Scalars['String'];
+}>;
+
+
+export type AdminFetchCheckoutLogsQuery = (
+  { __typename?: 'Query' }
+  & { adminFetchLogs: (
+    { __typename?: 'PaginatedLogResponse' }
+    & { results: Array<(
+      { __typename?: 'AddInvoiceDiscountLog' }
+      & Pick<AddInvoiceDiscountLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'AddProductPriceLog' }
+      & Pick<AddProductPriceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'ArchiveProductPriceLog' }
+      & Pick<ArchiveProductPriceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'AttachPaymentScheduleToInvoiceLog' }
+      & Pick<AttachPaymentScheduleToInvoiceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'AttachPaymentToInvoiceLog' }
+      & Pick<AttachPaymentToInvoiceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CancelAnticipationLog' }
+      & Pick<CancelAnticipationLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CancelWithdrawalLog' }
+      & Pick<CancelWithdrawalLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CopyCertificateTemplateLog' }
+      & Pick<CopyCertificateTemplateLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateAnticipationLog' }
+      & Pick<CreateAnticipationLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateBankAccountLog' }
+      & Pick<CreateBankAccountLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateCardLog' }
+      & Pick<CreateCardLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateCertificateLog' }
+      & Pick<CreateCertificateLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateCertificateTemplateFromCopyLog' }
+      & Pick<CreateCertificateTemplateFromCopyLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateCheckoutLog' }
+      & Pick<CreateCheckoutLog, '_id' | 'type' | 'createdAt'>
+      & { after: (
+        { __typename?: 'CheckoutLogState' }
+        & { checkout: (
+          { __typename?: 'Checkout' }
+          & Pick<Checkout, '_id' | 'status'>
+        ) }
+      ), targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateImportLog' }
+      & Pick<CreateImportLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateInvoiceAccessLog' }
+      & Pick<CreateInvoiceAccessLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateInvoiceLog' }
+      & Pick<CreateInvoiceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateInvoicePaymentLinkLog' }
+      & Pick<CreateInvoicePaymentLinkLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateMemberLog' }
+      & Pick<CreateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreatePaymentLog' }
+      & Pick<CreatePaymentLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreatePaymentScheduleLog' }
+      & Pick<CreatePaymentScheduleLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreatePlanConfigLog' }
+      & Pick<CreatePlanConfigLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreatePolicyLog' }
+      & Pick<CreatePolicyLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateProductLog' }
+      & Pick<CreateProductLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreatePurchaseLog' }
+      & Pick<CreatePurchaseLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateRecipientLog' }
+      & Pick<CreateRecipientLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateRefundLog' }
+      & Pick<CreateRefundLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateSplitConfigLog' }
+      & Pick<CreateSplitConfigLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateUserPaymentProfileLog' }
+      & Pick<CreateUserPaymentProfileLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateWithdrawalLog' }
+      & Pick<CreateWithdrawalLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'DeleteBankAccountLog' }
+      & Pick<DeleteBankAccountLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'DeleteCardLog' }
+      & Pick<DeleteCardLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'DeleteCertificateLog' }
+      & Pick<DeleteCertificateLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'DeleteInvoiceDiscountLog' }
+      & Pick<DeleteInvoiceDiscountLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'DeleteInvoicePaymentLinkLog' }
+      & Pick<DeleteInvoicePaymentLinkLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'DeleteMemberLog' }
+      & Pick<DeleteMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'DeletePolicyLog' }
+      & Pick<DeletePolicyLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'DeleteProductLog' }
+      & Pick<DeleteProductLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'DeleteProductPriceLog' }
+      & Pick<DeleteProductPriceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'DeleteSplitConfigLog' }
+      & Pick<DeleteSplitConfigLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'DeleteUserPaymentProfileLog' }
+      & Pick<DeleteUserPaymentProfileLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'DetachPaymentFromInvoiceLog' }
+      & Pick<DetachPaymentFromInvoiceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'DetachPaymentScheduleFromInvoiceLog' }
+      & Pick<DetachPaymentScheduleFromInvoiceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UnarchiveProductPriceLog' }
+      & Pick<UnarchiveProductPriceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateAnticipationStatusLog' }
+      & Pick<UpdateAnticipationStatusLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateBankAccountLog' }
+      & Pick<UpdateBankAccountLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateCertificateLog' }
+      & Pick<UpdateCertificateLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateCheckoutLog' }
+      & Pick<UpdateCheckoutLog, '_id' | 'type' | 'createdAt'>
+      & { before: (
+        { __typename?: 'CheckoutLogState' }
+        & { checkout: (
+          { __typename?: 'Checkout' }
+          & Pick<Checkout, '_id' | 'status'>
+        ) }
+      ), after: (
+        { __typename?: 'CheckoutLogState' }
+        & { checkout: (
+          { __typename?: 'Checkout' }
+          & Pick<Checkout, '_id' | 'status'>
+        ) }
+      ), targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateImportLog' }
+      & Pick<UpdateImportLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateInvoiceAccessLog' }
+      & Pick<UpdateInvoiceAccessLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateInvoiceDiscountLog' }
+      & Pick<UpdateInvoiceDiscountLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateInvoiceLog' }
+      & Pick<UpdateInvoiceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateInvoicePaymentLinkLog' }
+      & Pick<UpdateInvoicePaymentLinkLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateMemberLog' }
+      & Pick<UpdateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdatePaymentLog' }
+      & Pick<UpdatePaymentLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdatePaymentScheduleLog' }
+      & Pick<UpdatePaymentScheduleLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdatePlanConfigLog' }
+      & Pick<UpdatePlanConfigLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdatePolicyLog' }
+      & Pick<UpdatePolicyLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateProductLog' }
+      & Pick<UpdateProductLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateProductPriceLog' }
+      & Pick<UpdateProductPriceLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdatePurchaseLog' }
+      & Pick<UpdatePurchaseLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateRecipientLog' }
+      & Pick<UpdateRecipientLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateRefundLog' }
+      & Pick<UpdateRefundLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateUserPaymentProfileLog' }
+      & Pick<UpdateUserPaymentProfileLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateWithdrawalStatusLog' }
+      & Pick<UpdateWithdrawalStatusLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    )> }
+  ) }
+);
+
+export type AdminFetchPurchasesQueryVariables = Exact<{
+  filterArgs?: Maybe<PurchaseWhereInput>;
+  paginationArgs?: Maybe<PagePaginationInput>;
+  orderBy?: Maybe<Array<PurchaseOrderByInput> | PurchaseOrderByInput>;
+  filterInputText?: Maybe<Scalars['String']>;
+  purchaseIds?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+  checkoutSharedIds?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+  organizationId: Scalars['String'];
+}>;
+
+
+export type AdminFetchPurchasesQuery = (
+  { __typename?: 'Query' }
+  & { adminFetchPurchases: (
+    { __typename?: 'PaginatedPurchaseResponse' }
+    & Pick<PaginatedPurchaseResponse, 'currentPage' | 'totalPageCount' | 'totalResultCount' | 'hasNextPage'>
+    & { results: Array<(
+      { __typename?: 'Purchase' }
+      & Pick<Purchase, '_id' | 'createdAt' | 'updatedAt' | 'status' | 'invoiceItemsAmount' | 'invoicePaidAmount' | 'invoiceRefundedAmount' | 'invoiceTotalAmount' | 'invoiceDueAmount' | 'invoiceDiscountedAmount' | 'organizationId' | 'studentUserId' | 'updatedById' | 'createdById'>
+      & { checkout?: Maybe<(
+        { __typename?: 'Checkout' }
+        & Pick<Checkout, 'expirationDate' | 'description' | 'status' | 'currency'>
+        & { paymentMethodsConfig: (
+          { __typename?: 'CheckoutPaymentMethodsConfig' }
+          & { creditCard?: Maybe<(
+            { __typename?: 'CheckoutCreditCardConfig' }
+            & Pick<CheckoutCreditCardConfig, 'enabled'>
+            & { installmentsRule?: Maybe<(
+              { __typename?: 'InvoicePaymentLinkCreditCardSpecificInstallmentsInstallmentsRule' }
+              & Pick<InvoicePaymentLinkCreditCardSpecificInstallmentsInstallmentsRule, 'installments' | 'type'>
+            ) | (
+              { __typename?: 'InvoicePaymentLinkCreditCardUpToInstallmentsRule' }
+              & Pick<InvoicePaymentLinkCreditCardUpToInstallmentsRule, 'upTo' | 'type'>
+            )> }
+          )>, pix?: Maybe<(
+            { __typename?: 'CheckoutPixConfig' }
+            & Pick<CheckoutPixConfig, 'enabled'>
+            & { expirationRule?: Maybe<(
+              { __typename?: 'InvoicePaymentLinkDaysAfterCreationExpirationRule' }
+              & Pick<InvoicePaymentLinkDaysAfterCreationExpirationRule, 'days' | 'type'>
+            ) | (
+              { __typename?: 'InvoicePaymentLinkMinutesAfterCreationExpirationRule' }
+              & Pick<InvoicePaymentLinkMinutesAfterCreationExpirationRule, 'minutes' | 'type'>
+            ) | (
+              { __typename?: 'InvoicePaymentLinkSpecificDateExpirationRule' }
+              & Pick<InvoicePaymentLinkSpecificDateExpirationRule, 'date' | 'type'>
+            )> }
+          )>, bankSlip?: Maybe<(
+            { __typename?: 'CheckoutBankSlipConfig' }
+            & Pick<CheckoutBankSlipConfig, 'enabled'>
+            & { expirationRule?: Maybe<(
+              { __typename?: 'InvoicePaymentLinkDaysAfterCreationExpirationRule' }
+              & Pick<InvoicePaymentLinkDaysAfterCreationExpirationRule, 'days' | 'type'>
+            ) | (
+              { __typename?: 'InvoicePaymentLinkMinutesAfterCreationExpirationRule' }
+              & Pick<InvoicePaymentLinkMinutesAfterCreationExpirationRule, 'type'>
+            ) | (
+              { __typename?: 'InvoicePaymentLinkSpecificDateExpirationRule' }
+              & Pick<InvoicePaymentLinkSpecificDateExpirationRule, 'date' | 'type'>
+            )> }
+          )> }
+        ) }
+      )>, user: (
+        { __typename?: 'StudentUser' }
+        & Pick<StudentUser, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
+      ), payment: (
+        { __typename?: 'BankSlipPayment' }
+        & Pick<BankSlipPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
+      ) | (
+        { __typename?: 'CreditCardPayment' }
+        & Pick<CreditCardPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
+      ) | (
+        { __typename?: 'MoneyPayment' }
+        & Pick<MoneyPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
+      ) | (
+        { __typename?: 'PixPayment' }
+        & Pick<PixPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
+      ) }
+    )> }
+  ) }
 );
 
 export type AdminFetchInvoiceQueryVariables = Exact<{

@@ -3,38 +3,38 @@
 
 .flex.column-gap-2.mb-4(class="lg:column-gap-4")
 	Button.flex-1.justify-content-around(
-		v-if="invoice.methods.creditCard"
+		v-if="$props.methods.creditCard"
 		outlined
 		class="lg:py-4"
 		icon-pos="top"
 		:label="$t('payment.methods.creditCard')"
-		:severity="$route.name === 'payment-link-method-credit-card' ? 'primary' : 'secondary'"
+		:severity="$route.name === `${$props.type}-method-credit-card` ? 'primary' : 'secondary'"
 		:size="largeScreen || 'small'"
-		@click="$router.push({ name: 'payment-link-method-credit-card', query: $route.query })"
+		@click="$router.push({ name: `${$props.type}-method-credit-card`, query: $route.query })"
 	)
 		template(#icon)
 			IconCreditCard
 	Button.flex-1.justify-content-around(
-		v-if="invoice.methods.bankSlip"
+		v-if="$props.methods.bankSlip"
 		outlined
 		class="lg:py-4"
 		icon-pos="top"
 		:label="$t('payment.methods.bankSlip')"
-		:severity="$route.name === 'payment-link-method-bank-slip' ? 'primary' : 'secondary'"
+		:severity="$route.name === `${$props.type}-method-bank-slip` ? 'primary' : 'secondary'"
 		:size="largeScreen || 'small'"
-		@click="$router.push({ name: 'payment-link-method-bank-slip', query: $route.query })"
+		@click="$router.push({ name: `${$props.type}-method-bank-slip`, query: $route.query })"
 	)
 		template(#icon)
 			IconBankSlip
 	Button.flex-1.justify-content-around(
-		v-if="invoice.methods.pix"
+		v-if="$props.methods.pix"
 		outlined
 		class="lg:py-4"
 		icon-pos="top"
 		:label="$t('payment.methods.pix')"
-		:severity="$route.name === 'payment-link-method-pix' ? 'primary' : 'secondary'"
+		:severity="$route.name === `${$props.type}-method-pix` ? 'primary' : 'secondary'"
 		:size="largeScreen || 'small'"
-		@click="$router.push({ name: 'payment-link-method-pix', query: $route.query })"
+		@click="$router.push({ name: `${$props.type}-method-pix`, query: $route.query })"
 	)
 		template(#icon)
 			IconPix
@@ -44,18 +44,21 @@
 import { i18n } from '@/i18n';
 import { useBreakpoints } from '@/composables/breakpoints';
 
-const router = useRouter(),
-	route = useRoute(),
-	{ largeScreen } = useBreakpoints(),
-	invoice = inject('invoice'),
-	currentTab = ref(Object.entries(invoice.value.methods).find(([key, value]) => value)[0]),
-	methodRoutes = {
-		creditCard: 'payment-link-method-credit-card',
-		bankSlip: 'payment-link-method-bank-slip',
-		pix: 'payment-link-method-pix'
-	};
+const props = defineProps({
+	type: { type: String, required: true },
+	methods: { type: Array, required: true }
+});
+const router = useRouter();
+const route = useRoute();
+const { largeScreen } = useBreakpoints();
+const currentTab = ref(Object.entries(props.methods).find(([key, value]) => value)[0]);
+const methodRoutes = {
+	creditCard: `${props.type}-method-credit-card`,
+	bankSlip: `${props.type}-method-bank-slip`,
+	pix: `${props.type}-method-pix`
+};
 
-if (route.name === 'payment-link') {
+if (!route.name.includes('method')) {
 	router.push({
 		name: methodRoutes[currentTab.value],
 		query: route.query

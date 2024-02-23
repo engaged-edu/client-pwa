@@ -3,65 +3,66 @@ import { i18n } from '@/i18n';
 import { useMasks, useValidations } from '@/composables/utils';
 import { InvoicePaymentLinkCreditCardInstallmentRuleType } from '@/gql.ts';
 
-const PAGARME_KEY = import.meta.env.VITE_PAGARME_KEY,
-	addCard = ref(true),
-	saveCard = ref(true),
-	formInitialState = {
-		name: '',
-		number: '',
-		expiration: '',
-		cvv: '',
-		installments: null
-	},
-	form = reactive({ ...formInitialState });
+const PAGARME_KEY = import.meta.env.VITE_PAGARME_KEY;
+const addCard = ref(true);
+const saveCard = ref(true);
+const formInitialState = {
+	name: '',
+	number: '',
+	expiration: '',
+	cvv: '',
+	installments: null
+};
+const form = reactive({ ...formInitialState });
 
 export function useCreditCardForm(invoice) {
-	const { masks } = useMasks(),
-		{
-			required,
-			minLength,
-			ccNumber,
-			ccExpiration,
-			ccCVV
-		} = useValidations(),
-		$v = useVuelidate({
-			name: {
-				required: required(),
-				minLength: minLength(5)
-			},
-			number: {
-				required: required(),
-				ccNumber: ccNumber()
-			},
-			expiration: {
-				required: required(),
-				ccExpiration: ccExpiration()
-			},
-			cvv: {
-				required: required(),
-				ccCVV: ccCVV()
-			},
-			installments: { required: required() }
-		}, form, { $lazy: true }),
-		makeInstallmentsArray = (ins) => ins.map((i) => ({
-			name: i18n.t('payment.installmentOption', [i, i18n.n((invoice.value.amount || 0) / i / 100, invoice.value.currency)]),
-			value: i
-		})),
-		installments = computed(() => {
-			if (!invoice.value.creditCard?.enabled) {
-				return [];
-			}
+	const { masks } = useMasks();
+	const {
+		required,
+		minLength,
+		ccNumber,
+		ccExpiration,
+		ccCVV
+	} = useValidations();
+	const $v = useVuelidate({
+		name: {
+			required: required(),
+			minLength: minLength(5)
+		},
+		number: {
+			required: required(),
+			ccNumber: ccNumber()
+		},
+		expiration: {
+			required: required(),
+			ccExpiration: ccExpiration()
+		},
+		cvv: {
+			required: required(),
+			ccCVV: ccCVV()
+		},
+		installments: { required: required() }
+	}, form, { $lazy: true });
+	const makeInstallmentsArray = (ins) => ins.map((i) => ({
+		name: i18n.t('payment.installmentOption', [i, i18n.n((invoice.value.amount || 0) / i / 100, invoice.value.currency)]),
+		value: i
+	}));
+	const installments = computed(() => {
+		if (!invoice.value.creditCard?.enabled) {
+			return [];
+		}
 
-			const installmentsRule = invoice.value?.creditCard.installmentsRule,
-				installmentsArray = installmentsRule?.type === InvoicePaymentLinkCreditCardInstallmentRuleType.UpTo ? makeInstallmentsArray(Array.from({ length: installmentsRule.upTo }, (_, i) => i + 1)) : makeInstallmentsArray(installmentsRule?.installments);
+		const installmentsRule = invoice.value?.creditCard.installmentsRule;
+		const installmentsArray = installmentsRule?.type === InvoicePaymentLinkCreditCardInstallmentRuleType.UpTo ? makeInstallmentsArray(Array.from({ length: installmentsRule.upTo }, (_, i) => i + 1)) : makeInstallmentsArray(installmentsRule?.installments);
 
-			if (installmentsArray.length) {
-				form.installments = installmentsArray[0].value;
-			}
+		if (installmentsArray.length) {
+			form.installments = installmentsArray[0].value;
+		}
 
-			return installmentsArray;
-		}),
-		currentInstallment = computed(() => installments.value.find((i) => i.value === form.installments).name);
+		return installmentsArray;
+	});
+
+	const currentInstallment = computed(() => installments.value.find((i) => i.value === form.installments).name);
 
 	return {
 		addCard,
@@ -134,8 +135,8 @@ export function useCreditCard() {
 	}
 
 	function isValidCardNumber(cardNumber) {
-		const isValidFormat = /^(\d{12,19})$/u,
-			cleanedNumber = cardNumber.replace(/\D/gu, '');
+		const isValidFormat = /^(\d{12,19})$/u;
+		const cleanedNumber = cardNumber.replace(/\D/gu, '');
 
 		if (!isValidFormat.test(cleanedNumber)) {
 			return false;
@@ -151,11 +152,11 @@ export function useCreditCard() {
 	}
 
 	function isValidExpirationDate(expDate) {
-		const isValidFormat = /^(0[1-9]|1[0-2])\/(\d{2}|\d{4})$/u,
-			[month, year] = expDate.split('/').map(Number),
-			currentYear = new Date().getFullYear(),
-			currentMonth = new Date().getMonth() + 1,
-			expYear = year >= 100 ? year : 2000 + year;
+		const isValidFormat = /^(0[1-9]|1[0-2])\/(\d{2}|\d{4})$/u;
+		const [month, year] = expDate.split('/').map(Number);
+		const currentYear = new Date().getFullYear();
+		const currentMonth = new Date().getMonth() + 1;
+		const expYear = year >= 100 ? year : 2000 + year;
 
 		if (!isValidFormat.test(expDate)) {
 			return false;
@@ -185,7 +186,7 @@ export function useCreditCard() {
 			card_holder_name: holder,
 			card_expiration_date: expiration,
 			card_cvv: cvv
-		}); 
+		});
 		/* eslint-enable */
 	}
 
