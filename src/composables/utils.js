@@ -40,6 +40,8 @@ export function useMasks() {
 			ccNumber: '9999 9999 9999? 9999',
 			ccExp: '99/99',
 			cvv: '999?9',
+			cpf: '999.999.999-99',
+			cnpj: '99.999.999/9999-99',
 			phone(country) {
 				const ayt = new AsYouType(country);
 				let lengths = ayt.metadata.possibleLengths();

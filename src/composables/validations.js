@@ -1,7 +1,9 @@
 import {
 	helpers,
+	required,
 	minLength,
-	required
+	email,
+	sameAs
 } from '@vuelidate/validators';
 
 import { i18n } from '@/i18n';
@@ -30,6 +32,8 @@ export function useValidations() {
 		},
 		required: (message = i18n.t('validations.required')) => helpers.withMessage(message, required),
 		minLength: (length = 1, message = i18n.tc('validations.minLength', length)) => helpers.withMessage(message, minLength(length)),
+		email: (message = i18n.t('validations.email')) => helpers.withMessage(message, email),
+		sameAs: (equalTo, message = i18n.t('validations.sameAs')) => helpers.withMessage(message, sameAs(equalTo)),
 		ccNumber: (message = i18n.t('validations.ccNumber')) => helpers.withMessage(message, (number) => isValidCardNumber(number)),
 		ccCVV: (message = i18n.t('validations.ccCVV')) => helpers.withMessage(message, (number) => isValidCVV(number)),
 		ccExpiration: (message = i18n.t('validations.ccExpiration')) => helpers.withMessage(message, (date) => isValidExpirationDate(date))

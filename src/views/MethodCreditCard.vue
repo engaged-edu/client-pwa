@@ -86,7 +86,6 @@ form.formgrid(v-if="addCard")
 <script setup>
 import { useBreakpoints } from '@/composables/breakpoints';
 import { useCreditCardForm } from '@/composables/creditCard';
-import pixIcon from '/icons/pix.svg?raw';
 import CreditCardComponent from '@/components/CreditCardComponent.vue';
 
 const { largeScreen } = useBreakpoints();

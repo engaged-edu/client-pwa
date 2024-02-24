@@ -1,7 +1,8 @@
 <template lang="pug">
 mixin line(type)
 	.flex.align-items-center.gap-2.w-full&attributes(attributes)
-		img.w-2rem(
+		img(
+			style="width: 1.5rem"
 			:alt=`slotProps.${type}.name`
 			:src=`\`/p/flags/$\{slotProps.${type}.code}.svg\``
 		)
@@ -53,7 +54,7 @@ const pt = computed(() => {
 			...value,
 			panel: 'max-w-full',
 			root: { style: 'border-right: none' },
-			trigger: { style: 'width: .5rem; transform: translateX(-70%)' }
+			trigger: { style: 'width: .5rem; transform: translateX(-100%)' }
 		};
 	}
 
