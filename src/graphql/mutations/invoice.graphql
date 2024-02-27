@@ -1,7 +1,3 @@
-import gql from 'graphql-tag';
-
-/* eslint-disable */
-export const publicCreatePaymentFromInvoicePaymentLink = gql`
 mutation publicCreatePaymentFromInvoicePaymentLink(
 	$cardToken: String
 	$installments: Int
@@ -51,9 +47,8 @@ mutation publicCreatePaymentFromInvoicePaymentLink(
 
 		}
 	}
-}`;
+}
 
-export const publicCancelInvoicePaymentLinkPayment = gql`
 mutation publicCancelInvoicePaymentLinkPayment(
 	$accessToken: String!
 ) {
@@ -64,4 +59,4 @@ mutation publicCancelInvoicePaymentLinkPayment(
 			_id
 		}
 	}
-}`;
+}

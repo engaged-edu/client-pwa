@@ -482,6 +482,7 @@ export type BankSlipPayment = EntityCommonFieldsInterface & Payment & {
   amount: Scalars['Int'];
   checkout?: Maybe<Checkout>;
   checkoutId?: Maybe<Scalars['String']>;
+  checkoutSharedId?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<User>;
@@ -926,7 +927,6 @@ export enum ChapterStatus {
 export type Checkout = {
   __typename?: 'Checkout';
   _id: Scalars['ObjectId'];
-  accessToken: Scalars['String'];
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<AdminUser>;
   createdById?: Maybe<Scalars['String']>;
@@ -1771,6 +1771,7 @@ export type CreditCardPayment = EntityCommonFieldsInterface & Payment & {
   cardId?: Maybe<Scalars['String']>;
   checkout?: Maybe<Checkout>;
   checkoutId?: Maybe<Scalars['String']>;
+  checkoutSharedId?: Maybe<Scalars['String']>;
   country?: Maybe<CountryIsoCode>;
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<User>;
@@ -2341,16 +2342,19 @@ export type FeatureConfigWPaymentFeeInput = {
   paymentFee?: Maybe<PaymentFeeInput>;
 };
 
+export type FetchCheckoutPurchaseSummaryObj = {
+  __typename?: 'FetchCheckoutPurchaseSummaryObj';
+  amount: Scalars['Float'];
+  count: Scalars['Float'];
+  statuses: Array<Scalars['String']>;
+};
+
 export type FetchCheckoutPurchaseSummaryResponse = {
   __typename?: 'FetchCheckoutPurchaseSummaryResponse';
-  inflowAmount: Scalars['Float'];
-  inflowCount: Scalars['Float'];
-  outflowAmount: Scalars['Float'];
-  outflowCount: Scalars['Float'];
-  totalAmount: Scalars['Float'];
-  totalCount: Scalars['Float'];
-  waitingPaymentAmount: Scalars['Float'];
-  waitingPaymentCount: Scalars['Float'];
+  inflow: FetchCheckoutPurchaseSummaryObj;
+  outflow: FetchCheckoutPurchaseSummaryObj;
+  total: FetchCheckoutPurchaseSummaryObj;
+  waitingPayment: FetchCheckoutPurchaseSummaryObj;
 };
 
 export type FetchOrganizationCurrentDateResponse = {
@@ -2593,6 +2597,7 @@ export type Invoice = {
   activePaymentLinkPaymentMethods: Array<PaymentMethod>;
   checkout?: Maybe<Checkout>;
   checkoutId?: Maybe<Scalars['String']>;
+  checkoutSharedId?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<AdminUser>;
   createdById?: Maybe<Scalars['String']>;
@@ -3400,6 +3405,7 @@ export type MoneyPayment = EntityCommonFieldsInterface & Payment & {
   amount: Scalars['Int'];
   checkout?: Maybe<Checkout>;
   checkoutId?: Maybe<Scalars['String']>;
+  checkoutSharedId?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<User>;
   createdById?: Maybe<Scalars['String']>;
@@ -4637,7 +4643,7 @@ export type MutationPublicCancelInvoicePaymentLinkPaymentArgs = {
 
 
 export type MutationPublicCreateCheckoutPaymentArgs = {
-  accessToken: Scalars['String'];
+  checkoutSharedId: Scalars['String'];
   paymentCreationArgs: CheckoutPaymentCreationInput;
   upsertStudentUserArgs: CheckoutUpsertStudentInput;
   upsertUserPaymentProfileArgs: CheckoutUpsertUserPProfileInput;
@@ -5317,6 +5323,7 @@ export type Payment = {
   amount: Scalars['Int'];
   checkout?: Maybe<Checkout>;
   checkoutId?: Maybe<Scalars['String']>;
+  checkoutSharedId?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<User>;
   createdById?: Maybe<Scalars['String']>;
@@ -5623,6 +5630,7 @@ export type PixPayment = EntityCommonFieldsInterface & Payment & {
   amount: Scalars['Int'];
   checkout?: Maybe<Checkout>;
   checkoutId?: Maybe<Scalars['String']>;
+  checkoutSharedId?: Maybe<Scalars['String']>;
   code: Scalars['String'];
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<User>;
@@ -6044,7 +6052,8 @@ export type PublicCreatePaymentFromInvoicePaymentLinkResponse = {
 export type Purchase = {
   __typename?: 'Purchase';
   _id: Scalars['ObjectId'];
-  checkout?: Maybe<Checkout>;
+  checkout: Checkout;
+  checkoutId?: Maybe<Scalars['String']>;
   checkoutSharedId: Scalars['String'];
   createdAt: Scalars['DateTime'];
   createdBy?: Maybe<StudentUser>;
@@ -6878,7 +6887,7 @@ export type QueryFetchOrganizationArgs = {
 
 
 export type QueryPublicFetchCheckoutArgs = {
-  accessToken: Scalars['String'];
+  checkoutSharedId: Scalars['String'];
 };
 
 
@@ -6895,7 +6904,7 @@ export type QueryPublicFetchInvoicePaymentLinkUserCardsArgs = {
 
 
 export type QueryPublicFetchStudentCheckoutPurchaseArgs = {
-  accessToken: Scalars['String'];
+  checkoutSharedId: Scalars['String'];
   studentUserEmail?: Maybe<Scalars['String']>;
   studentUserId?: Maybe<Scalars['String']>;
 };
@@ -11616,7 +11625,19 @@ export type AdminFetchCheckoutPurchaseSummaryQuery = (
   { __typename?: 'Query' }
   & { adminFetchCheckoutPurchaseSummary?: Maybe<(
     { __typename?: 'FetchCheckoutPurchaseSummaryResponse' }
-    & Pick<FetchCheckoutPurchaseSummaryResponse, 'totalAmount' | 'totalCount' | 'inflowAmount' | 'inflowCount' | 'waitingPaymentAmount' | 'waitingPaymentCount' | 'outflowAmount' | 'outflowCount'>
+    & { total: (
+      { __typename?: 'FetchCheckoutPurchaseSummaryObj' }
+      & Pick<FetchCheckoutPurchaseSummaryObj, 'amount' | 'count' | 'statuses'>
+    ), inflow: (
+      { __typename?: 'FetchCheckoutPurchaseSummaryObj' }
+      & Pick<FetchCheckoutPurchaseSummaryObj, 'amount' | 'count' | 'statuses'>
+    ), waitingPayment: (
+      { __typename?: 'FetchCheckoutPurchaseSummaryObj' }
+      & Pick<FetchCheckoutPurchaseSummaryObj, 'amount' | 'count' | 'statuses'>
+    ), outflow: (
+      { __typename?: 'FetchCheckoutPurchaseSummaryObj' }
+      & Pick<FetchCheckoutPurchaseSummaryObj, 'amount' | 'count' | 'statuses'>
+    ) }
   )> }
 );
 
@@ -11638,7 +11659,7 @@ export type AdminFetchCheckoutsQuery = (
     & Pick<PaginatedCheckoutResponse, 'currentPage' | 'totalPageCount' | 'totalResultCount' | 'hasNextPage'>
     & { results: Array<(
       { __typename?: 'Checkout' }
-      & Pick<Checkout, '_id' | 'createdAt' | 'updatedAt' | 'expirationDate' | 'description' | 'status' | 'currency' | 'invoiceItemsAmount' | 'invoiceTotalAmount' | 'invoiceDiscountedAmount' | 'accessToken' | 'sharedId' | 'latest' | 'organizationId' | 'splitConfigId' | 'updatedById' | 'createdById' | 'url'>
+      & Pick<Checkout, '_id' | 'createdAt' | 'updatedAt' | 'expirationDate' | 'description' | 'status' | 'currency' | 'invoiceItemsAmount' | 'invoiceTotalAmount' | 'invoiceDiscountedAmount' | 'sharedId' | 'latest' | 'organizationId' | 'splitConfigId' | 'updatedById' | 'createdById' | 'url'>
       & { splitConfig: (
         { __typename?: 'SplitConfig' }
         & { rules: Array<(
@@ -11707,7 +11728,7 @@ export type AdminFetchCheckoutQuery = (
   { __typename?: 'Query' }
   & { adminFetchCheckout?: Maybe<(
     { __typename?: 'Checkout' }
-    & Pick<Checkout, '_id' | 'createdAt' | 'updatedAt' | 'expirationDate' | 'description' | 'status' | 'currency' | 'invoiceItemsAmount' | 'invoiceTotalAmount' | 'invoiceDiscountedAmount' | 'accessToken' | 'sharedId' | 'latest' | 'organizationId' | 'splitConfigId' | 'updatedById' | 'createdById' | 'url'>
+    & Pick<Checkout, '_id' | 'createdAt' | 'updatedAt' | 'expirationDate' | 'description' | 'status' | 'currency' | 'invoiceItemsAmount' | 'invoiceTotalAmount' | 'invoiceDiscountedAmount' | 'sharedId' | 'latest' | 'organizationId' | 'splitConfigId' | 'updatedById' | 'createdById' | 'url'>
     & { splitConfig: (
       { __typename?: 'SplitConfig' }
       & { rules: Array<(
@@ -12289,7 +12310,7 @@ export type AdminFetchPurchasesQuery = (
     & { results: Array<(
       { __typename?: 'Purchase' }
       & Pick<Purchase, '_id' | 'createdAt' | 'updatedAt' | 'status' | 'invoiceItemsAmount' | 'invoicePaidAmount' | 'invoiceRefundedAmount' | 'invoiceTotalAmount' | 'invoiceDueAmount' | 'invoiceDiscountedAmount' | 'organizationId' | 'studentUserId' | 'updatedById' | 'createdById'>
-      & { checkout?: Maybe<(
+      & { checkout: (
         { __typename?: 'Checkout' }
         & Pick<Checkout, 'expirationDate' | 'description' | 'status' | 'currency'>
         & { paymentMethodsConfig: (
@@ -12332,7 +12353,7 @@ export type AdminFetchPurchasesQuery = (
             )> }
           )> }
         ) }
-      )>, user: (
+      ), user: (
         { __typename?: 'StudentUser' }
         & Pick<StudentUser, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
       ), payment: (

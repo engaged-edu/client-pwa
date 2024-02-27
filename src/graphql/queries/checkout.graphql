@@ -1,0 +1,9 @@
+query publicFetchCheckout(
+	$checkoutSharedId: String!
+) {
+	publicFetchCheckout(
+		checkoutSharedId: $checkoutSharedId
+	) {
+		_id
+	}
+}
