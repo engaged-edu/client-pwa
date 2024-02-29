@@ -6128,7 +6128,7 @@ export type Query = {
   adminFetchChapter?: Maybe<Chapter>;
   adminFetchChapters: PaginatedChapterResponse;
   adminFetchCheckout?: Maybe<Checkout>;
-  adminFetchCheckoutPurchaseSummary?: Maybe<FetchCheckoutPurchaseSummaryResponse>;
+  adminFetchCheckoutPurchaseSummary: FetchCheckoutPurchaseSummaryResponse;
   adminFetchCheckouts: PaginatedCheckoutResponse;
   adminFetchCourse?: Maybe<Course>;
   adminFetchCourses: PaginatedCourseResponse;
@@ -10129,7 +10129,7 @@ export type AdminCreateCheckoutMutation = (
   { __typename?: 'Mutation' }
   & { adminCreateCheckout: (
     { __typename?: 'Checkout' }
-    & Pick<Checkout, '_id'>
+    & Pick<Checkout, '_id' | 'sharedId'>
   ) }
 );
 
@@ -11623,7 +11623,7 @@ export type AdminFetchCheckoutPurchaseSummaryQueryVariables = Exact<{
 
 export type AdminFetchCheckoutPurchaseSummaryQuery = (
   { __typename?: 'Query' }
-  & { adminFetchCheckoutPurchaseSummary?: Maybe<(
+  & { adminFetchCheckoutPurchaseSummary: (
     { __typename?: 'FetchCheckoutPurchaseSummaryResponse' }
     & { total: (
       { __typename?: 'FetchCheckoutPurchaseSummaryObj' }
@@ -11638,7 +11638,7 @@ export type AdminFetchCheckoutPurchaseSummaryQuery = (
       { __typename?: 'FetchCheckoutPurchaseSummaryObj' }
       & Pick<FetchCheckoutPurchaseSummaryObj, 'amount' | 'count' | 'statuses'>
     ) }
-  )> }
+  ) }
 );
 
 export type AdminFetchCheckoutsQueryVariables = Exact<{

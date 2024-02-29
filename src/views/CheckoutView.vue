@@ -4,6 +4,7 @@ ConfirmDialog
 CheckoutLayout(
 	ref="$CheckoutLayout"
 	:loading="isLoading"
+	:step="currentStep"
 	@submit="handleSubmit"
 )
 	template(#resume)
@@ -43,23 +44,26 @@ import PayerComponent from '@/components/PayerComponent.vue';
 import MethodComponent from '@/components/MethodComponent.vue';
 import SummaryComponent from '@/components/SummaryComponent.vue';
 import PaymentStatusComponent from '@/components/PaymentStatusComponent.vue';
-import { publicFetchInvoicePaymentLink } from '@/graphql/queries/invoice';
 import {
+	publicFetchCheckout,
+	publicFetchInvoicePaymentLink,
 	publicCreatePaymentFromInvoicePaymentLink,
 	publicCancelInvoicePaymentLinkPayment
-} from '@/graphql/mutations/invoice';
+} from '@/graphql';
 import {
 	PaymentMethod,
 	PaymentStatus,
 	InvoiceItemType
 } from '@/gql.ts';
 
+const $CheckoutLayout = ref();
 const route = useRoute();
 const logo = useLogo();
 const confirmDialog = useConfirm();
 const { validateForm } = useValidations();
 const { getCardHash } = useCreditCard();
 const { accessToken } = route.query;
+const checkoutSharedId = computed(() => route.params.id);
 const currentPaymentMethod = computed(() => {
 	const methods = {
 		'payment-link-method-credit-card': PaymentMethod.CreditCard,
@@ -69,18 +73,17 @@ const currentPaymentMethod = computed(() => {
 
 	return methods[route.name];
 });
-const $CheckoutLayout = ref();
 
 // Fetch Payment Link
 const {
-	result: paymentLinkResult,
-	loading: loadingPaymentLink,
-	onResult: onFetchPaymentLink
-} = useQuery(publicFetchInvoicePaymentLink, { accessToken });
+	result: checkoutResult,
+	loading: loadingCheckout,
+	onResult: onFetchCheckout
+} = useQuery(publicFetchCheckout, { checkoutSharedId: checkoutSharedId.value });
 const status = ref(null);
 const payment = ref(null);
-const paymentLinkData = computed(() => paymentLinkResult.value?.publicFetchInvoicePaymentLink);
-const products = computed(() => paymentLinkData.value?.invoice?.items.map((item) => {
+const checkoutData = computed(() => checkoutResult.value?.publicFetchCheckout);
+const products = computed(() => checkoutData.value.invoiceItems.map((item) => {
 	const isProduct = item?.type === InvoiceItemType.Product;
 
 	if (isProduct) {
@@ -100,24 +103,24 @@ const products = computed(() => paymentLinkData.value?.invoice?.items.map((item)
 		amount: item.amount * item.quantity
 	};
 }) || []);
-const discounts = computed(() => paymentLinkData.value?.invoice?.discounts || []);
+const discounts = computed(() => checkoutData.value?.invoiceDiscounts || []);
 const invoice = computed(() => {
-	const amount = paymentLinkData.value?.amount || 0;
-	const subtotal = products.value.reduce((acc, product) => acc + product.amount, 0);
-	const totalDiscount = discounts.value.reduce((acc, discount) => acc + discount.amount, 0);
-	const total = subtotal - totalDiscount;
+	const amount = checkoutData.value?.invoiceTotalAmount || 0;
+	const subtotal = checkoutData.value?.invoiceItemsAmount || 0;
+	const totalDiscount = checkoutData.value?.invoiceDiscountedAmount || 0;
+	const total = checkoutData.value?.invoiceTotalAmount || 0;
 	const content = {
-		id: paymentLinkData.value?._id,
-		createdAt: paymentLinkData.value?.createdAt,
-		updatedAt: paymentLinkData.value?.updatedAt,
-		status: paymentLinkData.value?.status,
-		expirationDate: paymentLinkData.value?.expirationDate,
+		id: checkoutData.value?._id,
+		createdAt: checkoutData.value?.createdAt,
+		updatedAt: checkoutData.value?.updatedAt,
+		status: checkoutData.value?.status,
+		expirationDate: checkoutData.value?.expirationDate,
 		methods: {
-			creditCard: paymentLinkData.value?.creditCard.enabled || false,
-			bankSlip: paymentLinkData.value?.bankSlip.enabled || false,
-			pix: paymentLinkData.value?.pix.enabled || false
+			creditCard: checkoutData.value?.paymentMethodsConfig.creditCard.enabled || false,
+			bankSlip: checkoutData.value?.paymentMethodsConfig.bankSlip.enabled || false,
+			pix: checkoutData.value?.paymentMethodsConfig.pix.enabled || false
 		},
-		currency: paymentLinkData.value?.invoice?.currency,
+		currency: checkoutData.value?.currency,
 		discounts: totalDiscount,
 		subtotal,
 		total,
@@ -125,11 +128,11 @@ const invoice = computed(() => {
 	};
 
 	if (content.methods.creditCard) {
-		content.creditCard = paymentLinkData.value?.creditCard;
+		content.creditCard = checkoutData.value?.paymentMethodsConfig.creditCard;
 	}
 
 	if (content.methods.bankSlip) {
-		content.bankSlip = paymentLinkData.value?.bankSlip;
+		content.bankSlip = checkoutData.value?.paymentMethodsConfig.bankSlip;
 	}
 
 	return content;
@@ -154,7 +157,10 @@ const {
 	mutate: cancelPayment,
 	loading: loadingCancelPayment
 } = useMutation(publicCancelInvoicePaymentLinkPayment, { variables: { accessToken } });
-const isLoading = computed(() => loadingPaymentLink.value || loadingCreatePayment.value || loadingCancelPayment.value);
+
+// General
+const isLoading = computed(() => loadingCheckout.value || loadingCreatePayment.value || loadingCancelPayment.value);
+const currentStep = ref('payment');
 
 async function handleSubmit() {
 	let params = {
@@ -231,15 +237,14 @@ onPaymentFail((result) => {
 	}, 3000);
 });
 
-onFetchPaymentLink((result) => {
+onFetchCheckout((result) => {
 	if (result.loading) {
 		return;
 	}
 
-	const data = result.data.publicFetchInvoicePaymentLink;
+	const data = result.data.publicFetchCheckout;
 
 	status.value = data.status;
-	payment.value = [...data.payments].pop();
 });
 
 provide('status', status);
@@ -247,9 +252,8 @@ provide('invoice', invoice);
 provide('payment', payment);
 provide('products', products);
 provide('discounts', discounts);
-
 provide('organization', computed(() => {
-	const org = paymentLinkData.value?.organization;
+	const org = checkoutData.value?.organization;
 
 	return {
 		id: org?._id,
@@ -257,49 +261,6 @@ provide('organization', computed(() => {
 		logoUrl: logo.getLogo(org?.appearance),
 		color: org?.appearance?.primaryColor,
 		softDescriptor: `Pg *Ed ${org?.payment?.creditCard.softDescriptor || ''}`
-	};
-}));
-
-provide('userProfile', computed(() => {
-	const address = paymentLinkData.value?.invoice?.userPaymentProfile.address;
-	const taxIds = paymentLinkData.value?.invoice?.userPaymentProfile.taxIds;
-	const user = paymentLinkData.value?.invoice?.user;
-
-	function makeAddress() {
-		if (!address) {
-			return null;
-		}
-
-		if (address.complement) {
-			return `${address.street}, ${address.number}, ${address.complement} - ${address.neighborhood}, ${address.city} - ${address.state}, ${address.zipcode}`;
-		}
-
-		return `${address.street}, ${address.number} - ${address.neighborhood}, ${address.city} - ${address.state}, ${address.zipcode}`;
-	}
-
-	function makePhone() {
-		if (!user.phoneNumber) {
-			return null;
-		}
-
-		const phone = parsePhoneNumber(user.phoneNumber || '', user.phoneNumberCountry);
-
-		return {
-			number: user.phoneNumber,
-			country: user.phoneNumberCountry,
-			parsed: phone.formatNational()
-		};
-	}
-
-	return {
-		name: paymentLinkData.value?.invoice?.user.name,
-		email: paymentLinkData.value?.invoice?.user.email,
-		businessName: paymentLinkData.value?.invoice?.userPaymentProfile.name,
-		country: paymentLinkData.value?.invoice?.userPaymentProfile.country,
-		type: paymentLinkData.value?.invoice?.userPaymentProfile.type,
-		taxId: taxIds.length ? taxIds[0] : null,
-		address: makeAddress(),
-		phone: makePhone()
 	};
 }));
 </script>

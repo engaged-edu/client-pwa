@@ -5,5 +5,109 @@ query publicFetchCheckout(
 		checkoutSharedId: $checkoutSharedId
 	) {
 		_id
+		createdAt
+		updatedAt
+		expirationDate
+		status
+		description
+		currency
+		organizationId
+		invoiceItemsAmount
+		invoiceTotalAmount
+		invoiceDiscountedAmount
+		invoiceItems {
+			type
+			quantity
+			... on ProductInvoiceItem {
+				productPrice
+				product {
+					name
+					description
+					prices {
+						_id
+						billingConfig {
+							... on PerUnitProductPrice {
+								unitAmount
+							}
+						}
+					}
+				}
+			}
+			... on InlineInvoiceItem {
+				name
+				quantity
+				amount
+			}
+		}
+		invoiceDiscounts {
+			_id
+			type
+			... on InvoiceManualDiscount {
+				description
+				amount
+			}
+		}
+		paymentMethodsConfig {
+			pix {
+				enabled
+			}
+			creditCard {
+				enabled
+				installmentsRule {
+					type
+					... on InvoicePaymentLinkCreditCardUpToInstallmentsRule {
+						upTo
+					}
+					... on InvoicePaymentLinkCreditCardSpecificInstallmentsInstallmentsRule {
+						installments
+					}
+				}
+			}
+			bankSlip {
+				enabled
+				expirationRule {
+					type
+					... on InvoicePaymentLinkDaysAfterCreationExpirationRule {
+						days
+					}
+					... on InvoicePaymentLinkSpecificDateExpirationRule {
+						date
+					}
+				}
+			}
+		}
+		organization {
+			_id
+			name
+			payment {
+				creditCard {
+					softDescriptor
+				}
+			}
+			appearance {
+				primaryColor
+				logo {
+					title
+					description
+					altText
+					url
+					filestackUrl
+				}
+				squareLogo32 {
+					title
+					description
+					altText
+					url
+					filestackUrl
+				}
+				squareLogo256 {
+					title
+					description
+					altText
+					url
+					filestackUrl
+				}
+			}
+		}
 	}
 }

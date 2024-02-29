@@ -8,7 +8,7 @@
 
 		main.layout__container.flex-grow-1
 			div(class="lg:col-8")
-				template(v-if="isStatus(InvoicePaymentLinkStatus.Pending)")
+				template(v-if="$props.step === 'payment'")
 					section.layout__identity.mb-3
 						Card(:pt="{content: {class: 'py-0'}}")
 							template(#content)
@@ -31,7 +31,7 @@
 						slot(name="summary")
 
 				Button.w-full.justify-content-center(
-					v-if="isStatus(InvoicePaymentLinkStatus.Pending)"
+					v-if="$props.step === 'payment'"
 					size="large"
 					:label="$t('payment.finishPayment')"
 					@click="$emit('submit')"
@@ -87,7 +87,7 @@ Sidebar.border-round-top-lg(
 					IconDown.ml-2
 
 			Button.w-full.justify-content-center.mt-3(
-				v-if="isStatus(InvoicePaymentLinkStatus.Pending)"
+				v-if="$props.step === 'payment'"
 				:label="$t('payment.finishPayment')"
 				@click="$emit('submit')"
 			)
@@ -117,6 +117,10 @@ export default {
 	props: {
 		loading: {
 			type: Boolean,
+			required: true
+		},
+		step: {
+			type: String,
 			required: true
 		}
 	},
@@ -163,10 +167,7 @@ export default {
 			invoice,
 			summaryVisible,
 			dialogVisible,
-			dialogContent,
-			isStatus(invoiceStatus) {
-				return status.value === invoiceStatus;
-			}
+			dialogContent
 		};
 	}
 };

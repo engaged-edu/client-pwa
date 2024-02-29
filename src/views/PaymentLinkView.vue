@@ -4,6 +4,7 @@ ConfirmDialog
 CheckoutLayout(
 	ref="$CheckoutLayout"
 	:loading="isLoading"
+	:step="currentStep"
 	@submit="handleSubmit"
 )
 	template(#resume)
@@ -43,11 +44,11 @@ import IdentityComponent from '@/components/IdentityComponent.vue';
 import MethodComponent from '@/components/MethodComponent.vue';
 import SummaryComponent from '@/components/SummaryComponent.vue';
 import PaymentStatusComponent from '@/components/PaymentStatusComponent.vue';
-import { publicFetchInvoicePaymentLink } from '@/graphql/queries/invoice';
 import {
+	publicFetchInvoicePaymentLink,
 	publicCreatePaymentFromInvoicePaymentLink,
 	publicCancelInvoicePaymentLinkPayment
-} from '@/graphql/mutations/invoice';
+} from '@/graphql';
 import {
 	PaymentMethod,
 	PaymentStatus,
@@ -154,7 +155,10 @@ const {
 	mutate: cancelPayment,
 	loading: loadingCancelPayment
 } = useMutation(publicCancelInvoicePaymentLinkPayment, { variables: { accessToken } });
+
+// General
 const isLoading = computed(() => loadingPaymentLink.value || loadingCreatePayment.value || loadingCancelPayment.value);
+const currentStep = ref('payment');
 
 async function handleSubmit() {
 	let params = {
@@ -203,6 +207,7 @@ function handleCancelPayment() {
 		accept: async () => {
 			await cancelPayment();
 			status.value = PaymentStatus.Pending;
+			currentStep.value = 'payment';
 		},
 		acceptLabel: i18n.t('general.yes'),
 		rejectLabel: i18n.t('general.no'),
@@ -220,6 +225,7 @@ onCreatedPayment((result) => {
 
 	status.value = data.invoicePaymentLink.status;
 	payment.value = data.payment;
+	currentStep.value = 'feedback';
 
 	$CheckoutLayout.value.showDialog(false);
 });
@@ -240,6 +246,7 @@ onFetchPaymentLink((result) => {
 
 	status.value = data.status;
 	payment.value = [...data.payments].pop();
+	currentStep.value = status.value === PaymentStatus.Pending ? 'payment' : 'feedback';
 });
 
 provide('status', status);
