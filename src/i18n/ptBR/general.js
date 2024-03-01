@@ -16,9 +16,9 @@ export default {
 		country: 'Selecione seu país',
 		cpf: 'Insira seu CPF',
 		email: 'Seu e-mail',
-		fullName: 'Nome completo',
+		name: 'Nome completo',
 		legal: 'Você é',
-		phone: 'Seu telefone'
+		phoneNumber: 'Seu telefone'
 	},
 	no: 'Não',
 	notSupported: 'Não suportado',

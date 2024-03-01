@@ -11,7 +11,7 @@ CheckoutLayout(
 		ResumeComponent(:handle-show-summary="$CheckoutLayout.showSummary")
 
 	template(#identity)
-		PayerComponent
+		PayerComponent(ref="$PayerComponent")
 
 	template(#method)
 		MethodComponent(
@@ -46,17 +46,20 @@ import SummaryComponent from '@/components/SummaryComponent.vue';
 import PaymentStatusComponent from '@/components/PaymentStatusComponent.vue';
 import {
 	publicFetchCheckout,
-	publicFetchInvoicePaymentLink,
-	publicCreatePaymentFromInvoicePaymentLink,
-	publicCancelInvoicePaymentLinkPayment
+	publicCreateCheckoutPayment,
+	publicCancelCheckoutPayment
 } from '@/graphql';
 import {
+	CountryIsoCode,
+	InvoiceItemType,
+	LegalPersonType,
 	PaymentMethod,
 	PaymentStatus,
-	InvoiceItemType
+	TaxIdType
 } from '@/gql.ts';
 
 const $CheckoutLayout = ref();
+const $PayerComponent = ref();
 const route = useRoute();
 const logo = useLogo();
 const confirmDialog = useConfirm();
@@ -66,9 +69,9 @@ const { accessToken } = route.query;
 const checkoutSharedId = computed(() => route.params.id);
 const currentPaymentMethod = computed(() => {
 	const methods = {
-		'payment-link-method-credit-card': PaymentMethod.CreditCard,
-		'payment-link-method-bank-slip': PaymentMethod.BankSlip,
-		'payment-link-method-pix': PaymentMethod.Pix
+		'checkout-method-credit-card': PaymentMethod.CreditCard,
+		'checkout-method-bank-slip': PaymentMethod.BankSlip,
+		'checkout-method-pix': PaymentMethod.Pix
 	};
 
 	return methods[route.name];
@@ -142,31 +145,62 @@ const invoice = computed(() => {
 const {
 	addCard,
 	saveCard,
-	form,
-	$v
+	form: formCreditCard,
+	$v: $vCreditCard
 } = useCreditCardForm(invoice.value);
 const {
 	mutate: createPayment,
 	loading: loadingCreatePayment,
 	onDone: onCreatedPayment,
 	onError: onPaymentFail
-} = useMutation(publicCreatePaymentFromInvoicePaymentLink);
+} = useMutation(publicCreateCheckoutPayment);
 
 // Cancel Payment
 const {
 	mutate: cancelPayment,
 	loading: loadingCancelPayment
-} = useMutation(publicCancelInvoicePaymentLinkPayment, { variables: { accessToken } });
+} = useMutation(publicCancelCheckoutPayment);
 
 // General
 const isLoading = computed(() => loadingCheckout.value || loadingCreatePayment.value || loadingCancelPayment.value);
 const currentStep = ref('payment');
 
 async function handleSubmit() {
-	let params = {
-		accessToken,
-		paymentMethod: currentPaymentMethod.value
+	const {
+		form: formPayer,
+		$v: $vPayer
+	} = $PayerComponent.value.getForm();
+	const params = {
+		checkoutSharedId: checkoutSharedId.value,
+		paymentCreationArgs: { paymentMethod: currentPaymentMethod.value },
+		upsertStudentUserArgs: {
+			name: formPayer.name,
+			email: formPayer.email,
+			phoneNumber: parsePhoneNumber(formPayer.phone.phoneNumber, formPayer.phone.phoneNumberCountry).formatInternational(),
+			phoneNumberCountry: formPayer.phone.phoneNumberCountry
+		},
+		upsertUserPaymentProfileArgs: {
+			country: formPayer.country,
+			type: formPayer.legal,
+			currency: invoice.value.currency
+		}
 	};
+
+	if (formPayer.country === CountryIsoCode.Br) {
+		params.upsertUserPaymentProfileArgs.taxIds = [
+			{
+				country: formPayer.country,
+				type: formPayer.legal === LegalPersonType.Individual ? TaxIdType.BrCpf : TaxIdType.BrCnpj,
+				value: (formPayer.legal === LegalPersonType.Individual ? formPayer.cpf : formPayer.cnpj).replace(/\D/gu, '')
+			}
+		];
+	}
+
+	if (formPayer.country !== CountryIsoCode.Br || formPayer.country === CountryIsoCode.Br && formPayer.legal !== LegalPersonType.Individual) {
+		params.upsertUserPaymentProfileArgs.name = formPayer.companyName;
+	} else {
+		params.upsertUserPaymentProfileArgs.name = formPayer.name;
+	}
 
 	$CheckoutLayout.value.showDialog(true, {
 		type: 'loading',
@@ -174,27 +208,39 @@ async function handleSubmit() {
 		description: i18n.t('payment.processingPurchase')
 	});
 
+	try {
+		await validateForm($vPayer);
+	} catch (e) {
+		$CheckoutLayout.value.showDialog(true, {
+			type: 'error',
+			title: i18n.t('general.fillFormCorrectly'),
+			description: i18n.t('payment.errorAtField', [i18n.t(`general.identity.${$vPayer.value.$errors[0].$property}`)])
+		}, 3000);
+
+		return;
+	}
+
 	if (currentPaymentMethod.value === PaymentMethod.CreditCard) {
 		try {
-			await validateForm($v);
+			await validateForm($vCreditCard);
 		} catch (e) {
 			$CheckoutLayout.value.showDialog(true, {
 				type: 'error',
 				title: i18n.t('general.fillFormCorrectly'),
-				description: i18n.t('payment.errorAtField', [i18n.t(`payment.creditCard.${$v.value.$errors[0].$property}`)])
+				description: i18n.t('payment.errorAtField', [i18n.t(`payment.creditCard.${$vCreditCard.value.$errors[0].$property}`)])
 			}, 3000);
 
 			return;
 		}
 
-		params = {
-			...params,
-			installments: form.installments,
+		params.paymentCreationArgs = {
+			...params.paymentCreationArgs,
+			installments: formCreditCard.installments,
 			cardToken: await getCardHash(
-				form.number,
-				form.name,
-				form.expiration,
-				form.cvv
+				formCreditCard.number,
+				formCreditCard.name,
+				formCreditCard.expiration,
+				formCreditCard.cvv
 			)
 		};
 	}
@@ -207,8 +253,12 @@ function handleCancelPayment() {
 		header: i18n.t('payment.confirCancelPayment'),
 		message: i18n.t('payment.confirCancelPaymentDescription'),
 		accept: async () => {
-			await cancelPayment();
+			await cancelPayment({
+				checkoutSharedId: checkoutSharedId.value,
+				paymentId: payment.value._id
+			});
 			status.value = PaymentStatus.Pending;
+			currentStep.value = 'payment';
 		},
 		acceptLabel: i18n.t('general.yes'),
 		rejectLabel: i18n.t('general.no'),
@@ -222,10 +272,11 @@ onCreatedPayment((result) => {
 		return;
 	}
 
-	const data = result.data.publicCreatePaymentFromInvoicePaymentLink;
+	const data = result.data.publicCreateCheckoutPayment;
 
-	status.value = data.invoicePaymentLink.status;
+	status.value = data.checkout.status;
 	payment.value = data.payment;
+	currentStep.value = 'feedback';
 
 	$CheckoutLayout.value.showDialog(false);
 });
@@ -233,8 +284,9 @@ onCreatedPayment((result) => {
 onPaymentFail((result) => {
 	$CheckoutLayout.value.showDialog(true, {
 		type: 'error',
-		title: result.message
-	}, 3000);
+		title: i18n.t(`errors.${result.graphQLErrors[0].extensions.exception.code}`),
+		description: `code: ${result.graphQLErrors[0].extensions.exception.code}, message: ${result.message}`
+	}, 5000);
 });
 
 onFetchCheckout((result) => {

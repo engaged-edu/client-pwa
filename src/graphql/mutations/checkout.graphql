@@ -1,0 +1,62 @@
+mutation publicCreateCheckoutPayment(
+	$checkoutSharedId: String!
+	$paymentCreationArgs: CheckoutPaymentCreationInput!
+	$upsertStudentUserArgs: CheckoutUpsertStudentInput!
+	$upsertUserPaymentProfileArgs: CheckoutUpsertUserPProfileInput!
+) {
+	publicCreateCheckoutPayment(
+		checkoutSharedId: $checkoutSharedId
+		paymentCreationArgs: $paymentCreationArgs
+		upsertStudentUserArgs: $upsertStudentUserArgs
+		upsertUserPaymentProfileArgs: $upsertUserPaymentProfileArgs
+	) {
+		checkout {
+			_id
+			status
+		}
+		payment {
+			_id
+			updatedAt
+			status
+			failCode
+			failMessage
+			amount
+			currency
+			paymentMethod
+			... on CreditCardPayment {
+				createdAt
+				updatedAt
+				brand
+				installments
+				lastDigits
+			}
+			... on BankSlipPayment {
+				createdAt
+				updatedAt
+				code
+				expirationDate
+				pdfUrl
+			}
+			... on PixPayment {
+				createdAt
+				updatedAt
+				code
+				expirationDate
+				qrCodeUrl
+			}
+
+		}
+	}
+}
+
+mutation publicCancelCheckoutPayment(
+	$checkoutSharedId: String!
+	$paymentId: String!
+) {
+	publicCancelCheckoutPayment(
+		checkoutSharedId: $checkoutSharedId
+		paymentId: $paymentId
+	) {
+		_id
+	}
+}

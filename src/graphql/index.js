@@ -17,4 +17,8 @@ export {
 	publicCreatePaymentFromInvoicePaymentLink,
 	publicCancelInvoicePaymentLinkPayment
 } from './mutations/invoice.graphql';
+export {
+	publicCreateCheckoutPayment,
+	publicCancelCheckoutPayment
+} from './mutations/checkout.graphql';
 export default graphQLClient;

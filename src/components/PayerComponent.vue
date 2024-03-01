@@ -3,7 +3,7 @@
 
 .formgrid.grid
 	.field.col-12(class="lg:col-6")
-		label(for="full-name") {{ $t('general.identity.fullName') }}:
+		label(for="full-name") {{ $t('general.identity.name') }}:
 		InputText#full-name.w-full(
 			v-model="$v.name.$model"
 			:class="{ 'p-invalid': $v.name.$invalid }"
@@ -12,12 +12,14 @@
 		label(for="email") {{ $t('general.identity.email') }}:
 		InputText#email.w-full(
 			v-model="$v.email.$model"
+			type="email"
 			:class="{ 'p-invalid': $v.email.$invalid }"
 		)
 	.field.col-12(class="lg:col-6")
 		label(for="confirm-email") {{ $t('general.identity.confirmEmail') }}:
 		InputText#confirm-email.w-full(
 			v-model="$v.confirmEmail.$model"
+			type="email"
 			:class="{ 'p-invalid': $v.confirmEmail.$invalid }"
 		)
 	.field.col-12(class="lg:col-6")
@@ -28,7 +30,7 @@
 			@change="handleCountry"
 		)
 	.field.col-12(class="lg:col-6")
-		label(for="phone") {{ $t('general.identity.phone') }}:
+		label(for="phone") {{ $t('general.identity.phoneNumber') }}:
 		InputPhone(
 			v-model="$v.phone.$model"
 			:class="{ 'p-invalid': $v.phone.$invalid }"
@@ -79,6 +81,7 @@ import { CountryIsoCode, LegalPersonType } from '@/gql.ts';
 const { masks } = useMasks();
 const {
 	required,
+	requiredIf,
 	minLength,
 	sameAs,
 	email,
@@ -101,7 +104,7 @@ const formInitialState = {
 const form = reactive({ ...formInitialState });
 const $v = useVuelidate({
 	name: {
-		required,
+		required: required(),
 		minLength: minLength(5)
 	},
 	email: {
@@ -115,10 +118,10 @@ const $v = useVuelidate({
 		phoneNumberCountry: { required: required() }
 	},
 	legal: { required: required() },
-	cpf: { required: required() },
-	cnpj: { required: required() },
+	cpf: { required: requiredIf(computed(() => form.country === CountryIsoCode.Br && form.legal === LegalPersonType.Individual)) },
+	cnpj: { required: requiredIf(computed(() => form.country === CountryIsoCode.Br && form.legal !== LegalPersonType.Individual)) },
 	companyName: {
-		required: required(),
+		required: requiredIf(form.country !== CountryIsoCode.Br || form.country === CountryIsoCode.Br && form.legal !== LegalPersonType.Individual),
 		minLength: minLength(5)
 	}
 }, form, { $lazy: true });
@@ -132,4 +135,10 @@ function handleCountry(event) {
 
 	phoneModel.phoneNumberCountry = event.value.code;
 }
+
+defineExpose({
+	getForm() {
+		return { form, $v };
+	}
+});
 </script>

@@ -1,6 +1,7 @@
 import {
 	helpers,
 	required,
+	requiredIf,
 	minLength,
 	email,
 	sameAs
@@ -31,6 +32,7 @@ export function useValidations() {
 			});
 		},
 		required: (message = i18n.t('validations.required')) => helpers.withMessage(message, required),
+		requiredIf: (condition, message = i18n.t('validations.required')) => helpers.withMessage(message, requiredIf(condition)),
 		minLength: (length = 1, message = i18n.tc('validations.minLength', length)) => helpers.withMessage(message, minLength(length)),
 		email: (message = i18n.t('validations.email')) => helpers.withMessage(message, email),
 		sameAs: (equalTo, message = i18n.t('validations.sameAs')) => helpers.withMessage(message, sameAs(equalTo)),
