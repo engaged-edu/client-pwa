@@ -1,6 +1,6 @@
 <template lang="pug">
 .layout.my-0.mx-auto.w-full.overflow-hidden.flex.flex-column
-	img.layout__logo.mx-auto.my-3(src="/p/engaged-logo-200x82.png")
+	img.layout__logo.mx-auto.my-3(src="/engaged-logo-200x82.png")
 
 	.surface-0.p-3.text-color-secondary.line-height-3(class="lg:p-6")
 		.layout__container
