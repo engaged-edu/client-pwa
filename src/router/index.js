@@ -55,6 +55,12 @@ const router = createRouter({
 					meta: { name: i18n.t('payment.methods.pix') }
 				}
 			]
+		},
+		{
+			path: '/checkout/welcome',
+			name: 'checkout-welcome',
+			component: () => import('../views/CheckoutWelcomeView.vue'),
+			meta: { title: i18n.t('payment.checkout') }
 		}
 	]
 });

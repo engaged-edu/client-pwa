@@ -8,7 +8,7 @@
 
 		main.layout__container.flex-grow-1
 			div(class="lg:col-8")
-				template(v-if="$props.step === 'payment'")
+				template(v-if="$props.step === 'initial'")
 					section.layout__identity.mb-3
 						Card(:pt="{content: {class: 'py-0'}}")
 							template(#content)
@@ -31,7 +31,7 @@
 						slot(name="summary")
 
 				Button.w-full.justify-content-center(
-					v-if="$props.step === 'payment'"
+					v-if="$props.step === 'initial'"
 					size="large"
 					:label="$t('payment.finishPayment')"
 					@click="$emit('submit')"
@@ -87,7 +87,7 @@ Sidebar.border-round-top-lg(
 					IconDown.ml-2
 
 			Button.w-full.justify-content-center.mt-3(
-				v-if="$props.step === 'payment'"
+				v-if="$props.step === 'initial'"
 				:label="$t('payment.finishPayment')"
 				@click="$emit('submit')"
 			)
@@ -174,6 +174,9 @@ export default {
 </script>
 
 <style lang="stylus">
+#app
+	background var(--bluegray-50)
+
 .layout
 	max-width unit($screens.xl, px)
 	min-height 100dvh

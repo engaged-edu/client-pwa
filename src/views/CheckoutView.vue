@@ -163,7 +163,7 @@ const {
 
 // General
 const isLoading = computed(() => loadingCheckout.value || loadingCreatePayment.value || loadingCancelPayment.value);
-const currentStep = ref('payment');
+const currentStep = ref('initial');
 
 async function handleSubmit() {
 	const {
@@ -258,7 +258,7 @@ function handleCancelPayment() {
 				paymentId: payment.value._id
 			});
 			status.value = PaymentStatus.Pending;
-			currentStep.value = 'payment';
+			currentStep.value = 'initial';
 		},
 		acceptLabel: i18n.t('general.yes'),
 		rejectLabel: i18n.t('general.no'),
