@@ -2,23 +2,23 @@
 .text-sm.font-bold.mb-4(class="lg:text-xl") {{ $t('payment.itemsSummary') }}
 
 ScrollPanel(:pt="{ bary: 'hover:bg-primary-500 surface-300 opacity-100' }")
-	table.summary-list.w-full.relative(style="table-layout: fixed")
-		tr.text-sm(
+	.summary-list.w-full.relative
+		.grid.text-sm(
 			v-for="(item, index) in items"
 			:key="index"
 		)
-			td.vertical-align-top.border-bottom-1.surface-border.py-4.font-semibold.w-min
+			.col-fixed.vertical-align-top.border-bottom-1.surface-border.py-4.font-semibold
 				i-mdi-sale(v-if="isDiscount(item)")
 				span(v-else) {{ item.quantity }}x
 
-			td.vertical-align-top.border-bottom-1.surface-border.py-4.px-2
+			.col.vertical-align-top.border-bottom-1.surface-border.py-4.px-2
 				.font-semibold(v-if="isDiscount(item)") {{ $t('payment.discount') }}
 				.font-semibold.white-space-nowrap.overflow-hidden.text-overflow-ellipsis(v-else-if="item.name") {{ item.name }}
 				.font-light.ellipsis-2(
 					v-if="item.description"
 					:class="{ 'mt-2': isDiscount(item) || item.name }"
 				) {{ item.description }}
-			td.vertical-align-top.border-bottom-1.surface-border.py-4.font-semibold.white-space-nowrap.w-min
+			.col-fixed.vertical-align-top.border-bottom-1.surface-border.py-4.font-semibold.white-space-nowrap
 				.text-right(
 					:class="{ 'text-green-500': isDiscount(item) }"
 				)
@@ -75,9 +75,6 @@ const isDiscount = (item) => item.type === InvoiceDiscountType.Manual;
 </script>
 
 <style lang="stylus">
-.summary-list
-	z-index -1
-
 .p-scrollpanel
 	max-height 60dvh
 
