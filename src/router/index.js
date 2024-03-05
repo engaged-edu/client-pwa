@@ -57,7 +57,7 @@ const router = createRouter({
 			]
 		},
 		{
-			path: '/checkout/welcome',
+			path: '/checkout/welcome/:id/:user',
 			name: 'checkout-welcome',
 			component: () => import('../views/CheckoutWelcomeView.vue'),
 			meta: { title: i18n.t('payment.checkout') }

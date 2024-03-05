@@ -12,7 +12,10 @@ const graphQLClient = new ApolloClient({
 });
 
 export { publicFetchInvoicePaymentLink } from './queries/invoice.graphql';
-export { publicFetchCheckout } from './queries/checkout.graphql';
+export {
+	publicFetchCheckout,
+	publicFetchStudentCheckoutPurchase
+} from './queries/checkout.graphql';
 export {
 	publicCreatePaymentFromInvoicePaymentLink,
 	publicCancelInvoicePaymentLinkPayment
