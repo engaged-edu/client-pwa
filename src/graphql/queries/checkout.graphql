@@ -75,7 +75,29 @@ query publicFetchCheckout(
 		invoiceTotalAmount
 		invoiceDiscountedAmount
 		invoiceItems {
-			...InvoiceItemFrag
+			type
+			quantity
+			... on ProductInvoiceItem {
+				productPrice
+				product {
+					name
+					description
+					prices {
+						_id
+						billingConfig {
+							... on PerUnitProductPrice {
+								unitAmount
+							}
+						}
+					}
+				}
+			}
+			... on InlineInvoiceItem {
+				name
+				quantity
+				amount
+			}
+
 		}
 		invoiceDiscounts {
 			_id

@@ -3,7 +3,7 @@
 
 ScrollPanel(:pt="{ bary: 'hover:bg-primary-500 surface-300 opacity-100' }")
 	.summary-list.w-full.relative
-		.grid.text-sm(
+		.grid.flex-nowrap.text-sm(
 			v-for="(item, index) in items"
 			:key="index"
 		)
@@ -11,7 +11,7 @@ ScrollPanel(:pt="{ bary: 'hover:bg-primary-500 surface-300 opacity-100' }")
 				i-mdi-sale(v-if="isDiscount(item)")
 				span(v-else) {{ item.quantity }}x
 
-			.col.vertical-align-top.border-bottom-1.surface-border.py-4.px-2
+			.col.vertical-align-top.border-bottom-1.surface-border.py-4.px-2(style="display: inline-grid")
 				.font-semibold(v-if="isDiscount(item)") {{ $t('payment.discount') }}
 				.font-semibold.white-space-nowrap.overflow-hidden.text-overflow-ellipsis(v-else-if="item.name") {{ item.name }}
 				.font-light.ellipsis-2(
@@ -23,7 +23,7 @@ ScrollPanel(:pt="{ bary: 'hover:bg-primary-500 surface-300 opacity-100' }")
 					:class="{ 'text-green-500': isDiscount(item) }"
 				)
 					span(v-if="isDiscount(item)") -
-					| {{ $t('cur', [item.amount, invoice.currency]) }}
+					span {{ $t('cur', [item.amount, invoice.currency]) }}
 
 .grid.text-sm.my-2
 	template(v-if="invoice.subtotal !== invoice.total")
