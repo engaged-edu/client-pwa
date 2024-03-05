@@ -158,7 +158,7 @@ const {
 
 // General
 const isLoading = computed(() => loadingPaymentLink.value || loadingCreatePayment.value || loadingCancelPayment.value);
-const currentStep = ref('payment');
+const currentStep = ref('initial');
 
 async function handleSubmit() {
 	let params = {
@@ -207,7 +207,7 @@ function handleCancelPayment() {
 		accept: async () => {
 			await cancelPayment();
 			status.value = PaymentStatus.Pending;
-			currentStep.value = 'payment';
+			currentStep.value = 'initial';
 		},
 		acceptLabel: i18n.t('general.yes'),
 		rejectLabel: i18n.t('general.no'),
@@ -246,12 +246,12 @@ onFetchPaymentLink((result) => {
 
 	status.value = data.status;
 	payment.value = [...data.payments].pop();
-	currentStep.value = status.value === PaymentStatus.Pending ? 'payment' : 'feedback';
+	currentStep.value = status.value === PaymentStatus.Pending ? 'initial' : 'feedback';
 });
 
 provide('status', status);
 provide('invoice', invoice);
-provide('payment', payment);
+provide('initial', payment);
 provide('products', products);
 provide('discounts', discounts);
 
