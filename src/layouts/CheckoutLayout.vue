@@ -34,7 +34,7 @@
 					v-if="$props.step === 'initial'"
 					size="large"
 					:label="$t('payment.finishPayment')"
-					@click="$emit('submit')"
+					@click="handleSubmit"
 				)
 					template(#icon)
 						IconCheck.p-button-icon-right
@@ -72,6 +72,14 @@ Sidebar.border-round-top-lg(
 						IconDown.p-button-icon-right
 			slot(name="summary")
 
+			Button.w-full.justify-content-center(
+				v-if="$props.step === 'initial'"
+				:label="$t('payment.finishPayment')"
+				@click="handleSubmit"
+			)
+				template(#icon)
+					IconCheck.p-button-icon-right
+
 Sidebar.border-round-top-lg(
 	v-if="!largeScreen && invoice.total"
 	visible
@@ -89,7 +97,7 @@ Sidebar.border-round-top-lg(
 			Button.w-full.justify-content-center.mt-3(
 				v-if="$props.step === 'initial'"
 				:label="$t('payment.finishPayment')"
-				@click="$emit('submit')"
+				@click="handleSubmit"
 			)
 				template(#icon)
 					IconCheck.p-button-icon-right
@@ -125,7 +133,7 @@ export default {
 		}
 	},
 	emits: ['submit'],
-	setup(props, { expose }) {
+	setup(props, { expose, emit }) {
 		const { largeScreen } = useBreakpoints();
 		const status = inject('status');
 		const organization = inject('organization');
@@ -155,6 +163,11 @@ export default {
 			}, timer);
 		}
 
+		function handleSubmit() {
+			summaryVisible.value = false;
+			emit('submit');
+		}
+
 		expose({
 			showSummary,
 			showDialog
@@ -167,7 +180,8 @@ export default {
 			invoice,
 			summaryVisible,
 			dialogVisible,
-			dialogContent
+			dialogContent,
+			handleSubmit
 		};
 	}
 };
