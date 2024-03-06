@@ -251,7 +251,7 @@ onFetchPaymentLink((result) => {
 
 provide('status', status);
 provide('invoice', invoice);
-provide('initial', payment);
+provide('payment', payment);
 provide('products', products);
 provide('discounts', discounts);
 
