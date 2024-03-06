@@ -1,62 +1,3 @@
-fragment OrgFrag on Organization{
-	_id
-	name
-	payment {
-		creditCard {
-			softDescriptor
-		}
-	}
-	appearance {
-		primaryColor
-		logo {
-			title
-			description
-			altText
-			url
-			filestackUrl
-		}
-		squareLogo32 {
-			title
-			description
-			altText
-			url
-			filestackUrl
-		}
-		squareLogo256 {
-			title
-			description
-			altText
-			url
-			filestackUrl
-		}
-	}
-}
-
-fragment InvoiceItemFrag on InvoiceItem {
-	type
-	quantity
-	... on ProductInvoiceItem {
-		productPrice
-		product {
-			name
-			description
-			prices {
-				_id
-				billingConfig {
-					... on PerUnitProductPrice {
-						unitAmount
-					}
-				}
-			}
-		}
-	}
-	... on InlineInvoiceItem {
-		name
-		quantity
-		amount
-	}
-}
-
 query publicFetchCheckout(
 	$checkoutSharedId: String!
 ) {
@@ -137,7 +78,37 @@ query publicFetchCheckout(
 			}
 		}
 		organization {
-			...OrgFrag
+			_id
+			name
+			payment {
+				creditCard {
+					softDescriptor
+				}
+			}
+			appearance {
+				primaryColor
+				logo {
+					title
+					description
+					altText
+					url
+					filestackUrl
+				}
+				squareLogo32 {
+					title
+					description
+					altText
+					url
+					filestackUrl
+				}
+				squareLogo256 {
+					title
+					description
+					altText
+					url
+					filestackUrl
+				}
+			}
 		}
 	}
 }
@@ -158,13 +129,84 @@ query publicFetchStudentCheckoutPurchase (
 			name
 			email
 		}
+		payment {
+			statusAt
+		}
 		checkout {
 			invoiceItems {
-				...InvoiceItemFrag
+				type
+				quantity
+				... on ProductInvoiceItem {
+					product {
+						_id
+						type
+						name
+						description
+						... on AccessProduct {
+							accesses {
+								... on CourseProductAccess {
+									course {
+										name
+									}
+									room {
+										name
+									}
+								}
+							}
+							accessExpirationRule {
+								type
+								... on AccessPeriodExpirationRule {
+									from
+									amount
+									unit
+								}
+								... on AccessFixedDateExpirationRule {
+									date
+								}
+							}
+						}
+					}
+				}
+				... on InlineInvoiceItem {
+					name
+					quantity
+					amount
+				}
+
 			}
 		}
 		organization {
-			...OrgFrag
+			_id
+			name
+			payment {
+				creditCard {
+					softDescriptor
+				}
+			}
+			appearance {
+				primaryColor
+				logo {
+					title
+					description
+					altText
+					url
+					filestackUrl
+				}
+				squareLogo32 {
+					title
+					description
+					altText
+					url
+					filestackUrl
+				}
+				squareLogo256 {
+					title
+					description
+					altText
+					url
+					filestackUrl
+				}
+			}
 		}
 	}
 }

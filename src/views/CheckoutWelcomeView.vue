@@ -24,84 +24,39 @@
 
 		.p-3(class="lg:p-6")
 			.layout__container.grid
-				.col-12.mx-auto(class="md:col-6 lg:col-4")
+				.col-12.mx-auto(
+					v-for="product in products"
+					:key="product.id"
+					class="md:col-6 lg:col-4"
+				)
 					Card(:pt="{body: {class: 'py-2 lg:p-3'}}")
 						template(#content)
-							h3.text-sm.font-bold.my-0.flex.align-items-center.justify-content-between(class="lg:text-base") 1x Nome do produto
-								Tag.text-center(severity="success") Disponível
+							.flex.align-items-center.justify-content-between
+								h3.text-sm.font-bold.my-0.white-space-nowrap.overflow-hidden.text-overflow-ellipsis(class="lg:text-base") {{ product.quantity }}x {{ product.name }}
+								Tag.block.text-center(
+									v-if="!!product.accesses"
+									severity="success"
+								) Disponível
+									template(v-if="product.expirationDate")
+										br
+										span até {{ $d(product.expirationDate) }}
 
-							p.text-sm.m-0.mt-3.ellipsis.ellipsis-3 Descrição do produto que terá no máximo 3 linhas, e o restante que não couber ficará em ellipsis com tooltip ao passar o mouse no hover mostrando toda descDescrição do produto que terá no máximo 3 linhas, e o restante que não couber ficará em ellipsis com tooltip ao passar o mouse no hover mostrando toda desc
+							p.text-sm.m-0.mt-3.ellipsis.ellipsis-3(v-if="product.description") {{ product.description }}
+
+							ul.font-semibold.line-height-3.p-0.pl-3.m-0.mt-3(v-if="!!product.accesses && product.showAccesses")
+								li(
+									v-for="access in product?.accesses"
+									:key="access"
+								) {{ access }}
 
 							Button.surface-card.block.mx-auto.mt-2(
+								v-if="!!product.accesses"
 								text
 								rounded
 								size="small"
 								severity="success"
-								label="Mostrar conteúdo"
-							)
-
-				.col-12.mx-auto(class="md:col-6 lg:col-4")
-					Card(:pt="{body: {class: 'py-2 lg:p-3'}}")
-						template(#content)
-							h3.text-sm.font-bold.my-0.flex.align-items-center.justify-content-between(class="lg:text-base") 1x Nome do produto
-								Tag.text-center(severity="success") Disponível
-
-							p.text-sm.m-0.mt-3.ellipsis.ellipsis-3 Descrição do produto que terá no máximo 3 linhas, e o restante que não couber ficará em ellipsis com tooltip ao passar o mouse no hover mostrando toda descDescrição do produto que terá no máximo 3 linhas, e o restante que não couber ficará em ellipsis com tooltip ao passar o mouse no hover mostrando toda desc
-
-							Button.surface-card.block.mx-auto.mt-2(
-								text
-								rounded
-								size="small"
-								severity="success"
-								label="Mostrar conteúdo"
-							)
-
-				.col-12.mx-auto(class="md:col-6 lg:col-4")
-					Card(:pt="{body: {class: 'py-2 lg:p-3'}}")
-						template(#content)
-							h3.text-sm.font-bold.my-0.flex.align-items-center.justify-content-between(class="lg:text-base") 1x Nome do produto
-								Tag.text-center(severity="success") Disponível #[br] até 28/Jul/24
-
-							p.text-sm.m-0.mt-3.ellipsis.ellipsis-3 Descrição do produto que terá no máximo 3 linhas, e o restante que não couber ficará em ellipsis com tooltip ao passar o mouse no hover mostrando toda descDescrição do produto que terá no máximo 3 linhas, e o restante que não couber ficará em ellipsis com tooltip ao passar o mouse no hover mostrando toda desc
-
-							Button.surface-card.block.mx-auto.mt-2(
-								text
-								rounded
-								size="small"
-								severity="success"
-								label="Mostrar conteúdo"
-							)
-
-				.col-12.mx-auto(class="md:col-6 lg:col-4")
-					Card(:pt="{body: {class: 'py-2 lg:p-3'}}")
-						template(#content)
-							h3.text-sm.font-bold.my-0.flex.align-items-center.justify-content-between(class="lg:text-base") 1x Nome do produto
-								Tag.text-center(severity="primary") Disponível #[br] até 28/Jul/24
-
-							p.text-sm.m-0.mt-3.ellipsis.ellipsis-3 Descrição do produto que terá no máximo 3 linhas, e o restante que não couber ficará em ellipsis com tooltip ao passar o mouse no hover mostrando toda descDescrição do produto que terá no máximo 3 linhas, e o restante que não couber ficará em ellipsis com tooltip ao passar o mouse no hover mostrando toda desc
-
-							Button.surface-card.block.mx-auto.mt-2(
-								text
-								rounded
-								size="small"
-								severity="primary"
-								label="Mostrar conteúdo"
-							)
-
-				.col-12.mx-auto(class="md:col-6 lg:col-4")
-					Card(:pt="{body: {class: 'py-2 lg:p-3'}}")
-						template(#content)
-							h3.text-sm.font-bold.my-0.flex.align-items-center.justify-content-between(class="lg:text-base") 1x Nome do produto
-								Tag.text-center(severity="success") Disponível
-
-							p.text-sm.m-0.mt-3.ellipsis.ellipsis-3 Descrição do produto que terá no máximo 3 linhas, e o restante que não couber ficará em ellipsis com tooltip ao passar o mouse no hover mostrando toda descDescrição do produto que terá no máximo 3 linhas, e o restante que não couber ficará em ellipsis com tooltip ao passar o mouse no hover mostrando toda desc
-
-							Button.surface-card.block.mx-auto.mt-2(
-								text
-								rounded
-								size="small"
-								severity="success"
-								label="Mostrar conteúdo"
+								:label="product.showAccesses ? 'Ocultar conteúdo' : 'Mostrar conteúdo'"
+								@click="product.showAccesses = !product.showAccesses"
 							)
 
 		.surface-0.p-3.text-gray-600.line-height-3(class="lg:p-6")
@@ -149,6 +104,12 @@
 import { useQuery } from '@vue/apollo-composable';
 import { useLogo } from '@/composables/utils';
 import { publicFetchStudentCheckoutPurchase } from '@/graphql';
+import {
+	InvoiceItemType,
+	ProductType,
+	AccessExpirationRuleType,
+	TimeUnit
+} from '@/gql.ts';
 
 const route = useRoute();
 const logo = useLogo();
@@ -156,7 +117,8 @@ const checkoutSharedId = computed(() => route.params.id);
 const studentUserId = computed(() => route.params.user);
 const {
 	result,
-	loading
+	loading,
+	onResult
 } = useQuery(publicFetchStudentCheckoutPurchase, {
 	checkoutSharedId: checkoutSharedId.value,
 	studentUserId: studentUserId.value
@@ -173,7 +135,87 @@ const organization = computed(() => {
 		softDescriptor: `Pg *Ed ${org?.payment?.creditCard.softDescriptor || ''}`
 	};
 });
+const paidAt = computed(() => data.value?.payment.statusAt);
+const products = ref([]);
 
+function getExpirationDate(expirationRule) {
+	if (!expirationRule) {
+		return false;
+	}
+
+	switch (expirationRule.type) {
+		case AccessExpirationRuleType.FixedDate: {
+			return expirationRule.date;
+		}
+
+		case AccessExpirationRuleType.Period: {
+			const paidDate = new Date(paidAt.value);
+			let addition;
+
+			switch (expirationRule.unit) {
+				case TimeUnit.Year: {
+					addition = paidDate.setYear(paidDate.getFullYear() + expirationRule.amount);
+					break;
+				}
+
+				case TimeUnit.Month: {
+					addition = paidDate.setMonth(paidDate.getMonth() + expirationRule.amount);
+					break;
+				}
+
+				case TimeUnit.Day: {
+					addition = paidDate.setDate(paidDate.getDate() + expirationRule.amount);
+					break;
+				}
+			}
+
+			return new Date(addition).toISOString();
+		}
+
+		default: {
+			return false;
+		}
+	}
+}
+
+onResult((res) => {
+	if (res.loading) {
+		return;
+	}
+
+	const payload = res.data.publicFetchStudentCheckoutPurchase;
+
+	products.value = payload.checkout.invoiceItems.map((item) => {
+		const isProduct = item?.type === InvoiceItemType.Product;
+
+		if (isProduct) {
+			const product = {
+				id: item.product._id,
+				type: item.type,
+				name: item.product.name,
+				description: item.product.description,
+				quantity: item.quantity
+			};
+
+			if (item.product.type === ProductType.Access) {
+				product.showAccesses = false;
+				product.accesses = item.product.accesses.map((access) => `${access.course.name} - ${access.room.name}`);
+			}
+
+			product.expirationDate = getExpirationDate(item.product?.accessExpirationRule);
+
+			return product;
+		}
+
+		return {
+			id: performance.now(),
+			type: item.type,
+			name: item.name,
+			quantity: item.quantity,
+			amount: item.amount * item.quantity
+		};
+	}) || [];
+});
 </script>
 
 <style lang="stylus">

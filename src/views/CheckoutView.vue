@@ -119,9 +119,9 @@ const invoice = computed(() => {
 		status: checkoutData.value?.status,
 		expirationDate: checkoutData.value?.expirationDate,
 		methods: {
-			creditCard: checkoutData.value?.paymentMethodsConfig.creditCard.enabled || false,
-			bankSlip: checkoutData.value?.paymentMethodsConfig.bankSlip.enabled || false,
-			pix: checkoutData.value?.paymentMethodsConfig.pix.enabled || false
+			creditCard: checkoutData.value?.paymentMethodsConfig.creditCard?.enabled || false,
+			bankSlip: checkoutData.value?.paymentMethodsConfig.bankSlip?.enabled || false,
+			pix: checkoutData.value?.paymentMethodsConfig.pix?.enabled || false
 		},
 		currency: checkoutData.value?.currency,
 		discounts: totalDiscount,
