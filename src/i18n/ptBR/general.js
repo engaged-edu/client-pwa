@@ -10,6 +10,7 @@ export default {
 	fillFormCorrectly: 'Preencha o formulário corretamente!',
 	fullName: 'Nome completo',
 	hideAllData: 'Ocultar todos os dados',
+	hideContent: 'Ocultar conteúdo',
 	identity: {
 		cnpj: 'Insira seu CNPJ',
 		companyName: 'Razão social',
@@ -28,6 +29,7 @@ export default {
 	poweredBy: 'Powered by',
 	safeEnv: 'Ambiente 100% seguro',
 	showAllData: 'Ver todos os dados',
+	showContent: 'Mostrar conteúdo',
 	title: 'EngagED',
 	typeYourInfo: 'Digite seus dados',
 	until: 'até',

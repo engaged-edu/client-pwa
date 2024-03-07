@@ -55,13 +55,14 @@
 									:key="access"
 								) {{ access }}
 
-							Button.surface-card.block.mx-auto.mt-2(
+							Button.surface-card.flex.mx-auto.mt-2(
 								v-if="!!product.accesses"
 								text
-								rounded
 								size="small"
 								severity="success"
-								:label="product.showAccesses ? 'Ocultar conteúdo' : 'Mostrar conteúdo'"
+								icon-pos="right"
+								:icon="product.showAccesses ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+								:label="$t(product.showAccesses ? 'general.hideContent' : 'general.showContent')"
 								@click="product.showAccesses = !product.showAccesses"
 							)
 
