@@ -36,7 +36,7 @@ import { useConfirm } from 'primevue/useconfirm';
 import ConfirmDialog from 'primevue/confirmdialog';
 import { useMutation, useQuery } from '@vue/apollo-composable';
 import { i18n } from '@/i18n';
-import { useLogo } from '@/composables/utils';
+import { useLogo, useWatchPix } from '@/composables/utils';
 import { useCreditCard, useCreditCardForm } from '@/composables/creditCard';
 import { useValidations } from '@/composables/validations';
 import ResumeComponent from '@/components/ResumeComponent.vue';
@@ -76,7 +76,8 @@ const $CheckoutLayout = ref();
 const {
 	result: paymentLinkResult,
 	loading: loadingPaymentLink,
-	onResult: onFetchPaymentLink
+	onResult: onFetchPaymentLink,
+	refetch: refetchPaymentLink
 } = useQuery(publicFetchInvoicePaymentLink, { accessToken });
 const status = ref(null);
 const payment = ref(null);
@@ -157,8 +158,10 @@ const {
 } = useMutation(publicCancelInvoicePaymentLinkPayment, { variables: { accessToken } });
 
 // General
-const isLoading = computed(() => loadingPaymentLink.value || loadingCreatePayment.value || loadingCancelPayment.value);
+const allowLoader = ref(true);
+const isLoading = computed(() => allowLoader.value && (loadingPaymentLink.value || loadingCreatePayment.value || loadingCancelPayment.value));
 const currentStep = ref('initial');
+const { watchPix } = useWatchPix(refetchPaymentLink, allowLoader);
 
 async function handleSubmit() {
 	let params = {
@@ -216,6 +219,12 @@ function handleCancelPayment() {
 	});
 }
 
+function setPayment(currentPayment) {
+	payment.value = currentPayment;
+
+	watchPix(currentPayment);
+}
+
 onCreatedPayment((result) => {
 	if (result.loading) {
 		return;
@@ -224,9 +233,9 @@ onCreatedPayment((result) => {
 	const data = result.data.publicCreatePaymentFromInvoicePaymentLink;
 
 	status.value = data.invoicePaymentLink.status;
-	payment.value = data.payment;
 	currentStep.value = 'feedback';
 
+	setPayment(data.payment);
 	$CheckoutLayout.value.showDialog(false);
 });
 
@@ -245,8 +254,9 @@ onFetchPaymentLink((result) => {
 	const data = result.data.publicFetchInvoicePaymentLink;
 
 	status.value = data.status;
-	payment.value = [...data.payments].pop();
 	currentStep.value = status.value === PaymentStatus.Pending ? 'initial' : 'feedback';
+
+	setPayment([...data.payments].pop());
 });
 
 provide('status', status);

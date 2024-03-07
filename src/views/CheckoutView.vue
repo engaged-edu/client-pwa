@@ -36,7 +36,7 @@ import { useConfirm } from 'primevue/useconfirm';
 import ConfirmDialog from 'primevue/confirmdialog';
 import { useMutation, useQuery } from '@vue/apollo-composable';
 import { i18n } from '@/i18n';
-import { useLogo } from '@/composables/utils';
+import { useLogo, useWatchPix } from '@/composables/utils';
 import { useCreditCard, useCreditCardForm } from '@/composables/creditCard';
 import { useValidations } from '@/composables/validations';
 import ResumeComponent from '@/components/ResumeComponent.vue';
@@ -81,7 +81,8 @@ const currentPaymentMethod = computed(() => {
 const {
 	result: checkoutResult,
 	loading: loadingCheckout,
-	onResult: onFetchCheckout
+	onResult: onFetchCheckout,
+	refetch: refetchCheckout
 } = useQuery(publicFetchCheckout, { checkoutSharedId: checkoutSharedId.value });
 const status = ref(null);
 const payment = ref(null);
@@ -162,8 +163,10 @@ const {
 } = useMutation(publicCancelCheckoutPayment);
 
 // General
-const isLoading = computed(() => loadingCheckout.value || loadingCreatePayment.value || loadingCancelPayment.value);
+const allowLoader = ref(true);
+const isLoading = computed(() => allowLoader.value && (loadingCheckout.value || loadingCreatePayment.value || loadingCancelPayment.value));
 const currentStep = ref('initial');
+const { watchPix } = useWatchPix(refetchCheckout, allowLoader);
 
 async function handleSubmit() {
 	const {
@@ -267,6 +270,12 @@ function handleCancelPayment() {
 	});
 }
 
+function setPayment(currentPayment) {
+	payment.value = currentPayment;
+
+	watchPix(currentPayment);
+}
+
 onCreatedPayment((result) => {
 	if (result.loading) {
 		return;
@@ -275,9 +284,9 @@ onCreatedPayment((result) => {
 	const data = result.data.publicCreateCheckoutPayment;
 
 	status.value = data.checkout.status;
-	payment.value = data.payment;
 	currentStep.value = 'feedback';
 
+	setPayment(data.payment);
 	$CheckoutLayout.value.showDialog(false);
 });
 

@@ -4,6 +4,10 @@ export { useCreditCard } from './creditCard';
 export { useDarkMode } from './darkMode';
 export { useLogo } from './logo';
 export { useValidations } from './validations';
+import {
+	PaymentMethod,
+	PaymentStatus
+} from '@/gql.ts';
 
 export function useFormatText() {
 	const format = {
@@ -61,6 +65,24 @@ export function useMasks() {
 
 				return template;
 			}
+		}
+	};
+}
+
+export function useWatchPix(refetch, allowLoader) {
+	return {
+		watchPix(payment) {
+			if (!(payment.paymentMethod === PaymentMethod.Pix && payment.status === PaymentStatus.WaitingPayment)) {
+				return;
+			}
+
+			window.setTimeout(async () => {
+				allowLoader.value = false;
+
+				await refetch();
+
+				allowLoader.value = true;
+			}, 5000);
 		}
 	};
 }
