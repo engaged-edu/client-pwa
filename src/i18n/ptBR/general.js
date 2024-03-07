@@ -1,5 +1,6 @@
 export default {
 	address: 'Endereço',
+	available: 'Disponível',
 	cnpj: 'CNPJ',
 	cpf: 'CPF',
 	companyName: 'Razão social',
@@ -29,5 +30,6 @@ export default {
 	showAllData: 'Ver todos os dados',
 	title: 'EngagED',
 	typeYourInfo: 'Digite seus dados',
+	until: 'até',
 	yes: 'Sim'
 };

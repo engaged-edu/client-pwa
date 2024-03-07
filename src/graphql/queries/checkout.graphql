@@ -131,6 +131,10 @@ query publicFetchStudentCheckoutPurchase (
 		}
 		payment {
 			statusAt
+			paymentMethod
+			purchase {
+				_id
+			}
 		}
 		checkout {
 			invoiceItems {
