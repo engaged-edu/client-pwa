@@ -325,7 +325,7 @@ provide('organization', computed(() => {
 		name: org?.name,
 		logoUrl: logo.getLogo(org?.appearance),
 		color: org?.appearance?.primaryColor,
-		softDescriptor: `Pg *Ed ${org?.payment?.creditCard.softDescriptor || ''}`
+		softDescriptor: `Pg *Ed ${org?.payment?.creditCard.softDescriptor || ''}`.trim()
 	};
 }));
 </script>

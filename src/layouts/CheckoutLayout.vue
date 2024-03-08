@@ -118,7 +118,8 @@ Dialog(
 </template>
 
 <script>
-import { useTitle } from '@vueuse/core';
+import { useTitle, useFavicon } from '@vueuse/core';
+import { useLogo } from '@/composables/utils';
 import { useBreakpoints } from '@/composables/breakpoints';
 import { InvoicePaymentLinkStatus } from '@/gql.ts';
 
@@ -136,6 +137,7 @@ export default {
 	emits: ['submit'],
 	setup(props, { expose, emit }) {
 		const route = useRoute();
+		const logo = useLogo();
 		const { largeScreen } = useBreakpoints();
 		const status = inject('status');
 		const organization = inject('organization');
@@ -180,7 +182,12 @@ export default {
 				return;
 			}
 
+			if (org.color) {
+				document.querySelector('[name="theme-color"]').setAttribute('content', org.color);
+			}
+
 			useTitle(`${org.name} - ${route.meta.title}`);
+			useFavicon(logo.getLogo32(org.appearance));
 		});
 
 		return {
