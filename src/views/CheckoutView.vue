@@ -248,7 +248,11 @@ async function handleSubmit() {
 		};
 	}
 
-	createPayment({ ...params });
+	allowLoader.value = false;
+
+	await createPayment({ ...params });
+
+	allowLoader.value = true;
 }
 
 function handleCancelPayment() {
