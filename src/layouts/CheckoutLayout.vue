@@ -72,7 +72,7 @@ Sidebar.border-round-top-lg(
 						IconDown.p-button-icon-right
 			slot(name="summary")
 
-			Button.w-full.justify-content-center(
+			Button.w-full.justify-content-center.mt-3(
 				v-if="$props.step === 'initial'"
 				:label="$t('payment.finishPayment')"
 				@click="handleSubmit"

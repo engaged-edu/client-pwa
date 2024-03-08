@@ -76,13 +76,13 @@ const isDiscount = (item) => item.type === InvoiceDiscountType.Manual;
 
 <style lang="stylus">
 .p-scrollpanel
-	max-height 60dvh
+	max-height 45dvh
 
 	@media $from.lg
 		max-height 350px
 
 	&-content
-		max-height 58dvh
+		max-height 43dvh
 		background unquote('linear-gradient(var(--surface-card) 30%, rgba(255,255,255,0)), linear-gradient(rgba(255,255,255,0), var(--surface-card) 70%) 0 100%, radial-gradient(farthest-side at 50% 0, rgba(0,0,0,.35), rgba(0,0,0,0)), radial-gradient(farthest-side at 50% 100%, rgba(0,0,0,.35), rgba(0,0,0,0)) 0 100%')
 		background-repeat no-repeat
 		background-size 100% 30px, 100% 30px, 100% 14px, 100% 14px
