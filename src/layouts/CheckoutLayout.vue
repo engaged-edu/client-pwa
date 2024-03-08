@@ -118,6 +118,7 @@ Dialog(
 </template>
 
 <script>
+import { useTitle } from '@vueuse/core';
 import { useBreakpoints } from '@/composables/breakpoints';
 import { InvoicePaymentLinkStatus } from '@/gql.ts';
 
@@ -134,6 +135,7 @@ export default {
 	},
 	emits: ['submit'],
 	setup(props, { expose, emit }) {
+		const route = useRoute();
 		const { largeScreen } = useBreakpoints();
 		const status = inject('status');
 		const organization = inject('organization');
@@ -171,6 +173,14 @@ export default {
 		expose({
 			showSummary,
 			showDialog
+		});
+
+		watch(organization, (org) => {
+			if (!('id' in org)) {
+				return;
+			}
+
+			useTitle(`${org.name} - ${route.meta.title}`);
 		});
 
 		return {
