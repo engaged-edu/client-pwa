@@ -7,7 +7,7 @@
 			slot(name="resume")
 
 		main.layout__container.flex-grow-1
-			div(class="lg:col-8")
+			div(class="lg:col-7")
 				template(v-if="$props.step === 'initial'")
 					section.layout__identity.mb-3
 						Card(:pt="{content: {class: 'py-0'}}")
@@ -24,7 +24,7 @@
 
 			section.layout__summary(
 				v-if="largeScreen"
-				class="lg:col-4"
+				class="lg:col-5"
 			)
 				Card.mb-3(:pt="{content: {class: 'py-0'}}")
 					template(#content)
