@@ -47,7 +47,7 @@
 		class="lg:col-6"
 	)
 		label(for="cpf") {{ $t('general.identity.cpf') }}:
-		InputMask#cpf.w-full(
+		InputTextMask#cpf.w-full(
 			v-model="$v.cpf.$model"
 			:mask="masks.cpf"
 			:class="{ 'p-invalid': $v.cpf.$invalid }"
@@ -66,7 +66,7 @@
 		class="lg:col-6"
 	)
 		label(for="cnpj") {{ $t('general.identity.cnpj') }}:
-		InputMask#cnpj.w-full(
+		InputTextMask#cnpj.w-full(
 			v-model="$v.cnpj.$model"
 			:mask="masks.cnpj"
 			:class="{ 'p-invalid': $v.cnpj.$invalid }"

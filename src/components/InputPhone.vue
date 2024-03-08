@@ -6,7 +6,7 @@ InputGroup
 		inset
 		@change="emit('change', $event)"
 	)
-	InputMask(
+	InputTextMask(
 		v-model="modelValue.phoneNumber"
 		v-bind="$attrs"
 		:mask="masks.phone(modelValue.phoneNumberCountry)"

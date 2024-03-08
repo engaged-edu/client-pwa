@@ -11,7 +11,7 @@ form.formgrid(v-if="addCard")
 		label(for="number") {{ $t('payment.creditCard.number') }}:
 		.p-input-icon-right.w-full
 			IconCreditCard
-			InputMask#number.w-full(
+			InputTextMask#number.w-full(
 				v-model="$v.number.$model"
 				:class="{ 'p-invalid': $v.number.$invalid }"
 				:mask="masks.ccNumber"
@@ -23,15 +23,16 @@ form.formgrid(v-if="addCard")
 			.formgrid.grid
 				.field.col
 					label(for="expiration") {{ $t('payment.creditCard.expiration') }}:
-					InputMask#expiration.w-full(
+					InputTextMask#expiration.w-full(
 						v-model="$v.expiration.$model"
+						placeholder="MM/YY"
 						:class="{ 'p-invalid': $v.expiration.$invalid }"
 						:mask="masks.ccExp"
 						@focus="flip = false"
 					)
 				.field.col
 					label(for="cvv") {{ $t('payment.creditCard.cvv') }}:
-					InputMask#cvv.w-full(
+					InputTextMask#cvv.w-full(
 						v-model="$v.cvv.$model"
 						:class="{ 'p-invalid': $v.cvv.$invalid }"
 						:mask="masks.cvv"
