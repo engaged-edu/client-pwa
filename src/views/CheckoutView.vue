@@ -324,6 +324,8 @@ provide('organization', computed(() => {
 		id: org?._id,
 		name: org?.name,
 		logoUrl: logo.getLogo(org?.appearance),
+		logo32Url: logo.getLogo32(org?.appearance),
+		logo256Url: logo.getLogo256(org?.appearance),
 		color: org?.appearance?.primaryColor,
 		softDescriptor: `Pg *Ed ${org?.payment?.creditCard.softDescriptor || ''}`.trim()
 	};
