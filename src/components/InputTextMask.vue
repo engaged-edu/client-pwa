@@ -1,5 +1,8 @@
 <template lang="pug">
-InputMask(@focus="handleFocus")
+InputMask(
+	:auto-clear="false"
+	@focus="handleFocus"
+)
 </template>
 
 <script setup>
@@ -15,6 +18,6 @@ async function handleFocus(event) {
 	window.setTimeout(() => {
 		$el.focus();
 		$el.setSelectionRange(0, 0);
-	}, 10);
+	}, 100);
 }
 </script>

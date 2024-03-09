@@ -13,6 +13,7 @@
 		InputText#email.w-full(
 			v-model="$v.email.$model"
 			type="email"
+			inputmode="email"
 			:class="{ 'p-invalid': $v.email.$invalid }"
 		)
 	.field.col-12(class="lg:col-6")
@@ -20,6 +21,7 @@
 		InputText#confirm-email.w-full(
 			v-model="$v.confirmEmail.$model"
 			type="email"
+			inputmode="email"
 			:class="{ 'p-invalid': $v.confirmEmail.$invalid }"
 		)
 	.field.col-12(class="lg:col-6")
@@ -33,6 +35,7 @@
 		label(for="phone") {{ $t('general.identity.phoneNumber') }}:
 		InputPhone(
 			v-model="$v.phone.$model"
+			inputmode="tel"
 			:class="{ 'p-invalid': $v.phone.$invalid }"
 			@input="$v.phone.phoneNumber.$touch()"
 		)
@@ -49,6 +52,7 @@
 		label(for="cpf") {{ $t('general.identity.cpf') }}:
 		InputTextMask#cpf.w-full(
 			v-model="$v.cpf.$model"
+			inputmode="numeric"
 			:mask="masks.cpf"
 			:class="{ 'p-invalid': $v.cpf.$invalid }"
 		)
@@ -68,6 +72,7 @@
 		label(for="cnpj") {{ $t('general.identity.cnpj') }}:
 		InputTextMask#cnpj.w-full(
 			v-model="$v.cnpj.$model"
+			inputmode="numeric"
 			:mask="masks.cnpj"
 			:class="{ 'p-invalid': $v.cnpj.$invalid }"
 		)
