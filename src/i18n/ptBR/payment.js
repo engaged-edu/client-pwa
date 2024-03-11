@@ -50,7 +50,7 @@ export default {
 	printBankSlip: 'Imprimir boleto',
 	processingPurchase: 'Estamos processando sua compra',
 	showSummary: 'Ver resumo dos itens',
-	terms: 'A EngagED está processando o pagamento de {name}. <br /> Ao prosseguir você concorda com os <strong>Termos de Uso</strong> e <strong>Política de Privacidade</strong>.',
+	terms: 'A EngagED está processando o pagamento de {0}. {1} Ao prosseguir você concorda com os {2}, políticas de {3} e {4}.',
 	title: 'Link de Pagamento',
 	totalPayment: 'Total do pagamento',
 	useOtherMethod: 'Utilizar outro método de pagamento',

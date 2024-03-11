@@ -39,13 +39,31 @@
 					template(#icon)
 						IconCheck.p-button-icon-right
 
-				.text-sm.text-color-secondary.text-center.my-3(v-html="$t('payment.terms', { name: organization.name })")
+				i18n-t.text-sm.text-color-secondary.text-center.my-3(
+					tag="div"
+					keypath="payment.terms"
+				)
+					span {{ organization.name }}
+					br
+					span.font-bold.cursor-pointer(
+						class="hover:underline"
+						@click="dialogTerms = true"
+					) {{ $t('terms.terms') }}
+					span.font-bold.cursor-pointer(
+						class="hover:underline"
+						@click="dialogPrivacy = true"
+					) {{ $t('terms.privacy') }}
+					span.font-bold.cursor-pointer(
+						class="hover:underline"
+						@click="dialogCookies = true"
+					) {{ $t('terms.cookies') }}
 				.text-sm.text-green-500.mt-6.flex.align-items-center.justify-content-center
 					IconSafe.mr-2
 					| {{ $t('general.safeEnv') }}
 
 		footer.layout__footer.my-2.text-xs.text-center.text-gray-400(class="lg:my-5") {{ $t('general.poweredBy') }}&nbsp;
 			a.no-underline.text-gray-400(
+				class="hover:underline"
 				href="https://engaged.com.br"
 				target="_blank"
 			) {{ $t('campli') }}
@@ -115,6 +133,10 @@ Dialog(
 
 		.font-semibold.text-xs.text-600(v-if="dialogContent.title") {{ dialogContent.title }}
 		.font-semibold.text-xs.text-color-secondary(v-if="dialogContent.description") {{ dialogContent.description }}
+
+DialogTerms(v-model:visible="dialogTerms")
+DialogPrivacy(v-model:visible="dialogPrivacy")
+DialogCookies(v-model:visible="dialogCookies")
 </template>
 
 <script>
@@ -149,6 +171,9 @@ export default {
 			title: '',
 			description: ''
 		});
+		const dialogTerms = ref(false);
+		const dialogPrivacy = ref(false);
+		const dialogCookies = ref(false);
 
 		function showSummary(state = true) {
 			summaryVisible.value = state;
@@ -198,6 +223,9 @@ export default {
 			summaryVisible,
 			dialogVisible,
 			dialogContent,
+			dialogTerms,
+			dialogPrivacy,
+			dialogCookies,
 			handleSubmit
 		};
 	}
