@@ -187,7 +187,7 @@ export default {
 			}
 
 			useTitle(`${org.name} - ${route.meta.title}`);
-			useFavicon(org.logo256Url || org.logo32Url);
+			useFavicon(org.logo32Url);
 		});
 
 		return {
