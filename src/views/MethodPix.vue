@@ -7,7 +7,7 @@
 		.text-sm {{ $t('payment.amount') }}:&nbsp;
 			span.font-bold {{ $t('cur', [invoice.amount, invoice.currency]) }}
 
-	.text-xs.text-color-secondary.flex.flex-column.max-w-30rem.gap-4
+	.text-sm.text-color-secondary.flex.flex-column.max-w-30rem.gap-4
 		.flex.align-items-center
 			i-mdi-numeric-1-circle.w-1.h-2rem.p-1
 			.w-9(v-html="$t('payment.pixInstructions[0]')")
