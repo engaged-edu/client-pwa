@@ -44,11 +44,11 @@ export function useCreditCardForm(invoice) {
 		installments: { required: required() }
 	}, form, { $lazy: true });
 	const makeInstallmentsArray = (ins) => ins.map((i) => ({
-		name: i18n.t('payment.installmentOption', [i, i18n.n((invoice.value.amount || 0) / i / 100, invoice.value.currency)]),
+		name: i18n.t('payment.installmentOption', [i, i18n.n((invoice.value?.amount || 0) / i / 100, invoice.value?.currency)]),
 		value: i
 	}));
 	const installments = computed(() => {
-		if (!invoice.value.creditCard?.enabled) {
+		if (!invoice.value?.creditCard?.enabled) {
 			return [];
 		}
 
@@ -61,8 +61,13 @@ export function useCreditCardForm(invoice) {
 
 		return installmentsArray;
 	});
+	const currentInstallment = computed(() => {
+		if (!installments.value.length) {
+			return;
+		}
 
-	const currentInstallment = computed(() => installments.value.find((i) => i.value === form.installments).name);
+		return installments.value.find((i) => i.value === form.installments).name;
+	});
 
 	return {
 		addCard,

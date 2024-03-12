@@ -72,7 +72,7 @@ export function useMasks() {
 export function useWatchPix(refetch, allowLoader) {
 	return {
 		watchPix(payment) {
-			if (!(payment.paymentMethod === PaymentMethod.Pix && payment.status === PaymentStatus.WaitingPayment)) {
+			if (!payment || !(payment.paymentMethod === PaymentMethod.Pix && payment.status === PaymentStatus.WaitingPayment)) {
 				return;
 			}
 
