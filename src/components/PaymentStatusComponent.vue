@@ -131,7 +131,7 @@
 			.font-bold {{ $t('payment.invoicePaymentProgress') }}
 			.font-light.text-sm {{ $t('payment.invoicePaymentProgressInfo') }}
 			.flex.justify-content-between.text-xs.mt-2
-				div {{ $t('cur', [invoice.amount, invoice.currency]) }} #[span.lowercase {{ $t('payment.paid') }}]
+				div {{ $t('cur', [invoice.paid, invoice.currency]) }} #[span.lowercase {{ $t('payment.paid') }}]
 				.flex.align-items-center.gap-2 {{ $t('cur', [invoice.total, invoice.currency]) }} #[span.lowercase {{ $t('payment.invoiceTotal') }}]
 					IconCheck.text-green-500(v-if="percentage >= 100")
 			ProgressBar(
@@ -151,7 +151,7 @@ import { PaymentMethod, PaymentStatus } from '@/gql.ts';
 const { largeScreen } = useBreakpoints();
 const payment = inject('payment');
 const invoice = inject('invoice');
-const percentage = invoice.value.amount / invoice.value.total * 100;
+const percentage = invoice.value.paid / invoice.value.total * 100;
 const { currentInstallment } = useCreditCardForm(invoice);
 const {
 	copy: handleCopyCode,

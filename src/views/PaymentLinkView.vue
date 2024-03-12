@@ -108,6 +108,7 @@ const invoice = computed(() => {
 	const subtotal = products.value.reduce((acc, product) => acc + product.amount, 0);
 	const totalDiscount = discounts.value.reduce((acc, discount) => acc + discount.amount, 0);
 	const total = subtotal - totalDiscount;
+	const paid = paymentLinkData.value?.invoice.paidAmount || 0;
 	const content = {
 		id: paymentLinkData.value?._id,
 		createdAt: paymentLinkData.value?.createdAt,
@@ -121,6 +122,7 @@ const invoice = computed(() => {
 		},
 		currency: paymentLinkData.value?.invoice?.currency,
 		discounts: totalDiscount,
+		paid,
 		subtotal,
 		total,
 		amount
