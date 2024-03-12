@@ -79,7 +79,7 @@
 
 			template(v-if="isMethod(PaymentMethod.Pix)")
 				.flex.justify-content-center
-					.text-ms.text-color-secondary.flex.flex-column.max-w-30rem.gap-2
+					.text-sm.text-color-secondary.flex.flex-column.max-w-30rem.gap-2
 						.flex.align-items-center
 							i-mdi-numeric-1-circle.w-1.h-2rem.p-1
 							.w-11 {{ $t('payment.pixInstructions[1]') }}
