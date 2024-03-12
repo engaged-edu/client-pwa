@@ -2,7 +2,7 @@ export default {
 	terms: 'Termos de Uso',
 	termsContent: [
 		{
-			title: '<div class="text-center">TERMOS E CONDIÇÕES DE USO</div>',
+			title: '<div class="text-center">Termos e Condições de Uso</div>',
 			paragraphs: [
 				'Versão: <u>23 de Dezembro de 2020.</u>',
 				'Importante esclarecer que a ENGAGED é responsável pela Plataforma que coloca Você em contato com os Responsáveis pelos cursos. Ou seja, Nós não promovemos os cursos, mas funcionamos como uma “vitrine” de oportunidades de aprendizado e fazemos a intermediação com os Responsáveis por promovê-las. Deste modo, os nossos Termos e Condições de Uso, Política de Cookies e nossa Política de Privacidade são independentes dos Termos e Condições de Uso, Política de Cookies e de Privacidade dos Responsáveis pelos cursos selecionados que você eventualmente aceite.',
@@ -264,5 +264,181 @@ export default {
 		}
 	],
 	privacy: 'Privacidade',
-	cookies: 'Cookies'
+	privacyContent: [
+		{
+			title: '<div class="text-center">Política de Privacidade</div>',
+			paragraphs: [
+				'Este documento foi alterado pela última vez em 12 de janeiro de 2021.',
+				'<strong>Política de Privacidade EngagED</strong>',
+				'<strong>Olá,</strong>',
+				'Somos a ENGAGED, nós intermediamos a sua relação com o Responsável pelo curso (<strong>{organization}</strong>) por meio desta Plataforma. Nós estamos inscritos no CNPJ/MF sob o nº 20.835.943/0001-41, e esta é nossa Política de Privacidade! Acreditamos na transparência quando o assunto é segurança e privacidade, esse documento é para você entender como protegemos seus dados pessoais, quais são as informações coletadas para que você tenha uma melhor experiência com a EngagED.',
+				'<strong>Importante esclarecer que a ENGAGED é responsável pela Plataforma que coloca Você em contato com os Responsáveis pelos cursos. Ou seja, Nós não promovemos os cursos, mas funcionamos como uma “vitrine” de oportunidades de aprendizado e fazemos a intermediação com os Responsáveis por promovê-las. Deste modo, esta Política de Privacidade é independente da Política de Privacidade dos Responsáveis pelos cursos selecionados que você eventualmente aceite.</strong>',
+				'<strong>Esta Política de Privacidade tem como objetivo estabelecer os termos e condições relacionadas ao uso das suas informações e dados pessoais coletados, decorrentes do acesso à Plataforma da EngagED, estendendo também às Instituições (Responsáveis pelo curso) que possuem a licença de uso da Plataforma.</strong>',
+				'Para acessar nossa Plataforma, você precisa concordar expressamente com todas as condições de coleta dos seus dados e conhecer e concordar com nossos Termos e Condições de Uso.',
+				'Não esqueça, você é o titular dos dados pessoais que irá inserir nos cadastros da Plataforma, e pode pedir, a qualquer momento, que suas informações sejam excluídas, limitadas e/ou alteradas. Com a ciência e aceite desta Política de Privacidade você nos autoriza a utilizar as informações nas condições que estamos informando.',
+				'As informações repassadas por você, são incluídas na nossa Plataforma de forma voluntária, sempre que se cadastrar, utilizar e navegar na Plataforma. Não venderemos os seus dados, mas utilizaremos para divulgar e compartilhar para alguns terceiros sempre com o seu consentimento.',
+				'Em caso de dúvidas sobre a Política de Privacidade, você ou a Instituição podem entrar em contato utilizando o canal <strong>privacidade@engaged.com.br</strong>'
+			]
+		},
+		{
+			title: 'Como obtemos as informações?',
+			paragraphs: [
+				'<strong>RESUMO</strong> - Coletamos os Dados conforme o Usuário e Instituição nos fornecem, de forma direta ou indireta, no acesso e uso dos sites, aplicativos e serviços prestados.',
+				'A EngagED coleta as informações quando você faz o cadastro para utilização da Plataforma, de forma voluntária, podendo pedir que os dados sejam preenchidos. É de responsabilidade sua a atualização e veracidade das informações. Neste momento você expressamente concorda e consente com a coleta, uso, armazenamento e tratamento de dados pela EngagED.',
+				'A EngagED pode coletar informações nas interações (mensagens, correspondências eletrônicas) entre você e as Instituições, no momento da realização de matrículas em cursos, programas de extensão ou outros serviços ofertados pelas Instituições, e também para a geração dos contratos entre vocês.',
+				'<strong>São as Instituições que possuem a licença de uso da Plataforma e são elas as responsáveis por indicar quais dados serão necessários para fins de pré-matrícula, matrícula, vestibular, inscrições, etc., incluindo, mas não se limitando, a dados e materiais acadêmicos e financeiros. Para fins da Lei n. 13.709/2018 – Lei Geral de Proteção de Dados Pessoais, a EngagED operará dados pessoais coletados para tratamento em nome do controlador.</strong>',
+				'As informações serão obtidas registrando as visitas e acesso com uso do login, podendo capturar dados do seu navegador, endereço de IP, data, hora e informações do momento do acesso.',
+				'A EngagED utiliza cookies, podendo haver uma transferência anônima dos seus dados para fins de controle de audiência e navegação. Você pode recusar e/ou bloquear o uso de cookies na navegação do site, mas isso pode prejudicar sua experiência. Para acessar e utilizar a Plataforma, no entanto, é necessário que você aceite a Política de Cookies.',
+				'A EngagED utilizará cookie específico para aplicações do Google Analytics enquanto você estiver navegando pelo site, assim podemos combinar suas informações para rastrear e analisar páginas e comportamento de visitas, visando uma melhor experiência. Essas informações serão utilizadas para campanhas de marketing customizadas, mas esses cookies não armazenam informações pessoais. Você pode consultar aqui como funciona e como proteger seus dados.',
+				'Para entender melhor como Você interage com nossa Plataforma e para otimizar sua experiência, utilizamos o MixPanel, cuja Política de Privacidade pode ser encontrada aqui.',
+				'Caso as informações coletadas e/ou tratadas sejam consideradas sensíveis, ou seja, capazes de revelar dados relacionados à raça, etnia, convicção e filiação religiosa, opinião política, filiação a sindicato, dados de saúde, sexuais, genéticos ou biométrico, somente será coletado mediante o seu consentimento. Essas informações serão armazenadas de modo a garantir a segurança contra compartilhamentos com terceiros, com exceção àquelas que já passaram pelo processo de anonimização.',
+				'A EngagED poderá ter acesso, automaticamente, às informações armazenadas em plataformas de pagamento eletrônico para fins de confirmação da identidade e dados de pagamento.'
+			]
+		},
+		{
+			title: 'Quais informações podem ser coletadas e para qual finalidade?',
+			paragraphs: ['<strong>RESUMO</strong> - Detalhamos quais dados são solicitados para fins de cadastro e a finalidade da coleta.']
+		},
+		{
+			subtitle: 'Dados cadastrais do Usuário Final - Usuário Contratante (Pessoa Física)',
+			paragraphs: [
+				'<strong>Dados coletados</strong>',
+				'Nome completo.<br>E-mail.<br>Telefones para contato.<br>Dados pessoais financeiros (ex. 4 últimos dígitos do cartão de crédito, data de expiração, endereço de cobrança).',
+				'<strong>Finalidade da Coleta</strong>',
+				'Identificar e autenticar Usuário. <br> Cumprir as obrigações decorrentes do uso dos serviços, incluindo eventuais pagamentos vinculados. <br> Ampliar o relacionamento, informar sobre novidades, funcionalidades, conteúdos, notícias e demais eventos que consideramos relevantes para Usuário. <br> Enriquecer sua experiência conosco, promover produtos e serviços. <br> Conceder acesso a áreas restritas da Plataforma. <br> Realizar rotinas de prevenção a fraudes e riscos associados, além do cumprimento de obrigações legais e regulatórias. <br> Ter acesso a informações armazenadas para fins de confirmação da identidade da Instituição e do pagamento efetuado, na hipótese de pagamento por meio de plataforma de pagamento eletrônico. <br> Enviar mensagens de suporte e administração da Plataforma, bem como avisos em geral e informações solicitadas pelos Usuários e/ou necessárias para a operação e manutenção da Plataforma; <br> Promover a Plataforma e envio de mensagens de marketing, quando autorizado pela Instituição. <br> Para fins de resolução de eventuais conflitos decorrentes da operação da Plataforma; e <br> Garantir a portabilidade dos Dados cadastrais para outro Controlador do mesmo ramo de nossa atuação, caso solicitado, cumprindo com a obrigação do art. 18 da Lei n. 13.709/2018, Lei Geral de Proteção de Dados Pessoais.'
+			]
+		},
+		{
+			subtitle: 'Dados cadastrais da Instituição',
+			paragraphs: [
+				'<strong>Dados coletados</strong>',
+				'Razão Social. <br> CNPJ. <br> Inscrição Municipal. <br> Representante Legal. <br> Dados de e-mail e telefone para contato.<br>Dados financeiros.',
+				'<strong>Finalidade da Coleta</strong>',
+				'Identificar e autenticar Usuário.',
+				'Cumprir as obrigações decorrentes do uso dos serviços, incluindo pagamentos e emissão de nota fiscal.',
+				'Ampliar relacionamento, informar sobre novidades, funcionalidades, conteúdos, notícias e demais eventos que consideramos relevantes para Usuário.',
+				'Enriquecer sua experiência conosco, promover produtos e serviços.',
+				'Realizar a prevenção a fraudes e riscos associados, além do cumprimento de obrigações legais e regulatórias.',
+				'Ter acesso a informações armazenadas em referida plataforma para fins de confirmação da identidade da Instituição e do pagamento efetuado, na hipótese de pagamento por meio de plataforma de pagamento eletrônico.',
+				'Permissão do acesso e utilização da Plataforma pelos Usuários;',
+				'Operação da Plataforma e administração dos serviços oferecidos aos Usuários.',
+				'Garantir a portabilidade dos Dados cadastrais para outro Controlador do mesmo ramo de nossa atuação, caso solicitado, cumprindo com a obrigação do art. 18 da Lei Geral de Proteção de Dados Pessoais.'
+			]
+		},
+		{
+			subtitle: 'Dados de identificação digital',
+			paragraphs: [
+				'<strong>Dados coletados</strong>',
+				'Endereço IP e Login. <br> Registros de data e horário de cada ação realizada e tipo de navegador utilizado. <br> ID da sessão. <br> <em>Cookies e tecnologias semelhantes. <br> Plugins Sociais.</em>',
+				'<strong>Finalidade da Coleta</strong>',
+				'Identificar e autenticar Usuário/Instituição.',
+				'Cumprir com obrigações legais de manutenção de registros estabelecidas pelo Marco Civil da Internet - Lei 12.965/2014.',
+				'Realizar a prevenção a fraudes e riscos associados, além do cumprimento de obrigações legais e regulatórias.',
+				'Segurança, auditoria, melhoria da qualidade, bem como para monitoramento da condução dos serviços oferecidos na Plataforma.',
+				'Transferir à EngagED informações anônimas sobre como o Usuário navega a Plataforma para fins de verificação acerca do modo pelo qual os serviços estão sendo utilizados e procurados, possibilitando a realização de um controle interno de audiência e de navegação.',
+				'Envio de mensagens de suporte e administração da Plataforma, bem como avisos em geral e informações solicitadas pelos Usuários e/ou necessárias para a operação e manutenção da Plataforma.',
+				'Promoção da Plataforma e envio de mensagens de marketing, quando autorizado pela Instituição; e',
+				'Cumprimento das obrigações legais da EngagED e resolução de eventuais conflitos decorrentes da operação da Plataforma.'
+			]
+		},
+		{
+			title: 'Segurança, Armazenamento e Compartilhamento das Informações',
+			paragraphs: [
+				'<strong>RESUMO</strong> - Detalhamos como podem ser compartilhados, como é armazenado e sobre a segurança.',
+				'EngagED guardará todos os dados coletados em suas bases de dados protegidas e seguras em nuvem confiável de parceiro localizado no Brasil ou em outros países, como EUA ou países da União Europeia. Tais dados serão acessados apenas por processos computadorizados automatizados, profissionais autorizados e nos casos listados nesta Política. Caso o Usuário requeira a exclusão de seus dados da base de dados, a EngagED se reserva o direito de manter os dados em questão em cópias de salvaguarda por até 6 (seis) meses, a fim de cumprir obrigações legais de guarda obrigatória.',
+				'A EngagED utilizará as Informações somente conforme disposto na presente Política de Privacidade, sendo assegurado o direito dos Usuários à inviolabilidade da intimidade e da vida privada. As Informações serão armazenadas em banco de dados reservado, com acesso restrito a alguns funcionários da EngagED devidamente habilitados, que são obrigados, por contrato, a manter a confidencialidade das informações e não as utilizar inadequadamente. Com exceção das formas de compartilhamento previstos nesta Política de Privacidade, a EngagED não poderá divulgar as Informações, salvo por meio de ordem judicial ou em virtude de lei.',
+				'As informações quanto a utilização da Plataforma e as metas atingidas pela Instituição e outras que não sejam de cunho pessoal ou que não tenham qualquer relação com a vida privada, intimidade, honra e imagem do Usuário, serão utilizadas para fins comerciais, de marketing e publicidade.',
+				'Os Dados coletados e as atividades registradas podem ser compartilhados com autoridades judiciais, administrativas ou governamentais competentes, sempre que houver determinação legal, requerimento, requisição ou ordem judicial e de forma automática, em caso de movimentações societárias, como fusão, aquisição e incorporação.',
+				'Plataforma poderá conter apoiadores com links próprios que, quando acessados, levam o Usuário ao acesso de sites de tais apoiadores. Deste modo, a EngagED não tem qualquer responsabilidade quanto à política de privacidade de tais sites.',
+				'Além disso, a Plataforma EngagED possibilita a integração com diversas ferramentas à escolha da instituição. Listamos a seguir quais são elas, acompanhadas de suas respectivas Políticas de Privacidade:',
+				'Google Sheets API - Exportação de relatórios: https://policies.google.com/privacy?hl=pt-BR',
+				'Moodle - Plataforma EAD: https://moodle.com/pt/notificacao-de-privacidade/',
+				'Eadbox - Plataforma EAD: http://encurtador.com.br/jzOX7',
+				'EAD Plataforma - Plataforma EAD: https://eadplataforma.com/privacy',
+				'Facebook Pixel - Ads & Tracking: https://www.facebook.com/policy.php',
+				'Google Analytics - Ads & Tracking: https://policies.google.com/privacy?hl=pt-BR',
+				'Google Tag Manager - Ads & Tracking: https://policies.google.com/privacy?hl=pt-BR',
+				'Quero Bolsa - Plataforma de captação de alunos: https://querobolsa.com.br/politica_de_privacidade',
+				'RDStation – Tracking: https://legal.rdstation.com/pt/privacy-policy/',
+				'WPensar - Sistema de gestão escolar:',
+				'Zapier - Plataforma de automação: https://zapier.com/privacy',
+				'Ressaltamos que a responsabilidade no uso de tais ferramentas é do usuário e conforme a Política de Privacidade específica, não da EngagED.'
+			]
+		},
+		{
+			title: 'Alterações na Política de Privacidade',
+			paragraphs: [
+				'Nos reservamos ao direito de atualizar este documento a qualquer momento, por esse motivo consulte-o com frequência. Se terceirizarmos qualquer atividade, garantiremos que as empresas contratadas obedeçam a todas as disposições deste documento.',
+				'Caso alguma disposição desta Política de Privacidade seja considerada ilegal ou ilegítima por autoridade da localidade em que o Usuário resida ou da sua conexão à internet, as demais condições permanecerão em pleno vigor e efeito.',
+				'Caso não esteja de acordo com a Política de Privacidade alterada, deverá desativar a sua conta na EngagED.'
+			]
+		},
+		{
+			title: 'Disposições Gerais',
+			paragraphs: [
+				'Esta Política de Privacidade será interpretada segundo a legislação brasileira, no idioma português, sendo eleito o Foro da Comarca de Curitiba, Estado do Paraná, com expressa renúncia de qualquer outro, por mais privilegiado que seja, para dirimir qualquer dúvida, pendência ou litígio oriundo destes Termos e Condições de Uso e da Política de Privacidade e Segurança.',
+				'A EngagED reforça a intenção de resolução amigável de qualquer divergência.',
+				'Em caso de extinção da relação entre EngagED e Instituição e/ou Instituição e demais Usuários, você poderá optar por permanecer cadastrado na Plataforma. Ao final da relação entre EngagED excluiremos definitivamente, a requerimento do Usuário, os dados pessoais fornecidos para cadastro e login.',
+				'A comunicação com a EngagED deverá ocorrer por meio dos canais de atendimento indicados na Plataforma, especialmente para fins desta Política de Privacidade por meio do email privacidade@engaged.com.br, inclusive para eventual exclusão, restrição ou dúvidas quanto à coleta, ao uso e tratamento dos dados pessoais.'
+			]
+		},
+		{
+			title: 'Ao aceitar esta Política, Você autoriza a ENGAGED a utilizar e dispor das informações nestes termos.',
+			paragraphs: [
+				'A Plataforma da EngagED não se destina a indivíduos com idade inferior a 18 anos. Não coletamos deliberadamente dados pessoais de crianças e adolescentes sem consentimento expresso de seus pais, tutores ou representantes legais. Se você tiver menos de 18 anos, não deverá utilizar a Plataforma e nem fornecer quaisquer dados pessoais.',
+				'<div class="p-2 border-1"><strong>FICOU COM DÚVIDA SOBRE OS TERMOS UTILIZADOS NESTA POLÍTICA DE PRIVACIDADE?</strong><br><br>Elaboramos um resumo para que você possa entender cada um deles.</div>',
+				'<strong><em>Cookies:</em></strong> Pequenos arquivos salvos nos seus dispositivos, que armazenam as preferências e outras informações, com a finalidade de personalizar sua navegação de acordo com o seu perfil. Os Cookies guardam algumas informações temporárias a respeito dos locais que você visita na internet. A EngagED usa alguns tipos de cookies para melhorar a experiência da sua navegação no site e também para publicidade.',
+				'Conta de Acesso: Credencial necessária para utilizar ou acessar as funcionalidades da Plataforma.',
+				'Dados: Quaisquer informações inseridas, tratadas ou transmitidas pela Plataforma EngagED.',
+				'Dados Pessoais: Todas informações fornecidas pelos Usuários no momento de realização do cadastro e que permitam sua identificação. Os Dados Pessoais fornecidos serão tratados pela EngagED e possuem caráter confidencial, sendo acessados apenas pelas pessoas autorizadas.',
+				'Informações: significam todas as informações fornecidas pelo Usuário à EngagED, bem como aquelas relacionadas ao Usuário e captadas pela EngagED na operação da Plataforma, identificadas nesta Política.',
+				'Instituição ou Responsável pelo Curso: significa a instituição de ensino ou pessoa jurídica similar que contrata a licença de uso da Plataforma EngagED, na forma de software as a service; e é o responsável por organizar, vender e realizar o curso proposto.',
+				'Tratamento de dados pessoais: Toda e qualquer operação efetuada com Dados Pessoais fornecidos pelo Usuário, como as que se referem a coleta, produção, recepção, classificação, utilização, acesso, reprodução, transmissão, distribuição, processamento, arquivamento, armazenamento, eliminação, avaliação ou controle da informação, modificação, comunicação, transferência, difusão ou extração.',
+				'Plataforma: significa a plataforma educacional whitelabel “EngagED”, que promove o engajamento de alunos, professores e instituições de ensino em um único canal de interação online.',
+				'Usuário: pessoas representadas pela própria Instituição, potenciais alunos, alunos cadastrados e professores que acessem a Plataforma e que venham a fornecer seus dados, incluindo visitantes anônimos.',
+				'Usuária Contratante: significa a pessoa física ou jurídica, que contrata ou que tem interesse na contratação da licença de uso da Plataforma, na forma de software as a service.',
+				'Usuário Final: significa o usuário a quem se destina a Plataforma, tal como potencial aluno, ou aluno cadastrado.'
+			]
+		}
+	],
+	cookies: 'Cookies',
+	cookiesContent: [
+		{
+			title: '<div class="text-center">Política de Cookies da EngagED</div>',
+			paragraphs: [
+				'Versão: <u>23 de Dezembro de 2020.</u>',
+				'Provavelmente Você já ouviu falar de cookies, mas talvez não saiba exatamente o que são, para quê servem e como você pode configurá-los conforme a sua vontade. Nós da EngagED elaboramos esta Política de Cookies para esclarecer tudo isso sem linguagem técnica ou juridiquês. Para saber como nós protegemos sua privacidade, acesse nossos Termos de Uso e Política de Privacidade.'
+			]
+		},
+		{
+			title: '1 - Como a EngagED usa os cookies?',
+			paragraphs: [
+				'Quando você visita um site, ele envia ao navegador um pequeno texto, chamado cookie. Este cookie ajuda o site a se lembrar de informações sobre a visita. Por exemplo, usamos cookies para lembrar seu idioma preferido, tornar os anúncios exibidos mais relevantes para você, contar quantos visitantes recebemos em uma página, ajudar você a se inscrever em nossos serviços e proteger seus dados. Isto tem o objetivo de tornar sua próxima visita mais fácil e o site mais útil para você.',
+				'Os cookies não permitem que qualquer arquivo ou informação seja extraído do disco rígido do usuário. Também não é possível que, por meio deles, tenhamos acesso às informações pessoais que não tenham partido do usuário ou da forma como utiliza os recursos do site ou da Plataforma.',
+				'Além disso, nem todo cookie contém informações que permitem a identificação do usuário, sendo que determinados tipos de cookies podem ser empregados simplesmente para que o site seja carregado corretamente ou para que suas funcionalidades funcionem do modo esperado.',
+				'As informações armazenadas em cookies que permitam identificar um usuário são consideradas dados pessoais. Dessa forma, todas as regras previstas na nossa Política de Privacidade também lhes são aplicáveis.'
+			]
+		},
+		{
+			title: '2 - Quais os cookies usados pela EngagED?',
+			paragraphs: [
+				'Usamos diferentes tipos de cookies para executar o site e a plataforma da EngagED. Os cookies relacionados abaixo são armazenados no navegador.',
+				'a. <strong>Preferências</strong>',
+				'Os cookies de preferência permitem que um site guarde as informações que definem a forma como ele é exibido ou como ele se comporta.',
+				'Por exemplo, ao lembrar sua região e seu idioma preferido, um site pode fornecer a previsão do tempo do local no idioma escolhido. Esses cookies também podem mudar o tamanho do texto, a fonte e outras partes de páginas da Web que você pode personalizar.',
+				'b. <strong>Segurança</strong>',
+				'Os cookies de segurança servem para autenticar usuários e evitar fraudes de login. Além disso, protegem os dados do usuário de acesso não autorizado.',
+				'Os cookies chamados "SID" e "HSID", por exemplo, contêm registros com assinatura digital e criptografados do ID da Conta do Google de um usuário e a hora do login mais recente. Ao unir as informações destes cookies, é feito o bloqueio de muitos tipos de ataque, como tentativas de roubar o conteúdo de formulários que você preenche em páginas da Web.',
+				'c. <strong>Processos</strong>',
+				'Esses cookies ajudam a fazer o site funcionar e fornecer serviços que o usuário espera, como facilitar a navegação por páginas da Web e o acesso a áreas protegidas de um site.',
+				'd. <strong>Publicidade</strong>',
+				'Os cookies de publicidade ajudam a tornar a publicidade mais envolvente para os usuários e mais valiosa para editores e anunciantes.',
+				'Estes cookies podem, por exemplo, ser usados para selecionar publicidade com base no que é relevante para o usuário, melhorar os relatórios sobre o desempenho da campanha e evitar a exibição de anúncios que o usuário já viu.',
+				'e. <strong>Análise</strong>',
+				'Os cookies de análise ajudam a entender o engajamento dos usuários com o site. Nós usamos o Google Analytics, ferramenta de análise do Google que nos ajuda a entender o engajamento dos usuários. Ele usa um conjunto de cookies para coletar informações e relatar estatísticas de uso do site, sem identificar os usuários para o Google. O principal cookie usado pelo Google Analytics é o "_ga".',
+				'Para entender melhor como Você interage com nossa plataforma e para otimizar sua experiência, utilizamos o MixPanel, cuja Política de Privacidade pode ser encontrada nesse link.',
+				'<strong>O acesso e uso da Plataforma EngagED depende necessariamente do aceite da Política de Cookies.</strong>'
+			]
+		}
+	]
 };
