@@ -16,7 +16,7 @@
 			class="lg:text-7xl"
 		)
 
-	.flex.flex-column.gap-6.text-gray-600
+	.flex.flex-column.gap-4.text-gray-600
 		.flex.flex-column.gap-2.text-center
 			.font-bold {{ $t(`enums.PaymentStatus.${payment.status}`) }}
 			.font-light \#{{ payment._id }}
@@ -79,7 +79,7 @@
 
 			template(v-if="isMethod(PaymentMethod.Pix)")
 				.flex.justify-content-center
-					.text-xs.text-color-secondary.flex.flex-column.max-w-30rem.gap-4
+					.text-xs.text-color-secondary.flex.flex-column.max-w-30rem.gap-2
 						.flex.align-items-center
 							i-mdi-numeric-1-circle.w-1.h-2rem.p-1
 							.w-11(v-html="$t('payment.pixInstructions[0]')")
