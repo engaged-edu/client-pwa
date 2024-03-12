@@ -79,18 +79,15 @@
 
 			template(v-if="isMethod(PaymentMethod.Pix)")
 				.flex.justify-content-center
-					.text-xs.text-color-secondary.flex.flex-column.max-w-30rem.gap-2
+					.text-ms.text-color-secondary.flex.flex-column.max-w-30rem.gap-2
 						.flex.align-items-center
 							i-mdi-numeric-1-circle.w-1.h-2rem.p-1
-							.w-11(v-html="$t('payment.pixInstructions[0]')")
-						.flex.align-items-center
-							i-mdi-numeric-2-circle.w-1.h-2rem.p-1
 							.w-11 {{ $t('payment.pixInstructions[1]') }}
 						.flex.align-items-center
-							i-mdi-numeric-3-circle.w-1.h-2rem.p-1
+							i-mdi-numeric-2-circle.w-1.h-2rem.p-1
 							.w-11 {{ $t('payment.pixInstructions[2]') }}
 						.flex.align-items-center
-							i-mdi-numeric-4-circle.w-1.h-2rem.p-1
+							i-mdi-numeric-3-circle.w-1.h-2rem.p-1
 							.w-11 {{ $t('payment.pixInstructions[3]') }}
 
 				.text-center(v-if="largeScreen")
