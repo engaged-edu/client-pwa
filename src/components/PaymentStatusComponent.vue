@@ -131,8 +131,13 @@
 			.font-bold {{ $t('payment.invoicePaymentProgress') }}
 			.font-light.text-sm {{ $t('payment.invoicePaymentProgressInfo') }}
 			.flex.justify-content-between.text-xs.mt-2
-				div {{ $t('cur', [invoice.paid, invoice.currency]) }} #[span.lowercase {{ $t('payment.paid') }}]
-				.flex.align-items-center.gap-2 {{ $t('cur', [invoice.total, invoice.currency]) }} #[span.lowercase {{ $t('payment.invoiceTotal') }}]
+				div
+					span.font-bold {{ $t('cur', [invoice.paid, invoice.currency]) }}
+					span.lowercase &nbsp;{{ $t('payment.paid') }}
+				.flex.align-items-center.gap-2
+					div
+						span.font-bold {{ $t('cur', [invoice.total, invoice.currency]) }}
+						span.lowercase &nbsp;{{ $t('payment.invoiceTotal') }}
 					IconCheck.text-green-500(v-if="percentage >= 100")
 			ProgressBar(
 				:show-value="false"
