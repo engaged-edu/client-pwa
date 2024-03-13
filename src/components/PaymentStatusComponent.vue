@@ -28,8 +28,8 @@
 					.text-xs **** {{ payment.lastDigits }}
 
 			.flex.align-items-center.gap-2(v-else)
-				IconBankSlip(v-if="isMethod(PaymentMethod.BankSlip)")
-				IconPix(v-if="isMethod(PaymentMethod.Pix)")
+				IconBankSlip.text-2xl(v-if="isMethod(PaymentMethod.BankSlip)")
+				IconPix.text-2xl(v-if="isMethod(PaymentMethod.Pix)")
 				div {{ $t(`enums.PaymentMethod.${payment.paymentMethod}`) }}
 
 			.flex.flex-column.gap-2.text-sm.white-space-nowrap
