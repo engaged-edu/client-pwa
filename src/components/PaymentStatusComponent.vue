@@ -139,7 +139,7 @@
 			ProgressBar(
 				:show-value="false"
 				:value="percentage"
-				:pt="{ value: { class: percentage !== 100 || 'bg-green-500' } }"
+				:pt="{ value: { class: percentage < 100 || 'bg-green-500' } }"
 				style="height: 6px"
 			)
 </template>

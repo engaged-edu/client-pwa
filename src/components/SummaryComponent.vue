@@ -50,7 +50,7 @@ template(v-if="largeScreen")
 			.col.text-right {{ $route.meta.name }}
 		.text-bluegray-400.text-right.font-light(
 			v-if="$route.name.includes('credit-card')"
-			v-html="currentInstallment"
+			v-html="payment?._id ? $t('payment.installmentOption', [payment.installments, $n((payment.amount / payment.installments) / 100, payment.currency)]) : currentInstallment"
 		)
 
 	.grid.text-lg.font-bold.mt-2
@@ -64,6 +64,7 @@ import { useCreditCardForm } from '@/composables/creditCard';
 import { InvoiceDiscountType } from '@/gql.ts';
 
 const route = useRoute();
+const payment = inject('payment');
 const invoice = inject('invoice');
 const products = inject('products');
 const discounts = inject('discounts');
