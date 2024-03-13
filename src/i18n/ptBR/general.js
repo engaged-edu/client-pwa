@@ -30,7 +30,6 @@ export default {
 	safeEnv: 'Ambiente 100% seguro',
 	showAllData: 'Ver todos os dados',
 	showContent: 'Mostrar conteúdo',
-	title: 'EngagED',
 	typeYourInfo: 'Digite seus dados',
 	until: 'até',
 	yes: 'Sim'

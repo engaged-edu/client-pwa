@@ -12,6 +12,6 @@ Dialog.w-full(
 		p(
 			v-for="p in content.paragraphs"
 			:key="p"
-			v-html="p"
+			v-html="$rt(p)"
 		)
 </template>

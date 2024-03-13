@@ -16,5 +16,7 @@ export default {
 	checkout,
 	terms,
 	campli: 'EngagED',
+	privacyEmail: '{\'privacidade@engaged.com.br\'}',
+	supportEmail: '{\'suporte@engaged.com.br\'}',
 	cur: ({ list }) => i18n.n(list(0) / 100, list(1))
 };
