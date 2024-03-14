@@ -274,23 +274,26 @@ function handleCancelPayment() {
 	});
 }
 
-function setPayment(currentPayment) {
+async function setPayment(currentPayment) {
 	payment.value = currentPayment;
+
+	await nextTick();
 
 	watchPix(currentPayment);
 }
 
-onCreatedPayment((result) => {
+onCreatedPayment(async (result) => {
 	if (result.loading) {
 		return;
 	}
 
 	const data = result.data.publicCreateCheckoutPayment;
 
+	await setPayment(data.payment);
+
 	status.value = data.checkout.status;
 	currentStep.value = 'feedback';
 
-	setPayment(data.payment);
 	$CheckoutLayout.value.showDialog(false);
 });
 

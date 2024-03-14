@@ -225,23 +225,26 @@ function handleCancelPayment() {
 	});
 }
 
-function setPayment(currentPayment) {
+async function setPayment(currentPayment) {
 	payment.value = currentPayment;
+
+	await nextTick();
 
 	watchPix(currentPayment);
 }
 
-onCreatedPayment((result) => {
+onCreatedPayment(async (result) => {
 	if (result.loading) {
 		return;
 	}
 
 	const data = result.data.publicCreatePaymentFromInvoicePaymentLink;
 
+	await setPayment(data.payment);
+
 	status.value = data.invoicePaymentLink.status;
 	currentStep.value = 'feedback';
 
-	setPayment(data.payment);
 	$CheckoutLayout.value.showDialog(false);
 });
 
@@ -252,17 +255,17 @@ onPaymentFail((result) => {
 	}, 3000);
 });
 
-onFetchPaymentLink((result) => {
+onFetchPaymentLink(async (result) => {
 	if (result.loading) {
 		return;
 	}
 
 	const data = result.data.publicFetchInvoicePaymentLink;
 
+	await setPayment([...data.payments].pop());
+
 	status.value = data.status;
 	currentStep.value = status.value === PaymentStatus.Pending ? 'initial' : 'feedback';
-
-	setPayment([...data.payments].pop());
 });
 
 provide('status', status);
