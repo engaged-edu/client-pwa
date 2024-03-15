@@ -3,6 +3,7 @@ Dialog.w-full(
 	modal
 	class="lg:w-10 xl:w-6"
 	:header="$t('terms.terms')"
+	:draggable="false"
 )
 	template(
 		v-for="content in $tm('terms.termsContent')"
