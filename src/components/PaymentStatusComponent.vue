@@ -1,4 +1,6 @@
 <template lang="pug">
+Toast
+
 .payment-status.border-round-xl.shadow-1.relative.mt-5.py-5.px-3(
 	class="lg:py-7 lg:px-8"
 	:class="{ 'bg-yellow-50 border-yellow-500': isStatus(PaymentStatus.WaitingPayment), 'bg-green-50 border-green-500': isStatus(PaymentStatus.Paid) }"
@@ -58,7 +60,7 @@
 							severity="primary"
 							:size="largeScreen || 'small'"
 							:label="$t('payment.copyBarCode')"
-							@click="handleCopyCode"
+							@click="handleCopyCode(payment.code)"
 						)
 							template(#icon)
 								IconCopy.p-button-icon-left
@@ -108,7 +110,7 @@
 						severity="primary"
 						:size="largeScreen || 'small'"
 						:label="$t('payment.copyPixCode')"
-						@click="handleCopyCode"
+						@click="handleCopyCode(payment.code)"
 					)
 						template(#icon)
 							IconCopy.p-button-icon-left
@@ -145,20 +147,28 @@
 </template>
 
 <script setup>
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 import { useClipboard } from '@vueuse/core';
+import { i18n } from '@/i18n';
 import { useBreakpoints } from '@/composables/breakpoints';
 import { useCreditCardForm } from '@/composables/creditCard';
 import { PaymentMethod, PaymentStatus } from '@/gql.ts';
 
+const toast = useToast();
 const { largeScreen } = useBreakpoints();
 const payment = inject('payment');
 const invoice = inject('invoice');
 const percentage = invoice.value.paid / invoice.value.total * 100;
 const { currentInstallment } = useCreditCardForm(invoice);
 const {
-	copy: handleCopyCode,
+	copy: copyCode,
+	copied: codeCopied,
 	isSupported: copyIsSupported
-} = useClipboard({ source: payment.value?.code });
+} = useClipboard({
+	source: payment.value?.code,
+	legacy: true
+});
 
 defineProps({
 	handleCancelPayment: {
@@ -177,6 +187,18 @@ function isStatus(paymentStatus) {
 
 function handleOpenBankSlip() {
 	window.open(payment.value?.pdfUrl, '_blank');
+}
+
+function handleCopyCode(value) {
+	copyCode(value);
+
+	if (codeCopied) {
+		toast.add({
+			severity: 'success',
+			summary: i18n.t('general.copied'),
+			life: 3000
+		});
+	}
 }
 </script>
 

@@ -2,6 +2,7 @@ export default {
 	address: 'Endereço',
 	available: 'Disponível',
 	cnpj: 'CNPJ',
+	copied: 'Copiado!',
 	cpf: 'CPF',
 	companyName: 'Razão social',
 	country: 'País|Países',
