@@ -259,13 +259,15 @@ function handleCancelPayment() {
 	confirmDialog.require({
 		header: i18n.t('payment.confirCancelPayment'),
 		message: i18n.t('payment.confirCancelPaymentDescription'),
-		accept: async () => {
-			await cancelPayment({
+		accept: () => {
+			cancelPayment({
 				checkoutSharedId: checkoutSharedId.value,
 				paymentId: payment.value._id
+			}).then(() => {
+				status.value = PaymentStatus.Pending;
+				payment.value = null;
+				currentStep.value = 'initial';
 			});
-			status.value = PaymentStatus.Pending;
-			currentStep.value = 'initial';
 		},
 		acceptLabel: i18n.t('general.yes'),
 		rejectLabel: i18n.t('general.no'),
@@ -275,6 +277,10 @@ function handleCancelPayment() {
 }
 
 async function setPayment(currentPayment) {
+	if (!currentPayment || payment.value?.updatedAt > currentPayment.updatedAt) {
+		return;
+	}
+
 	payment.value = currentPayment;
 
 	await nextTick();

@@ -215,7 +215,9 @@ function handleCancelPayment() {
 		message: i18n.t('payment.confirCancelPaymentDescription'),
 		accept: async () => {
 			await cancelPayment();
+
 			status.value = PaymentStatus.Pending;
+			payment.value = null;
 			currentStep.value = 'initial';
 		},
 		acceptLabel: i18n.t('general.yes'),
@@ -226,6 +228,10 @@ function handleCancelPayment() {
 }
 
 async function setPayment(currentPayment) {
+	if (!currentPayment || payment.value?.updatedAt > currentPayment.updatedAt) {
+		return;
+	}
+
 	payment.value = currentPayment;
 
 	await nextTick();
@@ -255,17 +261,21 @@ onPaymentFail((result) => {
 	}, 3000);
 });
 
-onFetchPaymentLink(async (result) => {
+onFetchPaymentLink((result) => {
 	if (result.loading) {
 		return;
 	}
 
 	const data = result.data.publicFetchInvoicePaymentLink;
 
-	await setPayment([...data.payments].pop());
-
 	status.value = data.status;
 	currentStep.value = status.value === PaymentStatus.Pending ? 'initial' : 'feedback';
+
+	if (data.status === PaymentStatus.Pending) {
+		return;
+	}
+
+	setPayment([...data.payments].pop());
 });
 
 provide('status', status);
