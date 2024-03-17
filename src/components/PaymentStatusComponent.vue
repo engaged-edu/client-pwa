@@ -27,7 +27,7 @@ Toast
 			.flex.align-items-center.gap-2.flex-wrap(v-if="isMethod(PaymentMethod.CreditCard)")
 				img.w-4rem(:src="`/p/creditCards/${payment.brand}.svg`")
 				.flex.flex-column.gap-2.text-right.white-space-nowrap {{ $t(`enums.PaymentMethod.${payment.paymentMethod}`) }}
-					.text-xs **** {{ payment.lastDigits }}
+					.text-sm **** {{ payment.lastDigits }}
 
 			.flex.align-items-center.gap-2(v-else)
 				IconBankSlip.text-2xl(v-if="isMethod(PaymentMethod.BankSlip)")
@@ -37,7 +37,7 @@ Toast
 			.flex.flex-column.gap-2.text-sm.white-space-nowrap
 				div {{ $t('payment.amount') }}:&nbsp;
 					span.font-bold {{ $t('cur', [payment.amount, payment.currency]) }}
-				.text-xs(
+				.text-sm(
 					v-if="isMethod(PaymentMethod.CreditCard)"
 					v-html="$t('payment.installmentOption', [payment.installments, $n((payment.amount / payment.installments) / 100, payment.currency)])"
 				)
