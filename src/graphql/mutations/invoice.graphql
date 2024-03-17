@@ -16,6 +16,9 @@ mutation publicCreatePaymentFromInvoicePaymentLink(
 			_id
 			status
 		}
+		invoice {
+			paidAmount
+		}
 		payment {
 			_id
 			updatedAt

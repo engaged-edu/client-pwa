@@ -103,12 +103,13 @@ const products = computed(() => paymentLinkData.value?.invoice?.items.map((item)
 	};
 }) || []);
 const discounts = computed(() => paymentLinkData.value?.invoice?.discounts || []);
+const paidAmount = ref(0);
 const invoice = computed(() => {
 	const amount = paymentLinkData.value?.amount || 0;
 	const subtotal = products.value.reduce((acc, product) => acc + product.amount, 0);
 	const totalDiscount = discounts.value.reduce((acc, discount) => acc + discount.amount, 0);
 	const total = subtotal - totalDiscount;
-	const paid = paymentLinkData.value?.invoice.paidAmount || 0;
+	const paid = paidAmount.value || paymentLinkData.value?.invoice.paidAmount || 0;
 	const content = {
 		id: paymentLinkData.value?._id,
 		createdAt: paymentLinkData.value?.createdAt,
@@ -250,6 +251,7 @@ onCreatedPayment(async (result) => {
 	await setPayment(data.payment);
 
 	status.value = data.invoicePaymentLink.status;
+	paidAmount.value = data.invoice.paidAmount;
 	currentStep.value = 'feedback';
 
 	$CheckoutLayout.value.showDialog(false);

@@ -159,7 +159,7 @@ const toast = useToast();
 const { largeScreen } = useBreakpoints();
 const payment = inject('payment');
 const invoice = inject('invoice');
-const percentage = invoice.value.paid / invoice.value.total * 100;
+const percentage = computed(() => invoice.value.paid / invoice.value.total * 100);
 const { currentInstallment } = useCreditCardForm(invoice);
 const {
 	copy: copyCode,
