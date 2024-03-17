@@ -296,6 +296,15 @@ onCreatedPayment(async (result) => {
 
 	const data = result.data.publicCreateCheckoutPayment;
 
+	if (data.payment.status === PaymentStatus.Refused) {
+		$CheckoutLayout.value.showDialog(true, {
+			type: 'error',
+			title: data.payment.failMessage
+		}, 3000);
+
+		return;
+	}
+
 	await setPayment(data.payment);
 
 	status.value = data.checkout.status;
