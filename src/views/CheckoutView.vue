@@ -238,6 +238,7 @@ async function handleSubmit() {
 
 		params.paymentCreationArgs = {
 			...params.paymentCreationArgs,
+			saveUserCard: saveCard.value,
 			installments: formCreditCard.installments,
 			cardToken: await getCardHash(
 				formCreditCard.number,

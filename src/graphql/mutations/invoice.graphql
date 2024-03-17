@@ -1,14 +1,16 @@
 mutation publicCreatePaymentFromInvoicePaymentLink(
-	$cardToken: String
-	$installments: Int
 	$accessToken: String!
 	$paymentMethod: PaymentMethod!
+	$cardToken: String
+	$installments: Int
+	$saveUserCard: Boolean
 ) {
 	publicCreatePaymentFromInvoicePaymentLink(
-		cardToken: $cardToken
-		installments: $installments
 		accessToken: $accessToken
 		paymentMethod: $paymentMethod
+		cardToken: $cardToken
+		installments: $installments
+		saveUserCard: $saveUserCard
 	) {
 		invoicePaymentLink {
 			_id

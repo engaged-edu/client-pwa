@@ -192,6 +192,7 @@ async function handleSubmit() {
 
 		params = {
 			...params,
+			saveUserCard: saveCard.value,
 			installments: form.installments,
 			cardToken: await getCardHash(
 				form.number,
