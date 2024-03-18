@@ -282,6 +282,7 @@ onFetchPaymentLink((result) => {
 	const data = result.data.publicFetchInvoicePaymentLink;
 
 	status.value = data.status;
+	paidAmount.value = data.invoice.paidAmount;
 	currentStep.value = status.value === PaymentStatus.Pending ? 'initial' : 'feedback';
 
 	if (data.status === PaymentStatus.Pending) {
