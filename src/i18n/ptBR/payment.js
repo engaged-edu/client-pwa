@@ -21,6 +21,7 @@ export default {
 	cryptoSafe: 'Utilizamos criptografia para assegurar a proteção de seus dados de pagamento, garantindo o nível de segurança das instituições bancárias.',
 	discount: 'Desconto|Descontos',
 	errorAtField: 'Erro no campo: "{0}"',
+	errorMessage: 'Cód. {0} - {1}',
 	expiration: 'Validade',
 	finishPayment: 'Finalizar pagamento',
 	hideSummary: 'Ocultar resumo',

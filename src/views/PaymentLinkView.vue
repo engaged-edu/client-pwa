@@ -251,7 +251,8 @@ onCreatedPayment(async (result) => {
 	if (data.payment.status === PaymentStatus.Refused) {
 		$CheckoutLayout.value.showDialog(true, {
 			type: 'error',
-			title: data.payment.failMessage
+			title: i18n.t(`enums.PaymentStatus.${data.payment.status}`),
+			description: i18n.t('payment.errorMessage', [data.payment.failCode, data.payment.failMessage])
 		}, 3000);
 
 		return;
