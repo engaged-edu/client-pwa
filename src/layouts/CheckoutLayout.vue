@@ -127,7 +127,7 @@ Dialog(
 	:pt="{ root: 'flex flex-column gap-3 w-22rem py-5 px-3 text-center' }"
 )
 	template(#container)
-		IconSpinner.text-7xl(v-if="dialogContent.type === 'loading'")
+		ProgressSpinner.text-7xl(v-if="dialogContent.type === 'loading'")
 		IconError.text-7xl.text-red-500(v-if="dialogContent.type === 'error'")
 		IconOk.text-7xl.text-green-500(v-if="dialogContent.type === 'success'")
 

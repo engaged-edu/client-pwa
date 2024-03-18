@@ -942,6 +942,7 @@ export type Checkout = {
   organization: Organization;
   organizationId?: Maybe<Scalars['String']>;
   paymentMethodsConfig: CheckoutPaymentMethodsConfig;
+  sharedCreatedAt: Scalars['DateTime'];
   sharedId: Scalars['String'];
   splitConfig: SplitConfig;
   splitConfigId?: Maybe<Scalars['String']>;
@@ -1996,11 +1997,6 @@ export type DateFilterInput = {
   lte?: Maybe<Scalars['DateTime']>;
 };
 
-
-export type DeleteAnticipationSimulationResponse = {
-  __typename?: 'DeleteAnticipationSimulationResponse';
-  status: Scalars['String'];
-};
 
 export type DeleteBankAccountLog = EntityCommonFieldsInterface & Log & {
   __typename?: 'DeleteBankAccountLog';
@@ -3211,6 +3207,7 @@ export enum LogSource {
   CreateCheckoutInvoiceAccessesJob = 'CREATE_CHECKOUT_INVOICE_ACCESSES_JOB',
   CreateScheduledPaymentsJob = 'CREATE_SCHEDULED_PAYMENTS_JOB',
   ProcessCheckoutPaymentJob = 'PROCESS_CHECKOUT_PAYMENT_JOB',
+  PublicCancelCheckoutPayment = 'PUBLIC_CANCEL_CHECKOUT_PAYMENT',
   PublicCancelInvoicePaymentLinkPayment = 'PUBLIC_CANCEL_INVOICE_PAYMENT_LINK_PAYMENT',
   PublicCreateCheckoutPayment = 'PUBLIC_CREATE_CHECKOUT_PAYMENT',
   SyncExpiredCheckoutsJob = 'SYNC_EXPIRED_CHECKOUTS_JOB',
@@ -3474,7 +3471,6 @@ export type Mutation = {
   adminCommunicateStudentCertificateEmitted: Certificate;
   adminCopyCertificateTemplate: CopyCertificateTemplateResponse;
   adminCreateAccessProduct: AccessProduct;
-  /** Creates or confirms a simulated anticipation. Fields timeframe, amount and currency are required if simulationId is not provided */
   adminCreateAnticipation: Anticipation;
   adminCreateCertificate: Certificate;
   adminCreateCertificateTemplate: CertificateTemplate;
@@ -3509,7 +3505,6 @@ export type Mutation = {
   adminCreateUserCardWPagarmeExternalId: Card;
   adminCreateUserPaymentProfile: UserPaymentProfile;
   adminCreateWithdrawal: Withdrawal;
-  adminDeleteAnticipationSimulation: DeleteAnticipationSimulationResponse;
   adminDeleteCertificate: Certificate;
   adminDeleteCertificateTemplate: CertificateTemplate;
   adminDeleteChapter: Chapter;
@@ -3541,7 +3536,6 @@ export type Mutation = {
   adminResetPassword: AdminUser;
   adminRetryPaymentSchedule: RetryPaymentScheduleResponse;
   adminSendResetPasswordToken: AdminSendResetPasswordTokenResponse;
-  /** Creates or updates an anticipation simulation which expires in 5 minutes. */
   adminSimulateAnticipation: SimulateAnticipationResponse;
   adminSuspendInvoiceAccess: InvoiceAccess;
   adminSyncPayment: Payment;
@@ -3580,6 +3574,7 @@ export type Mutation = {
   adminUserSignUp: AdminUserAuthResponse;
   authenticateMagicToken: StudentUserAuthResponse;
   logOut: Session;
+  publicCancelCheckoutPayment?: Maybe<Payment>;
   publicCancelInvoicePaymentLinkPayment: PublicCancelInvoicePaymentLinkPaymentResponse;
   publicCreateCheckoutPayment: PublicCreateCheckoutPaymentResponse;
   publicCreatePaymentFromInvoicePaymentLink: PublicCreatePaymentFromInvoicePaymentLinkResponse;
@@ -3744,14 +3739,13 @@ export type MutationAdminCreateAccessProductArgs = {
 
 
 export type MutationAdminCreateAnticipationArgs = {
-  amount?: Maybe<Scalars['Int']>;
-  currency?: Maybe<Currency>;
+  amount: Scalars['Int'];
+  currency: Currency;
   description?: Maybe<Scalars['String']>;
   organizationId: Scalars['String'];
   paymentDate?: Maybe<Scalars['DateTime']>;
   recipientId: Scalars['String'];
-  simulationId?: Maybe<Scalars['String']>;
-  timeframe?: Maybe<AnticipationTimeframe>;
+  timeframe: AnticipationTimeframe;
 };
 
 
@@ -4062,13 +4056,6 @@ export type MutationAdminCreateWithdrawalArgs = {
 };
 
 
-export type MutationAdminDeleteAnticipationSimulationArgs = {
-  organizationId: Scalars['String'];
-  recipientId: Scalars['String'];
-  simulationId: Scalars['String'];
-};
-
-
 export type MutationAdminDeleteCertificateArgs = {
   certificateSharedId: Scalars['String'];
   organizationId: Scalars['String'];
@@ -4288,7 +4275,6 @@ export type MutationAdminSimulateAnticipationArgs = {
   organizationId: Scalars['String'];
   paymentDate?: Maybe<Scalars['DateTime']>;
   recipientId: Scalars['String'];
-  simulationId?: Maybe<Scalars['String']>;
   timeframe: AnticipationTimeframe;
 };
 
@@ -4634,6 +4620,12 @@ export type MutationAdminUserSignUpArgs = {
 
 export type MutationAuthenticateMagicTokenArgs = {
   magicToken: Scalars['String'];
+};
+
+
+export type MutationPublicCancelCheckoutPaymentArgs = {
+  checkoutSharedId: Scalars['String'];
+  paymentId: Scalars['String'];
 };
 
 
@@ -7598,7 +7590,6 @@ export type SimulateAnticipationResponse = {
   anticipationFee: Scalars['Int'];
   fee: Scalars['Int'];
   paymentDate: Scalars['DateTime'];
-  simulationId: Scalars['String'];
   timeframe: AnticipationTimeframe;
 };
 
@@ -10782,7 +10773,6 @@ export type AdminCancelWithdrawalMutation = (
 export type AdminSimulateAnticipationMutationVariables = Exact<{
   organizationId: Scalars['String'];
   recipientId: Scalars['String'];
-  simulationId?: Maybe<Scalars['String']>;
   amount: Scalars['Int'];
   timeframe: AnticipationTimeframe;
 }>;
@@ -10792,33 +10782,17 @@ export type AdminSimulateAnticipationMutation = (
   { __typename?: 'Mutation' }
   & { adminSimulateAnticipation: (
     { __typename?: 'SimulateAnticipationResponse' }
-    & Pick<SimulateAnticipationResponse, 'timeframe' | 'anticipationFee' | 'amount' | 'fee' | 'simulationId' | 'paymentDate'>
-  ) }
-);
-
-export type AdminDeleteAnticipationSimulationMutationVariables = Exact<{
-  organizationId: Scalars['String'];
-  recipientId: Scalars['String'];
-  simulationId: Scalars['String'];
-}>;
-
-
-export type AdminDeleteAnticipationSimulationMutation = (
-  { __typename?: 'Mutation' }
-  & { adminDeleteAnticipationSimulation: (
-    { __typename?: 'DeleteAnticipationSimulationResponse' }
-    & Pick<DeleteAnticipationSimulationResponse, 'status'>
+    & Pick<SimulateAnticipationResponse, 'timeframe' | 'anticipationFee' | 'amount' | 'fee' | 'paymentDate'>
   ) }
 );
 
 export type AdminCreateAnticipationMutationVariables = Exact<{
   organizationId: Scalars['String'];
   recipientId: Scalars['String'];
-  simulationId?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  currency?: Maybe<Currency>;
-  amount?: Maybe<Scalars['Int']>;
-  timeframe?: Maybe<AnticipationTimeframe>;
+  currency: Currency;
+  amount: Scalars['Int'];
+  timeframe: AnticipationTimeframe;
 }>;
 
 
@@ -11659,7 +11633,7 @@ export type AdminFetchCheckoutsQuery = (
     & Pick<PaginatedCheckoutResponse, 'currentPage' | 'totalPageCount' | 'totalResultCount' | 'hasNextPage'>
     & { results: Array<(
       { __typename?: 'Checkout' }
-      & Pick<Checkout, '_id' | 'createdAt' | 'updatedAt' | 'expirationDate' | 'description' | 'status' | 'currency' | 'invoiceItemsAmount' | 'invoiceTotalAmount' | 'invoiceDiscountedAmount' | 'sharedId' | 'latest' | 'organizationId' | 'splitConfigId' | 'updatedById' | 'createdById' | 'url'>
+      & Pick<Checkout, '_id' | 'sharedCreatedAt' | 'updatedAt' | 'expirationDate' | 'description' | 'status' | 'currency' | 'invoiceItemsAmount' | 'invoiceTotalAmount' | 'invoiceDiscountedAmount' | 'sharedId' | 'latest' | 'organizationId' | 'splitConfigId' | 'updatedById' | 'createdById' | 'url'>
       & { splitConfig: (
         { __typename?: 'SplitConfig' }
         & { rules: Array<(
