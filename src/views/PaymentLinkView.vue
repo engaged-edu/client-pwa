@@ -213,8 +213,8 @@ async function handleSubmit() {
 
 function handleCancelPayment() {
 	confirmDialog.require({
-		header: i18n.t('payment.confirCancelPayment'),
-		message: i18n.t('payment.confirCancelPaymentDescription'),
+		header: i18n.t('payment.confirmCancelPayment'),
+		message: i18n.t('payment.confirmCancelPaymentDescription'),
 		accept: async () => {
 			await cancelPayment();
 

@@ -6,8 +6,8 @@ export default {
 	billingTaxData: 'Dados fiscais para faturamento',
 	chargeName: 'A cobrança aparecerá na sua fatura como: <strong class="font-bold">{domain}</strong>',
 	checkout: 'Checkout',
-	confirCancelPayment: 'Excluir método de pagamento',
-	confirCancelPaymentDescription: 'Tem certeza que deseja excluir o método de pagamento atual?',
+	confirmCancelPayment: 'Utilizar outro método de pagamento',
+	confirmCancelPaymentDescription: 'Esta ação irá cancelar este pagamento para que possa escolher um novo método de pagamento.\n\nDeseja continuar?',
 	copyBarCode: 'Copiar código de barras',
 	copyPixCode: 'Copiar código PIX',
 	creditCard: {
