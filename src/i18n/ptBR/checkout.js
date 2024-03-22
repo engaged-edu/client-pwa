@@ -8,7 +8,7 @@ export default {
 			intro: 'Ficamos muito felizes em compartilhar esse momento com você!',
 			instructionTitle: 'Algumas informações são importantes compartilhar contigo',
 			instruction1: 'Para acessar o conteúdo, clique no botão <span class="font-bold">”{0}”</span> logo abaixo;',
-			instruction2: 'Também enviamos uma confirmação para o seu email <span class="font-bold">{0}</span>;',
+			instruction2: 'Também enviamos uma confirmação para o seu e-mail <span class="font-bold">{0}</span>;',
 			outro: 'Logo aqui abaixo listamos os itens que você adquiriu;'
 		},
 		steps: {

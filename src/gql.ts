@@ -8564,10 +8564,6 @@ export type FetchCoursesFragment = (
     ), lessons: Array<(
       { __typename?: 'Lesson' }
       & Pick<Lesson, 'status'>
-      & { rating?: Maybe<(
-        { __typename?: 'LessonRating' }
-        & Pick<LessonRating, 'count' | 'average'>
-      )> }
     )> }
   )>, rooms: Array<(
     { __typename?: 'Room' }
@@ -8935,7 +8931,7 @@ export type ReadonlyFileFragmentFragment = (
 
 export type FetchInvoiceFragmentFragment = (
   { __typename?: 'Invoice' }
-  & Pick<Invoice, '_id' | 'createdAt' | 'status' | 'expirationDate' | 'itemsAmount' | 'paidAmount' | 'refundedAmount' | 'totalAmount' | 'dueAmount' | 'discountedAmount' | 'description' | 'hasActivePaymentsAttached' | 'activePaymentLinkPaymentMethods'>
+  & Pick<Invoice, '_id' | 'createdAt' | 'status' | 'checkoutSharedId' | 'createdById' | 'expirationDate' | 'itemsAmount' | 'paidAmount' | 'refundedAmount' | 'totalAmount' | 'dueAmount' | 'discountedAmount' | 'description' | 'hasActivePaymentsAttached' | 'activePaymentLinkPaymentMethods'>
   & { user: (
     { __typename?: 'StudentUser' }
     & Pick<StudentUser, '_id' | 'name' | 'email'>
@@ -8997,8 +8993,15 @@ export type FetchPaymentProfileFragmentFragment = (
 
 type FetchPaymentFragment_BankSlipPayment_Fragment = (
   { __typename?: 'BankSlipPayment' }
-  & Pick<BankSlipPayment, 'code' | 'pdfUrl' | 'expirationDate' | '_id' | 'createdAt' | 'status' | 'statusAt' | 'amount' | 'refundedAmount' | 'currency' | 'description' | 'paymentMethod' | 'pagarmeExternalId' | 'scheduleTotalAmount' | 'scheduleInstallment' | 'modality' | 'scheduleTotalInstallments' | 'invoiceId' | 'paymentScheduleSharedId' | 'hasGeneratingSharedPaymentSchedules'>
-  & { splitConfig?: Maybe<(
+  & Pick<BankSlipPayment, 'code' | 'pdfUrl' | 'expirationDate' | '_id' | 'createdAt' | 'status' | 'statusAt' | 'amount' | 'checkoutSharedId' | 'createdById' | 'refundedAmount' | 'currency' | 'description' | 'paymentMethod' | 'pagarmeExternalId' | 'scheduleTotalAmount' | 'scheduleInstallment' | 'modality' | 'scheduleTotalInstallments' | 'invoiceId' | 'paymentScheduleSharedId' | 'hasGeneratingSharedPaymentSchedules'>
+  & { invoicePaymentLink?: Maybe<(
+    { __typename?: 'InvoicePaymentLink' }
+    & Pick<InvoicePaymentLink, '_id'>
+    & { invoice?: Maybe<(
+      { __typename?: 'Invoice' }
+      & Pick<Invoice, '_id'>
+    )> }
+  )>, splitConfig?: Maybe<(
     { __typename?: 'SplitConfig' }
     & { rules: Array<(
       { __typename?: 'SplitRule' }
@@ -9029,8 +9032,15 @@ type FetchPaymentFragment_BankSlipPayment_Fragment = (
 
 type FetchPaymentFragment_CreditCardPayment_Fragment = (
   { __typename?: 'CreditCardPayment' }
-  & Pick<CreditCardPayment, 'installments' | 'brand' | 'holderName' | 'firstDigits' | 'lastDigits' | 'cardExpirationDate' | '_id' | 'createdAt' | 'status' | 'statusAt' | 'amount' | 'refundedAmount' | 'currency' | 'description' | 'paymentMethod' | 'pagarmeExternalId' | 'scheduleTotalAmount' | 'scheduleInstallment' | 'modality' | 'scheduleTotalInstallments' | 'invoiceId' | 'paymentScheduleSharedId' | 'hasGeneratingSharedPaymentSchedules'>
-  & { splitConfig?: Maybe<(
+  & Pick<CreditCardPayment, 'installments' | 'brand' | 'holderName' | 'firstDigits' | 'lastDigits' | 'cardExpirationDate' | '_id' | 'createdAt' | 'status' | 'statusAt' | 'amount' | 'checkoutSharedId' | 'createdById' | 'refundedAmount' | 'currency' | 'description' | 'paymentMethod' | 'pagarmeExternalId' | 'scheduleTotalAmount' | 'scheduleInstallment' | 'modality' | 'scheduleTotalInstallments' | 'invoiceId' | 'paymentScheduleSharedId' | 'hasGeneratingSharedPaymentSchedules'>
+  & { invoicePaymentLink?: Maybe<(
+    { __typename?: 'InvoicePaymentLink' }
+    & Pick<InvoicePaymentLink, '_id'>
+    & { invoice?: Maybe<(
+      { __typename?: 'Invoice' }
+      & Pick<Invoice, '_id'>
+    )> }
+  )>, splitConfig?: Maybe<(
     { __typename?: 'SplitConfig' }
     & { rules: Array<(
       { __typename?: 'SplitRule' }
@@ -9061,8 +9071,15 @@ type FetchPaymentFragment_CreditCardPayment_Fragment = (
 
 type FetchPaymentFragment_MoneyPayment_Fragment = (
   { __typename?: 'MoneyPayment' }
-  & Pick<MoneyPayment, '_id' | 'createdAt' | 'status' | 'statusAt' | 'amount' | 'refundedAmount' | 'currency' | 'description' | 'paymentMethod' | 'pagarmeExternalId' | 'scheduleTotalAmount' | 'scheduleInstallment' | 'modality' | 'scheduleTotalInstallments' | 'invoiceId' | 'paymentScheduleSharedId' | 'hasGeneratingSharedPaymentSchedules'>
-  & { splitConfig?: Maybe<(
+  & Pick<MoneyPayment, '_id' | 'createdAt' | 'status' | 'statusAt' | 'amount' | 'checkoutSharedId' | 'createdById' | 'refundedAmount' | 'currency' | 'description' | 'paymentMethod' | 'pagarmeExternalId' | 'scheduleTotalAmount' | 'scheduleInstallment' | 'modality' | 'scheduleTotalInstallments' | 'invoiceId' | 'paymentScheduleSharedId' | 'hasGeneratingSharedPaymentSchedules'>
+  & { invoicePaymentLink?: Maybe<(
+    { __typename?: 'InvoicePaymentLink' }
+    & Pick<InvoicePaymentLink, '_id'>
+    & { invoice?: Maybe<(
+      { __typename?: 'Invoice' }
+      & Pick<Invoice, '_id'>
+    )> }
+  )>, splitConfig?: Maybe<(
     { __typename?: 'SplitConfig' }
     & { rules: Array<(
       { __typename?: 'SplitRule' }
@@ -9093,8 +9110,15 @@ type FetchPaymentFragment_MoneyPayment_Fragment = (
 
 type FetchPaymentFragment_PixPayment_Fragment = (
   { __typename?: 'PixPayment' }
-  & Pick<PixPayment, 'code' | 'qrCodeUrl' | 'expirationDate' | '_id' | 'createdAt' | 'status' | 'statusAt' | 'amount' | 'refundedAmount' | 'currency' | 'description' | 'paymentMethod' | 'pagarmeExternalId' | 'scheduleTotalAmount' | 'scheduleInstallment' | 'modality' | 'scheduleTotalInstallments' | 'invoiceId' | 'paymentScheduleSharedId' | 'hasGeneratingSharedPaymentSchedules'>
-  & { splitConfig?: Maybe<(
+  & Pick<PixPayment, 'code' | 'qrCodeUrl' | 'expirationDate' | '_id' | 'createdAt' | 'status' | 'statusAt' | 'amount' | 'checkoutSharedId' | 'createdById' | 'refundedAmount' | 'currency' | 'description' | 'paymentMethod' | 'pagarmeExternalId' | 'scheduleTotalAmount' | 'scheduleInstallment' | 'modality' | 'scheduleTotalInstallments' | 'invoiceId' | 'paymentScheduleSharedId' | 'hasGeneratingSharedPaymentSchedules'>
+  & { invoicePaymentLink?: Maybe<(
+    { __typename?: 'InvoicePaymentLink' }
+    & Pick<InvoicePaymentLink, '_id'>
+    & { invoice?: Maybe<(
+      { __typename?: 'Invoice' }
+      & Pick<Invoice, '_id'>
+    )> }
+  )>, splitConfig?: Maybe<(
     { __typename?: 'SplitConfig' }
     & { rules: Array<(
       { __typename?: 'SplitRule' }
@@ -12377,7 +12401,7 @@ export type AdminFetchInvoicesQuery = (
     & Pick<PaginatedInvoiceResponse, 'currentPage' | 'totalPageCount' | 'totalResultCount' | 'hasNextPage'>
     & { results: Array<(
       { __typename?: 'Invoice' }
-      & Pick<Invoice, '_id' | 'description' | 'createdAt' | 'status' | 'expirationDate' | 'totalAmount' | 'paidAmount'>
+      & Pick<Invoice, '_id' | 'description' | 'createdAt' | 'status' | 'expirationDate' | 'totalAmount' | 'paidAmount' | 'checkoutId' | 'createdById'>
       & { user: (
         { __typename?: 'StudentUser' }
         & Pick<StudentUser, '_id' | 'name' | 'email'>

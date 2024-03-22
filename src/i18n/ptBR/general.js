@@ -15,7 +15,7 @@ export default {
 	identity: {
 		cnpj: 'Insira seu CNPJ',
 		companyName: 'Razão social',
-		confirmEmail: 'Confirme seu email',
+		confirmEmail: 'Confirme seu e-mail',
 		country: 'Selecione seu país',
 		cpf: 'Insira seu CPF',
 		email: 'Seu e-mail',
