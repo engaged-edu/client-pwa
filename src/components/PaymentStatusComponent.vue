@@ -126,7 +126,7 @@ Toast
 					template(#icon)
 						IconLeft.p-button-icon-left
 
-		.flex.flex-column.gap-2(v-if="$props.type === 'payment-link'")
+		.flex.flex-column.gap-2(v-if="$route.name.includes('payment-link')")
 			.font-bold {{ $t('payment.invoicePaymentProgress') }}
 			.font-light.text-sm {{ $t('payment.invoicePaymentProgressInfo') }}
 			.flex.justify-content-between.text-xs.mt-2
@@ -173,10 +173,6 @@ const {
 defineProps({
 	handleCancelPayment: {
 		type: Function,
-		required: true
-	},
-	type: {
-		type: String,
 		required: true
 	}
 });

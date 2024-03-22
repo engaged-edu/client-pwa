@@ -2,7 +2,7 @@
 .flex.flex-column.align-items-center.gap-3.mb-4
 	.text-xs {{ $t('payment.youArePaying') }}
 	.text-base.font-bold {{ $t('cur', [invoice.amount, invoice.currency]) }}
-	.text-xs {{ $t('payment.ofTotal', [$t('cur', [invoice.total, invoice.currency])]) }}
+	.text-xs(v-if="$route.name.includes('payment-link')") {{ $t('payment.ofTotal', [$t('cur', [invoice.total, invoice.currency])]) }}
 	Button.surface-card(
 		text
 		plain

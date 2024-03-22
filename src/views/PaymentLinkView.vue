@@ -26,7 +26,6 @@ CheckoutLayout(
 	template(#status)
 		PaymentStatusComponent(
 			v-if="payment?._id"
-			type="payment-link"
 			:handle-cancel-payment="handleCancelPayment"
 		)
 </template>
