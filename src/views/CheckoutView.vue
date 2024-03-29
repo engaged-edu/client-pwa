@@ -213,7 +213,7 @@ async function handleSubmit() {
 	try {
 		await validateForm($vPayer);
 
-		params.upsertStudentUserArgs.phoneNumber = parsePhoneNumber(formPayer.phone.phoneNumber, formPayer.phone.phoneNumberCountry).formatInternational();
+		params.upsertStudentUserArgs.phoneNumber = parsePhoneNumber(formPayer.phone.phoneNumber, formPayer.phone.phoneNumberCountry).number;
 	} catch (e) {
 		$CheckoutLayout.value.showDialog(false);
 		document.querySelector('.p-invalid').focus();
