@@ -12308,7 +12308,71 @@ export type AdminFetchPurchasesQuery = (
     & { results: Array<(
       { __typename?: 'Purchase' }
       & Pick<Purchase, '_id' | 'createdAt' | 'updatedAt' | 'status' | 'invoiceItemsAmount' | 'invoicePaidAmount' | 'invoiceRefundedAmount' | 'invoiceTotalAmount' | 'invoiceDueAmount' | 'invoiceDiscountedAmount' | 'organizationId' | 'studentUserId' | 'updatedById' | 'createdById'>
-      & { checkout: (
+      & { payment: (
+        { __typename?: 'BankSlipPayment' }
+        & Pick<BankSlipPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
+        )>, userPaymentProfile?: Maybe<(
+          { __typename?: 'UserPaymentProfile' }
+          & { user: (
+            { __typename?: 'StudentUser' }
+            & Pick<StudentUser, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
+          ), taxIds?: Maybe<Array<(
+            { __typename?: 'TaxId' }
+            & Pick<TaxId, 'type' | 'value'>
+          )>> }
+        )> }
+      ) | (
+        { __typename?: 'CreditCardPayment' }
+        & Pick<CreditCardPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
+        )>, userPaymentProfile?: Maybe<(
+          { __typename?: 'UserPaymentProfile' }
+          & { user: (
+            { __typename?: 'StudentUser' }
+            & Pick<StudentUser, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
+          ), taxIds?: Maybe<Array<(
+            { __typename?: 'TaxId' }
+            & Pick<TaxId, 'type' | 'value'>
+          )>> }
+        )> }
+      ) | (
+        { __typename?: 'MoneyPayment' }
+        & Pick<MoneyPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
+        )>, userPaymentProfile?: Maybe<(
+          { __typename?: 'UserPaymentProfile' }
+          & { user: (
+            { __typename?: 'StudentUser' }
+            & Pick<StudentUser, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
+          ), taxIds?: Maybe<Array<(
+            { __typename?: 'TaxId' }
+            & Pick<TaxId, 'type' | 'value'>
+          )>> }
+        )> }
+      ) | (
+        { __typename?: 'PixPayment' }
+        & Pick<PixPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
+        )>, userPaymentProfile?: Maybe<(
+          { __typename?: 'UserPaymentProfile' }
+          & { user: (
+            { __typename?: 'StudentUser' }
+            & Pick<StudentUser, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
+          ), taxIds?: Maybe<Array<(
+            { __typename?: 'TaxId' }
+            & Pick<TaxId, 'type' | 'value'>
+          )>> }
+        )> }
+      ), checkout: (
         { __typename?: 'Checkout' }
         & Pick<Checkout, 'expirationDate' | 'description' | 'status' | 'currency'>
         & { paymentMethodsConfig: (
@@ -12354,18 +12418,6 @@ export type AdminFetchPurchasesQuery = (
       ), user: (
         { __typename?: 'StudentUser' }
         & Pick<StudentUser, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
-      ), payment: (
-        { __typename?: 'BankSlipPayment' }
-        & Pick<BankSlipPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
-      ) | (
-        { __typename?: 'CreditCardPayment' }
-        & Pick<CreditCardPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
-      ) | (
-        { __typename?: 'MoneyPayment' }
-        & Pick<MoneyPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
-      ) | (
-        { __typename?: 'PixPayment' }
-        & Pick<PixPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
       ) }
     )> }
   ) }
@@ -14447,7 +14499,7 @@ export type RecipientQuery = (
     & Pick<Recipient, '_id' | 'name' | 'type'>
     & { taxIds?: Maybe<Array<(
       { __typename?: 'TaxId' }
-      & Pick<TaxId, 'type' | 'value'>
+      & Pick<TaxId, 'country' | 'type' | 'value'>
     )>> }
   )> }
 );

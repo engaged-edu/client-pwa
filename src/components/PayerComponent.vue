@@ -8,6 +8,8 @@
 			v-model="$v.name.$model"
 			:class="{ 'p-invalid': $v.name.$invalid }"
 		)
+		FieldError(:field="$v.name")
+
 	.field.col-12(class="lg:col-6")
 		label(for="email") {{ $t('general.identity.email') }}:
 		InputText#email.w-full(
@@ -16,6 +18,8 @@
 			inputmode="email"
 			:class="{ 'p-invalid': $v.email.$invalid }"
 		)
+		FieldError(:field="$v.email")
+
 	.field.col-12(class="lg:col-6")
 		label(for="confirm-email") {{ $t('general.identity.confirmEmail') }}:
 		InputText#confirm-email.w-full(
@@ -24,6 +28,8 @@
 			inputmode="email"
 			:class="{ 'p-invalid': $v.confirmEmail.$invalid }"
 		)
+		FieldError(:field="$v.confirmEmail")
+
 	.field.col-12(class="lg:col-6")
 		label(for="country") {{ $t('general.identity.country') }}:
 		InputCountry#country.w-full(
@@ -31,20 +37,24 @@
 			:class="{ 'p-invalid': $v.country.$invalid }"
 			@change="handleCountry"
 		)
+
 	.field.col-12(class="lg:col-6")
 		label(for="phone") {{ $t('general.identity.phoneNumber') }}:
 		InputPhone(
 			v-model="$v.phone.$model"
 			inputmode="tel"
 			:class="{ 'p-invalid': $v.phone.$invalid }"
-			@input="$v.phone.phoneNumber.$touch()"
+			@input="$v.phone.$touch()"
 		)
+		FieldError(:field="$v.phone")
+
 	.field.col-12(class="lg:col-6")
 		label(for="legal") {{ $t('general.identity.legal') }}:
 		InputLegalPerson#legal.w-full(
 			v-model="$v.legal.$model"
 			:class="{ 'p-invalid': $v.legal.$invalid }"
 		)
+
 	.field.col-12(
 		v-if="form.country === CountryIsoCode.Br && form.legal === LegalPersonType.Individual"
 		class="lg:col-6"
@@ -56,6 +66,8 @@
 			:mask="masks.cpf"
 			:class="{ 'p-invalid': $v.cpf.$invalid }"
 		)
+		FieldError(:field="$v.cpf")
+
 	.field.col-12(
 		v-if="form.country !== CountryIsoCode.Br || form.country === CountryIsoCode.Br && form.legal !== LegalPersonType.Individual"
 		class="lg:col-6"
@@ -65,6 +77,8 @@
 			v-model="$v.companyName.$model"
 			:class="{ 'p-invalid': $v.companyName.$invalid }"
 		)
+		FieldError(:field="$v.companyName")
+
 	.field.col-12(
 		v-if="form.country === CountryIsoCode.Br && form.legal !== LegalPersonType.Individual"
 		class="lg:col-6"
@@ -76,10 +90,12 @@
 			:mask="masks.cnpj"
 			:class="{ 'p-invalid': $v.cnpj.$invalid }"
 		)
+		FieldError(:field="$v.cnpj")
 </template>
 
 <script setup>
 import { useVuelidate } from '@vuelidate/core';
+import { i18n } from '@/i18n';
 import { useMasks, useValidations } from '@/composables/utils';
 import { CountryIsoCode, LegalPersonType } from '@/gql.ts';
 
@@ -90,7 +106,9 @@ const {
 	minLength,
 	sameAs,
 	email,
-	phone
+	phone,
+	cpf,
+	cnpj
 } = useValidations();
 const formInitialState = {
 	name: '',
@@ -110,21 +128,28 @@ const form = reactive({ ...formInitialState });
 const $v = useVuelidate({
 	name: {
 		required: required(),
-		minLength: minLength(5)
+		minLength: minLength(5, i18n.t('validations.fullName'))
 	},
 	email: {
 		required: required(),
 		email: email()
 	},
-	confirmEmail: { sameAsEmail: sameAs(computed(() => form.email)) },
-	country: { required: required() },
-	phone: {
-		phoneNumber: { required: required() },
-		phoneNumberCountry: { required: required() }
+	confirmEmail: {
+		required: required(),
+		email: email(),
+		sameAsEmail: sameAs(computed(() => form.email), i18n.t('validations.confirmEmail'))
 	},
+	country: { required: required() },
+	phone: { phone: phone() },
 	legal: { required: required() },
-	cpf: { required: requiredIf(computed(() => form.country === CountryIsoCode.Br && form.legal === LegalPersonType.Individual)) },
-	cnpj: { required: requiredIf(computed(() => form.country === CountryIsoCode.Br && form.legal !== LegalPersonType.Individual)) },
+	cpf: {
+		required: requiredIf(computed(() => form.country === CountryIsoCode.Br && form.legal === LegalPersonType.Individual)),
+		cpf: cpf()
+	},
+	cnpj: {
+		required: requiredIf(computed(() => form.country === CountryIsoCode.Br && form.legal !== LegalPersonType.Individual)),
+		cnpj: cnpj()
+	},
 	companyName: {
 		required: requiredIf(form.country !== CountryIsoCode.Br || form.country === CountryIsoCode.Br && form.legal !== LegalPersonType.Individual),
 		minLength: minLength(5)

@@ -179,7 +179,6 @@ async function handleSubmit() {
 		upsertStudentUserArgs: {
 			name: formPayer.name,
 			email: formPayer.email,
-			phoneNumber: parsePhoneNumber(formPayer.phone.phoneNumber, formPayer.phone.phoneNumberCountry).formatInternational(),
 			phoneNumberCountry: formPayer.phone.phoneNumberCountry
 		},
 		upsertUserPaymentProfileArgs: {
@@ -213,12 +212,11 @@ async function handleSubmit() {
 
 	try {
 		await validateForm($vPayer);
+
+		params.upsertStudentUserArgs.phoneNumber = parsePhoneNumber(formPayer.phone.phoneNumber, formPayer.phone.phoneNumberCountry).formatInternational();
 	} catch (e) {
-		$CheckoutLayout.value.showDialog(true, {
-			type: 'error',
-			title: i18n.t('general.fillFormCorrectly'),
-			description: i18n.t('payment.errorAtField', [i18n.t(`general.identity.${$vPayer.value.$errors[0].$property}`)])
-		}, 3000);
+		$CheckoutLayout.value.showDialog(false);
+		document.querySelector('.p-invalid').focus();
 
 		return;
 	}

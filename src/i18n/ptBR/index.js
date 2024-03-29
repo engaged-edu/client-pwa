@@ -5,6 +5,7 @@ import errors from './errors';
 import general from './general';
 import payment from './payment';
 import checkout from './checkout';
+import validations from './validations';
 import terms from './terms';
 
 export default {
@@ -14,6 +15,7 @@ export default {
 	general,
 	payment,
 	checkout,
+	validations,
 	terms,
 	campli: 'EngagED',
 	privacyEmail: '{\'privacidade@engaged.com.br\'}',
