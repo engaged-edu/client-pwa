@@ -69,7 +69,7 @@
 		FieldError(:field="$v.cpf")
 
 	.field.col-12(
-		v-if="form.country !== CountryIsoCode.Br || form.country === CountryIsoCode.Br && form.legal !== LegalPersonType.Individual"
+		v-if="form.legal !== LegalPersonType.Individual"
 		class="lg:col-6"
 	)
 		label(for="company-name") {{ $t('general.identity.companyName') }}:
@@ -151,7 +151,7 @@ const $v = useVuelidate({
 		cnpj: cnpj()
 	},
 	companyName: {
-		required: requiredIf(form.country !== CountryIsoCode.Br || form.country === CountryIsoCode.Br && form.legal !== LegalPersonType.Individual),
+		required: requiredIf(form.legal !== LegalPersonType.Individual),
 		minLength: minLength(5)
 	}
 }, form, { $lazy: true });
