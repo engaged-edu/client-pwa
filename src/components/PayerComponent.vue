@@ -151,7 +151,7 @@ const $v = useVuelidate({
 		cnpj: cnpj()
 	},
 	companyName: {
-		required: requiredIf(form.legal !== LegalPersonType.Individual),
+		required: requiredIf(computed(() => form.legal !== LegalPersonType.Individual)),
 		minLength: minLength(5)
 	}
 }, form, { $lazy: true });
