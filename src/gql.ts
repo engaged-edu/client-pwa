@@ -3111,7 +3111,7 @@ export type Lesson = {
   name: Scalars['String'];
   organization: Organization;
   organizationId: Scalars['String'];
-  rating?: Maybe<LessonRating>;
+  rating: LessonRating;
   readingTime?: Maybe<Scalars['Float']>;
   status: LessonStatus;
   updatedAt: Scalars['DateTime'];
@@ -5706,6 +5706,7 @@ export type PlanConfig = {
 export type PlanConfigFeatures = {
   __typename?: 'PlanConfigFeatures';
   certificate: CertificateFeatureConfig;
+  checkout: FeatureConfig;
   course: FeatureConfig;
   directPayment: PlanFeatureDirectPayment;
   payment: PlanFeaturePayment;
@@ -5714,6 +5715,7 @@ export type PlanConfigFeatures = {
 
 export type PlanConfigFeaturesInput = {
   certificate?: Maybe<CertificateFeatureConfigInput>;
+  checkout?: Maybe<FeatureConfigInput>;
   course?: Maybe<FeatureConfigInput>;
   directPayment?: Maybe<PlanFeatureDirectPaymentInput>;
   payment?: Maybe<PlanFeaturePaymentInput>;
@@ -6060,6 +6062,7 @@ export type Purchase = {
   organizationId?: Maybe<Scalars['String']>;
   /** The latest purchase payment */
   payment: Payment;
+  sharedCheckout?: Maybe<Checkout>;
   status: PurchaseStatus;
   studentUserId?: Maybe<Scalars['String']>;
   updatedAt: Scalars['DateTime'];
@@ -8586,10 +8589,10 @@ export type FetchLessonsFragment = (
   ), expirationRule?: Maybe<(
     { __typename?: 'DateConstraint' }
     & Pick<DateConstraint, 'dateLimit' | 'daysLimit' | 'type'>
-  )>, rating?: Maybe<(
+  )>, rating: (
     { __typename?: 'LessonRating' }
     & Pick<LessonRating, 'average' | 'count'>
-  )>, liberationRule?: Maybe<(
+  ), liberationRule?: Maybe<(
     { __typename?: 'DateConstraint' }
     & Pick<DateConstraint, 'dateLimit' | 'daysLimit' | 'constraintType'>
     & { dateType: DateConstraint['type'] }
@@ -8789,10 +8792,10 @@ export type FetchLessonFragment = (
       { __typename?: 'CourseContent' }
       & Pick<CourseContent, 'chapterId'>
     )> }
-  ), rating?: Maybe<(
+  ), rating: (
     { __typename?: 'LessonRating' }
     & Pick<LessonRating, 'average' | 'count'>
-  )>, expirationRule?: Maybe<(
+  ), expirationRule?: Maybe<(
     { __typename?: 'DateConstraint' }
     & Pick<DateConstraint, 'dateLimit' | 'daysLimit' | 'type'>
   )>, liberationRule?: Maybe<(
@@ -12307,11 +12310,14 @@ export type AdminFetchPurchasesQuery = (
     & Pick<PaginatedPurchaseResponse, 'currentPage' | 'totalPageCount' | 'totalResultCount' | 'hasNextPage'>
     & { results: Array<(
       { __typename?: 'Purchase' }
-      & Pick<Purchase, '_id' | 'createdAt' | 'updatedAt' | 'status' | 'invoiceItemsAmount' | 'invoicePaidAmount' | 'invoiceRefundedAmount' | 'invoiceTotalAmount' | 'invoiceDueAmount' | 'invoiceDiscountedAmount' | 'organizationId' | 'studentUserId' | 'updatedById' | 'createdById'>
+      & Pick<Purchase, '_id' | 'createdAt' | 'updatedAt' | 'status' | 'invoiceTotalAmount'>
       & { payment: (
         { __typename?: 'BankSlipPayment' }
-        & Pick<BankSlipPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
-        & { user?: Maybe<(
+        & Pick<BankSlipPayment, 'paymentMethod' | 'amount' | 'scheduleTotalInstallments'>
+        & { invoice?: Maybe<(
+          { __typename?: 'Invoice' }
+          & Pick<Invoice, 'expirationDate'>
+        )>, user?: Maybe<(
           { __typename?: 'User' }
           & Pick<User, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
         )>, userPaymentProfile?: Maybe<(
@@ -12326,8 +12332,11 @@ export type AdminFetchPurchasesQuery = (
         )> }
       ) | (
         { __typename?: 'CreditCardPayment' }
-        & Pick<CreditCardPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
-        & { user?: Maybe<(
+        & Pick<CreditCardPayment, 'paymentMethod' | 'amount' | 'scheduleTotalInstallments'>
+        & { invoice?: Maybe<(
+          { __typename?: 'Invoice' }
+          & Pick<Invoice, 'expirationDate'>
+        )>, user?: Maybe<(
           { __typename?: 'User' }
           & Pick<User, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
         )>, userPaymentProfile?: Maybe<(
@@ -12342,8 +12351,11 @@ export type AdminFetchPurchasesQuery = (
         )> }
       ) | (
         { __typename?: 'MoneyPayment' }
-        & Pick<MoneyPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
-        & { user?: Maybe<(
+        & Pick<MoneyPayment, 'paymentMethod' | 'amount' | 'scheduleTotalInstallments'>
+        & { invoice?: Maybe<(
+          { __typename?: 'Invoice' }
+          & Pick<Invoice, 'expirationDate'>
+        )>, user?: Maybe<(
           { __typename?: 'User' }
           & Pick<User, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
         )>, userPaymentProfile?: Maybe<(
@@ -12358,8 +12370,11 @@ export type AdminFetchPurchasesQuery = (
         )> }
       ) | (
         { __typename?: 'PixPayment' }
-        & Pick<PixPayment, 'paymentMethod' | 'status' | 'amount' | 'scheduleTotalInstallments'>
-        & { user?: Maybe<(
+        & Pick<PixPayment, 'paymentMethod' | 'amount' | 'scheduleTotalInstallments'>
+        & { invoice?: Maybe<(
+          { __typename?: 'Invoice' }
+          & Pick<Invoice, 'expirationDate'>
+        )>, user?: Maybe<(
           { __typename?: 'User' }
           & Pick<User, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
         )>, userPaymentProfile?: Maybe<(
@@ -12372,49 +12387,6 @@ export type AdminFetchPurchasesQuery = (
             & Pick<TaxId, 'type' | 'value'>
           )>> }
         )> }
-      ), checkout: (
-        { __typename?: 'Checkout' }
-        & Pick<Checkout, 'expirationDate' | 'description' | 'status' | 'currency'>
-        & { paymentMethodsConfig: (
-          { __typename?: 'CheckoutPaymentMethodsConfig' }
-          & { creditCard?: Maybe<(
-            { __typename?: 'CheckoutCreditCardConfig' }
-            & Pick<CheckoutCreditCardConfig, 'enabled'>
-            & { installmentsRule?: Maybe<(
-              { __typename?: 'InvoicePaymentLinkCreditCardSpecificInstallmentsInstallmentsRule' }
-              & Pick<InvoicePaymentLinkCreditCardSpecificInstallmentsInstallmentsRule, 'installments' | 'type'>
-            ) | (
-              { __typename?: 'InvoicePaymentLinkCreditCardUpToInstallmentsRule' }
-              & Pick<InvoicePaymentLinkCreditCardUpToInstallmentsRule, 'upTo' | 'type'>
-            )> }
-          )>, pix?: Maybe<(
-            { __typename?: 'CheckoutPixConfig' }
-            & Pick<CheckoutPixConfig, 'enabled'>
-            & { expirationRule?: Maybe<(
-              { __typename?: 'InvoicePaymentLinkDaysAfterCreationExpirationRule' }
-              & Pick<InvoicePaymentLinkDaysAfterCreationExpirationRule, 'days' | 'type'>
-            ) | (
-              { __typename?: 'InvoicePaymentLinkMinutesAfterCreationExpirationRule' }
-              & Pick<InvoicePaymentLinkMinutesAfterCreationExpirationRule, 'minutes' | 'type'>
-            ) | (
-              { __typename?: 'InvoicePaymentLinkSpecificDateExpirationRule' }
-              & Pick<InvoicePaymentLinkSpecificDateExpirationRule, 'date' | 'type'>
-            )> }
-          )>, bankSlip?: Maybe<(
-            { __typename?: 'CheckoutBankSlipConfig' }
-            & Pick<CheckoutBankSlipConfig, 'enabled'>
-            & { expirationRule?: Maybe<(
-              { __typename?: 'InvoicePaymentLinkDaysAfterCreationExpirationRule' }
-              & Pick<InvoicePaymentLinkDaysAfterCreationExpirationRule, 'days' | 'type'>
-            ) | (
-              { __typename?: 'InvoicePaymentLinkMinutesAfterCreationExpirationRule' }
-              & Pick<InvoicePaymentLinkMinutesAfterCreationExpirationRule, 'type'>
-            ) | (
-              { __typename?: 'InvoicePaymentLinkSpecificDateExpirationRule' }
-              & Pick<InvoicePaymentLinkSpecificDateExpirationRule, 'date' | 'type'>
-            )> }
-          )> }
-        ) }
       ), user: (
         { __typename?: 'StudentUser' }
         & Pick<StudentUser, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
@@ -12453,7 +12425,7 @@ export type AdminFetchInvoicesQuery = (
     & Pick<PaginatedInvoiceResponse, 'currentPage' | 'totalPageCount' | 'totalResultCount' | 'hasNextPage'>
     & { results: Array<(
       { __typename?: 'Invoice' }
-      & Pick<Invoice, '_id' | 'description' | 'createdAt' | 'status' | 'expirationDate' | 'totalAmount' | 'paidAmount' | 'checkoutId' | 'createdById'>
+      & Pick<Invoice, '_id' | 'description' | 'createdAt' | 'status' | 'expirationDate' | 'totalAmount' | 'paidAmount' | 'checkoutId' | 'checkoutSharedId' | 'createdById'>
       & { user: (
         { __typename?: 'StudentUser' }
         & Pick<StudentUser, '_id' | 'name' | 'email'>
@@ -14499,7 +14471,7 @@ export type RecipientQuery = (
     & Pick<Recipient, '_id' | 'name' | 'type'>
     & { taxIds?: Maybe<Array<(
       { __typename?: 'TaxId' }
-      & Pick<TaxId, 'country' | 'type' | 'value'>
+      & Pick<TaxId, 'type' | 'value'>
     )>> }
   )> }
 );

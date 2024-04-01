@@ -6,7 +6,7 @@ import {
 	email,
 	sameAs
 } from '@vuelidate/validators';
-import { isValidPhoneNumber } from 'libphonenumber-js';
+import parsePhoneNumber, { isValidPhoneNumber } from 'libphonenumber-js';
 import { CPF, CNPJ } from 'br-document-utils';
 import { i18n } from '@/i18n';
 import { useCreditCard } from './creditCard';
@@ -36,7 +36,7 @@ export function useValidations() {
 		requiredIf: (condition, message = i18n.t('validations.required')) => helpers.withMessage(message, requiredIf(condition)),
 		minLength: (length = 1, message = i18n.tc('validations.minLength', length)) => helpers.withMessage(message, minLength(length)),
 		email: (message = i18n.t('validations.email')) => helpers.withMessage(message, email),
-		phone: (message = i18n.t('validations.phone')) => helpers.withMessage(message, (value) => isValidPhoneNumber(value.phoneNumber, value.phoneNumberCountry)),
+		phone: (message = i18n.t('validations.phone')) => helpers.withMessage(message, (value) => parsePhoneNumber(value.phoneNumber, value.phoneNumberCountry).isValid()),
 		cpf: (message = i18n.t('validations.cpf')) => helpers.withMessage(message, (value) => !value || CPF.validate(value)),
 		cnpj: (message = i18n.t('validations.cnpj')) => helpers.withMessage(message, (value) => !value || CNPJ.validate(value)),
 		sameAs: (equalTo, message = i18n.t('validations.sameAs')) => helpers.withMessage(message, sameAs(equalTo)),
