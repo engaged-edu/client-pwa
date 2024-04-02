@@ -11,7 +11,10 @@ CheckoutLayout(
 		ResumeComponent(:handle-show-summary="$CheckoutLayout.showSummary")
 
 	template(#identity)
-		PayerComponent(ref="$PayerComponent")
+		PayerComponent(
+			ref="$PayerComponent"
+			:handle-check-purchase="checkPurchase"
+		)
 
 	template(#method)
 		MethodComponent(
@@ -34,7 +37,7 @@ CheckoutLayout(
 import parsePhoneNumber from 'libphonenumber-js';
 import { useConfirm } from 'primevue/useconfirm';
 import ConfirmDialog from 'primevue/confirmdialog';
-import { useMutation, useQuery } from '@vue/apollo-composable';
+import { useMutation, useQuery, useLazyQuery } from '@vue/apollo-composable';
 import { i18n } from '@/i18n';
 import { useLogo, useWatchPix } from '@/composables/utils';
 import { useCreditCard, useCreditCardForm } from '@/composables/creditCard';
@@ -47,7 +50,8 @@ import PaymentStatusComponent from '@/components/PaymentStatusComponent.vue';
 import {
 	publicFetchCheckout,
 	publicCreateCheckoutPayment,
-	publicCancelCheckoutPayment
+	publicCancelCheckoutPayment,
+	publicFetchStudentCheckoutPurchase
 } from '@/graphql';
 import {
 	CountryIsoCode,
@@ -60,6 +64,7 @@ import {
 
 const $CheckoutLayout = ref();
 const $PayerComponent = ref();
+const router = useRouter();
 const route = useRoute();
 const logo = useLogo();
 const confirmDialog = useConfirm();
@@ -77,7 +82,7 @@ const currentPaymentMethod = computed(() => {
 	return methods[route.name];
 });
 
-// Fetch Payment Link
+// Fetch Checkout
 const {
 	result: checkoutResult,
 	loading: loadingCheckout,
@@ -166,7 +171,12 @@ const {
 const allowLoader = ref(true);
 const isLoading = computed(() => allowLoader.value && (loadingCheckout.value || loadingCreatePayment.value || loadingCancelPayment.value));
 const currentStep = ref('initial');
-const { watchPix } = useWatchPix(refetchCheckout, allowLoader);
+const {
+	load: loadPurchase,
+	refetch: refetchPurchase,
+	onResult: onResultPurchase
+} = useLazyQuery(publicFetchStudentCheckoutPurchase);
+const { watchPix } = useWatchPix(refetchPurchase, allowLoader);
 
 async function handleSubmit() {
 	const {
@@ -282,10 +292,50 @@ async function setPayment(currentPayment) {
 
 	payment.value = currentPayment;
 
+	if (currentPayment.status === PaymentStatus.Paid) {
+		router.push({
+			name: 'checkout-welcome',
+			params: {
+				id: checkoutSharedId.value,
+				user: currentPayment.purchase.studentUserId
+			}
+		});
+
+		return;
+	}
+
+	if (currentPayment.paymentMethod !== PaymentMethod.Pix) {
+		return;
+	}
+
 	await nextTick();
 
 	watchPix(currentPayment);
 }
+
+function checkPurchase() {
+	const { form: formPayer } = $PayerComponent.value.getForm();
+
+	if (loadPurchase(publicFetchStudentCheckoutPurchase, {
+		checkoutSharedId: checkoutSharedId.value,
+		studentUserEmail: formPayer.email
+	})) {
+		return;
+	}
+
+	refetchPurchase();
+}
+
+onResultPurchase((result) => {
+	if (result.loading) {
+		return;
+	}
+
+	const purchase = result.data.publicFetchStudentCheckoutPurchase;
+	const currentPayment = purchase ? purchase.payment : payment.value;
+
+	setPayment(currentPayment);
+});
 
 onCreatedPayment(async (result) => {
 	if (result.loading) {

@@ -130,10 +130,39 @@ query publicFetchStudentCheckoutPurchase (
 			email
 		}
 		payment {
+			_id
+			updatedAt
 			statusAt
+			status
+			failCode
+			failMessage
+			amount
+			currency
 			paymentMethod
+			... on CreditCardPayment {
+				createdAt
+				updatedAt
+				brand
+				installments
+				lastDigits
+			}
+			... on BankSlipPayment {
+				createdAt
+				updatedAt
+				code
+				expirationDate
+				pdfUrl
+			}
+			... on PixPayment {
+				createdAt
+				updatedAt
+				code
+				expirationDate
+				qrCodeUrl
+			}
 			purchase {
 				_id
+				studentUserId
 			}
 		}
 		checkout {

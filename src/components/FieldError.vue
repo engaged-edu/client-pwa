@@ -3,5 +3,10 @@ small.text-red-500(v-if="$props.field.$invalid") {{ $props.field.$errors[0].$mes
 </template>
 
 <script setup>
-defineProps(['field']);
+defineProps({
+	field: {
+		type: Object,
+		required: true
+	}
+});
 </script>

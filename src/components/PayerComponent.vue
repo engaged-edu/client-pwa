@@ -17,6 +17,7 @@
 			type="email"
 			inputmode="email"
 			:class="{ 'p-invalid': $v.email.$invalid }"
+			@blur="handleCheckEmail"
 		)
 		FieldError(:field="$v.email")
 
@@ -27,6 +28,7 @@
 			type="email"
 			inputmode="email"
 			:class="{ 'p-invalid': $v.confirmEmail.$invalid }"
+			@blur="handleCheckEmail"
 		)
 		FieldError(:field="$v.confirmEmail")
 
@@ -99,6 +101,12 @@ import { i18n } from '@/i18n';
 import { useMasks, useValidations } from '@/composables/utils';
 import { CountryIsoCode, LegalPersonType } from '@/gql.ts';
 
+const props = defineProps({
+	handleCheckPurchase: {
+		type: Function,
+		required: true
+	}
+});
 const { masks } = useMasks();
 const {
 	required,
@@ -164,6 +172,16 @@ function handleCountry(event) {
 	}
 
 	phoneModel.phoneNumberCountry = event.value.code;
+}
+
+function handleCheckEmail() {
+	const $confirmEmail = $v.value.confirmEmail;
+
+	if (!($confirmEmail.$anyDirty && !$confirmEmail.$error)) {
+		return;
+	}
+
+	props.handleCheckPurchase();
 }
 
 defineExpose({
