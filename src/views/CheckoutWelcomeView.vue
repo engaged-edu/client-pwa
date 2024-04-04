@@ -121,6 +121,7 @@ import {
 	TimeUnit
 } from '@/gql.ts';
 
+const router = useRouter();
 const route = useRoute();
 const logo = useLogo();
 const checkoutSharedId = computed(() => route.params.id);
@@ -189,6 +190,8 @@ function getExpirationDate(expirationRule) {
 }
 
 onResult((res) => {
+	router.replace({ query: null });
+
 	if (res.loading) {
 		return;
 	}
