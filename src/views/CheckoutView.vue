@@ -70,8 +70,8 @@ const logo = useLogo();
 const confirmDialog = useConfirm();
 const { validateForm } = useValidations();
 const { getCardHash } = useCreditCard();
-const { accessToken } = route.query;
 const checkoutSharedId = computed(() => route.params.id);
+const magicToken = ref();
 const currentPaymentMethod = computed(() => {
 	const methods = {
 		'checkout-method-credit-card': PaymentMethod.CreditCard,
@@ -295,10 +295,8 @@ async function setPayment(currentPayment) {
 	if (currentPayment.status === PaymentStatus.Paid) {
 		router.push({
 			name: 'checkout-welcome',
-			params: {
-				id: checkoutSharedId.value,
-				user: currentPayment.purchase.studentUserId
-			}
+			params: { id: checkoutSharedId.value },
+			query: { magicToken: magicToken.value }
 		});
 
 		return;
@@ -353,6 +351,8 @@ onCreatedPayment(async (result) => {
 
 		return;
 	}
+
+	magicToken.value = data.magicToken;
 
 	await setPayment(data.payment);
 

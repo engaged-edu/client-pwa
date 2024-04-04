@@ -5,7 +5,7 @@
 		img.layout__logo.mx-auto.my-3(:src="organization.logoUrl")
 
 		.surface-0.p-3.text-color-secondary.line-height-3(class="lg:p-6")
-			.layout__container
+			.layout__box
 				h1.font-bold.text-center.text-xl.text-green-500.my-0(class="lg:text-4xl") {{ $t('checkout.welcome.title', [data.user.name]) }}
 
 				p.text-color-secondary.mt-3.mb-0 {{ $t('checkout.welcome.hero.intro') }}
@@ -29,7 +29,7 @@
 						| {{ $t('checkout.welcome.softDescriptor') }}: #[span.font-bold {{ organization.softDescriptor }}]
 
 		.p-3(class="lg:p-6")
-			.layout__container.grid
+			.layout__box.grid
 				.col-12.mx-auto(
 					v-for="product in products"
 					:key="product.id"
@@ -67,7 +67,7 @@
 							)
 
 		.surface-0.p-3.text-gray-600.line-height-3(class="lg:p-6")
-			.layout__container
+			.layout__box
 				h1.font-bold.text-center.text-xl.my-0(class="lg:text-4xl") {{ $t('checkout.welcome.steps.title') }}
 
 				.grid.text-center.mt-3(class="lg:mt-6")
@@ -124,14 +124,14 @@ import {
 const route = useRoute();
 const logo = useLogo();
 const checkoutSharedId = computed(() => route.params.id);
-const studentUserId = computed(() => route.params.user);
+const magicToken = computed(() => route.query.magicToken);
 const {
 	result,
 	loading,
 	onResult
 } = useQuery(publicFetchStudentCheckoutPurchase, {
 	checkoutSharedId: checkoutSharedId.value,
-	studentUserId: studentUserId.value
+	magicToken: magicToken.value
 });
 const data = computed(() => result.value?.publicFetchStudentCheckoutPurchase);
 const organization = computed(() => {
@@ -240,7 +240,7 @@ onResult((res) => {
 		max-width 200px
 		max-height 82px
 
-	&__container
+	&__box
 		margin-left auto
 		margin-right auto
 		max-width unit($screens.xl, px)

@@ -38,7 +38,6 @@ query publicFetchCheckout(
 				quantity
 				amount
 			}
-
 		}
 		invoiceDiscounts {
 			_id
@@ -114,12 +113,12 @@ query publicFetchCheckout(
 }
 
 query publicFetchStudentCheckoutPurchase (
-	$studentUserId: String
+	$magicToken: String
 	$studentUserEmail: String
 	$checkoutSharedId: String!
 ) {
 	publicFetchStudentCheckoutPurchase(
-		studentUserId: $studentUserId
+		magicToken: $magicToken
 		studentUserEmail: $studentUserEmail
 		checkoutSharedId: $checkoutSharedId
 	) {

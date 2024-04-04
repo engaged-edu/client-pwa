@@ -10,6 +10,8 @@ mutation publicCreateCheckoutPayment(
 		upsertStudentUserArgs: $upsertStudentUserArgs
 		upsertUserPaymentProfileArgs: $upsertUserPaymentProfileArgs
 	) {
+		purchaseId
+		magicToken
 		checkout {
 			_id
 			status
@@ -44,7 +46,6 @@ mutation publicCreateCheckoutPayment(
 				expirationDate
 				qrCodeUrl
 			}
-
 		}
 	}
 }
