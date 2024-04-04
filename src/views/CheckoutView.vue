@@ -194,7 +194,8 @@ async function handleSubmit() {
 		upsertUserPaymentProfileArgs: {
 			country: formPayer.country,
 			type: formPayer.legal,
-			currency: invoice.value.currency
+			currency: invoice.value.currency,
+			name: formPayer.legal === LegalPersonType.Individual ? formPayer.name : formPayer.companyName
 		}
 	};
 
@@ -206,12 +207,6 @@ async function handleSubmit() {
 				value: (formPayer.legal === LegalPersonType.Individual ? formPayer.cpf : formPayer.cnpj).replace(/\D/gu, '')
 			}
 		];
-	}
-
-	if (formPayer.country !== CountryIsoCode.Br || formPayer.country === CountryIsoCode.Br && formPayer.legal !== LegalPersonType.Individual) {
-		params.upsertUserPaymentProfileArgs.name = formPayer.companyName;
-	} else {
-		params.upsertUserPaymentProfileArgs.name = formPayer.name;
 	}
 
 	$CheckoutLayout.value.showDialog(true, {
