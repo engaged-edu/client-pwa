@@ -54,6 +54,8 @@ export default {
 	terms: 'A EngagED está processando o pagamento de {0}. {1} Ao prosseguir você concorda com os {2}, políticas de {3} e {4}.',
 	title: 'Link de Pagamento',
 	totalPayment: 'Total do pagamento',
+	unavailableLink: 'Link indisponível',
+	unavailableLinkDescription: 'Este link não está mais disponível para compras.',
 	useOtherMethod: 'Utilizar outro método de pagamento',
 	youArePaying: 'Você está pagando',
 	youArePayingInfo: 'Você está pagando {0} de uma fatura com o valor total de {1}'

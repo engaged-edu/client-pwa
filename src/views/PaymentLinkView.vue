@@ -25,7 +25,7 @@ CheckoutLayout(
 
 	template(#status)
 		PaymentStatusComponent(
-			v-if="payment?._id"
+			v-if="payment?._id || currentStep === 'unavailable'"
 			:handle-cancel-payment="handleCancelPayment"
 		)
 </template>
@@ -50,9 +50,10 @@ import {
 	publicCancelInvoicePaymentLinkPayment
 } from '@/graphql';
 import {
+	InvoiceItemType,
+	InvoicePaymentLinkStatus,
 	PaymentMethod,
-	PaymentStatus,
-	InvoiceItemType
+	PaymentStatus
 } from '@/gql.ts';
 
 const route = useRoute();
@@ -241,6 +242,30 @@ async function setPayment(currentPayment) {
 	watchPix(currentPayment);
 }
 
+onFetchPaymentLink((result) => {
+	if (result.loading) {
+		return;
+	}
+
+	const data = result.data.publicFetchInvoicePaymentLink;
+
+	if ([InvoicePaymentLinkStatus.Canceled, InvoicePaymentLinkStatus.Expired].includes(data.status)) {
+		currentStep.value = 'unavailable';
+
+		return;
+	}
+
+	status.value = data.status;
+	paidAmount.value = data.invoice.paidAmount;
+	currentStep.value = status.value === PaymentStatus.Pending ? 'initial' : 'feedback';
+
+	if (data.status === PaymentStatus.Pending) {
+		return;
+	}
+
+	setPayment([...data.payments].pop());
+});
+
 onCreatedPayment(async (result) => {
 	if (result.loading) {
 		return;
@@ -272,24 +297,6 @@ onPaymentFail((result) => {
 		type: 'error',
 		title: result.message
 	}, 3000);
-});
-
-onFetchPaymentLink((result) => {
-	if (result.loading) {
-		return;
-	}
-
-	const data = result.data.publicFetchInvoicePaymentLink;
-
-	status.value = data.status;
-	paidAmount.value = data.invoice.paidAmount;
-	currentStep.value = status.value === PaymentStatus.Pending ? 'initial' : 'feedback';
-
-	if (data.status === PaymentStatus.Pending) {
-		return;
-	}
-
-	setPayment([...data.payments].pop());
 });
 
 provide('status', status);

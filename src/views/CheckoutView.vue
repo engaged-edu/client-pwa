@@ -28,7 +28,7 @@ CheckoutLayout(
 
 	template(#status)
 		PaymentStatusComponent(
-			v-if="payment?._id"
+			v-if="payment?._id || currentStep === 'unavailable'"
 			:handle-cancel-payment="handleCancelPayment"
 		)
 </template>
@@ -54,6 +54,7 @@ import {
 	publicFetchStudentCheckoutPurchase
 } from '@/graphql';
 import {
+	CheckoutStatus,
 	CountryIsoCode,
 	InvoiceItemType,
 	LegalPersonType,
@@ -319,6 +320,20 @@ function checkPurchase() {
 	refetchPurchase();
 }
 
+onFetchCheckout((result) => {
+	if (result.loading) {
+		return;
+	}
+
+	const data = result.data.publicFetchCheckout;
+
+	status.value = data.status;
+
+	if (data.status === CheckoutStatus.Inactive) {
+		currentStep.value = 'unavailable';
+	}
+});
+
 onResultPurchase((result) => {
 	if (result.loading) {
 		return;
@@ -363,16 +378,6 @@ onPaymentFail((result) => {
 		title: i18n.t(`errors.${result.graphQLErrors[0].extensions.exception.code}`),
 		description: `code: ${result.graphQLErrors[0].extensions.exception.code}, message: ${result.message}`
 	}, 3000);
-});
-
-onFetchCheckout((result) => {
-	if (result.loading) {
-		return;
-	}
-
-	const data = result.data.publicFetchCheckout;
-
-	status.value = data.status;
 });
 
 provide('status', status);
