@@ -41,6 +41,8 @@ export default {
 	paidAt: 'Pago em',
 	paymentMethod: 'Forma de pagamento',
 	paymentResponsible: 'Responsável pelo pagamento',
+	pendingPurchaseTitle: 'Conclua sua compra',
+	pendingPurchaseDescription: 'Identificamos uma compra em andamento com o e-mail informado.\n\nConclua a compra ou clique em "Utilizar outro método de pagamento" para escolher pagar de outra forma.',
 	pixCode: 'Código PIX',
 	pixInstructions: [
 		'Clique em "<strong>Finalizar pagamento</strong>" para gerar o código e o QR Code.',
@@ -50,6 +52,8 @@ export default {
 	],
 	printBankSlip: 'Imprimir boleto',
 	processingPurchase: 'Estamos processando sua compra',
+	purchaseCompletedTitle: 'Compra concluída com o e-mail informado',
+	purchaseCompletedDescription: 'Identificamos uma compra já associada a este endereço de e-mail.\n\nVerifique sua caixa de entrada e, caso necessário, insira um outro e-mail para prosseguir com sua compra.',
 	showSummary: 'Ver resumo dos itens',
 	terms: 'A EngagED está processando o pagamento de {0}. {1} Ao prosseguir você concorda com os {2}, políticas de {3} e {4}.',
 	title: 'Link de Pagamento',

@@ -13,7 +13,7 @@ CheckoutLayout(
 	template(#identity)
 		PayerComponent(
 			ref="$PayerComponent"
-			:handle-check-purchase="checkPurchase"
+			:handle-check-purchase="checkEmail"
 		)
 
 	template(#method)
@@ -60,6 +60,7 @@ import {
 	LegalPersonType,
 	PaymentMethod,
 	PaymentStatus,
+	PurchaseStatus,
 	TaxIdType
 } from '@/gql.ts';
 
@@ -72,16 +73,13 @@ const confirmDialog = useConfirm();
 const { validateForm } = useValidations();
 const { getCardHash } = useCreditCard();
 const checkoutSharedId = computed(() => route.params.id);
+const methods = {
+	'checkout-method-credit-card': PaymentMethod.CreditCard,
+	'checkout-method-bank-slip': PaymentMethod.BankSlip,
+	'checkout-method-pix': PaymentMethod.Pix
+};
+const currentPaymentMethod = computed(() => methods[route.name]);
 const magicToken = ref();
-const currentPaymentMethod = computed(() => {
-	const methods = {
-		'checkout-method-credit-card': PaymentMethod.CreditCard,
-		'checkout-method-bank-slip': PaymentMethod.BankSlip,
-		'checkout-method-pix': PaymentMethod.Pix
-	};
-
-	return methods[route.name];
-});
 
 // Fetch Checkout
 const {
@@ -172,12 +170,15 @@ const {
 const allowLoader = ref(true);
 const isLoading = computed(() => allowLoader.value && (loadingCheckout.value || loadingCreatePayment.value || loadingCancelPayment.value));
 const currentStep = ref('initial');
+
+// Purchase
 const {
 	load: loadPurchase,
 	refetch: refetchPurchase,
 	onResult: onResultPurchase
 } = useLazyQuery(publicFetchStudentCheckoutPurchase);
 const { watchPix } = useWatchPix(refetchPurchase, allowLoader);
+const emailChecked = ref(false);
 
 async function handleSubmit() {
 	const {
@@ -307,8 +308,10 @@ async function setPayment(currentPayment) {
 	watchPix(currentPayment);
 }
 
-function checkPurchase() {
+function checkEmail() {
 	const { form: formPayer } = $PayerComponent.value.getForm();
+
+	emailChecked.value = false;
 
 	if (loadPurchase(publicFetchStudentCheckoutPurchase, {
 		checkoutSharedId: checkoutSharedId.value,
@@ -318,6 +321,49 @@ function checkPurchase() {
 	}
 
 	refetchPurchase();
+}
+
+function checkPurchase(purchase) {
+	emailChecked.value = true;
+
+	if (!purchase) {
+		return;
+	}
+
+	if ([PurchaseStatus.Open, PurchaseStatus.Late].includes(purchase.status)) {
+		const goToFeedback = async () => {
+			router.push({
+				name: Object.keys(methods).find((key) => methods[key] === purchase.payment.paymentMethod),
+				params: { id: checkoutSharedId.value }
+			});
+
+			await nextTick();
+
+			// Yeah, it's necessary
+			window.setTimeout(() => {
+				setPayment(purchase.payment);
+				currentStep.value = 'feedback';
+			}, 100);
+		};
+
+		confirmDialog.require({
+			header: i18n.t('payment.pendingPaymentTitle'),
+			message: i18n.t('payment.pendingPaymentDescription'),
+			accept: goToFeedback,
+			onHide: goToFeedback,
+			acceptLabel: i18n.t('general.ok'),
+			rejectClass: 'hidden',
+			acceptClass: 'p-button-primary'
+		});
+	} else if ([PurchaseStatus.Paid, PurchaseStatus.PartiallyRefunded].includes(purchase.status)) {
+		confirmDialog.require({
+			header: i18n.t('payment.purchaseCompletedTitle'),
+			message: i18n.t('payment.purchaseCompletedDescription'),
+			acceptLabel: i18n.t('general.ok'),
+			rejectClass: 'hidden',
+			acceptClass: 'p-button-primary'
+		});
+	}
 }
 
 onFetchCheckout((result) => {
@@ -341,6 +387,12 @@ onResultPurchase((result) => {
 
 	const purchase = result.data.publicFetchStudentCheckoutPurchase;
 	const currentPayment = purchase ? purchase.payment : payment.value;
+
+	if (!emailChecked.value) {
+		checkPurchase(purchase);
+
+		return;
+	}
 
 	setPayment(currentPayment);
 });

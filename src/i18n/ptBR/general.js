@@ -25,6 +25,7 @@ export default {
 	},
 	no: 'Não',
 	notSupported: 'Não suportado',
+	ok: 'Ok',
 	payment: 'Pagamento|Pagamentos',
 	phone: 'Telefone',
 	poweredBy: 'Powered by',
