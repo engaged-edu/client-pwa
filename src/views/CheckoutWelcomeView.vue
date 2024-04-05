@@ -111,7 +111,7 @@
 </template>
 
 <script setup>
-import { useQuery } from '@vue/apollo-composable';
+import { useLazyQuery } from '@vue/apollo-composable';
 import { useLogo } from '@/composables/utils';
 import { publicFetchStudentCheckoutPurchase } from '@/graphql';
 import {
@@ -127,14 +127,12 @@ const logo = useLogo();
 const checkoutSharedId = computed(() => route.params.id);
 const magicToken = computed(() => route.query.magicToken);
 const {
+	load,
 	result,
 	loading,
 	onResult,
 	refetch
-} = useQuery(publicFetchStudentCheckoutPurchase, {
-	checkoutSharedId: checkoutSharedId.value,
-	magicToken: magicToken.value
-});
+} = useLazyQuery(publicFetchStudentCheckoutPurchase);
 const data = computed(() => result.value?.publicFetchStudentCheckoutPurchase);
 const organization = computed(() => {
 	const org = data.value?.organization;
@@ -192,6 +190,11 @@ function getExpirationDate(expirationRule) {
 
 onBeforeMount(async () => {
 	if (magicToken.value) {
+		load(publicFetchStudentCheckoutPurchase, {
+			checkoutSharedId: checkoutSharedId.value,
+			magicToken: magicToken.value
+		});
+
 		return;
 	}
 
