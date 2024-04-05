@@ -79,6 +79,7 @@ query publicFetchCheckout(
 		organization {
 			_id
 			name
+			url
 			payment {
 				creditCard {
 					softDescriptor
@@ -210,6 +211,7 @@ query publicFetchStudentCheckoutPurchase (
 		organization {
 			_id
 			name
+			url
 			payment {
 				creditCard {
 					softDescriptor

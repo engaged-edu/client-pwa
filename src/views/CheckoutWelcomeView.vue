@@ -15,10 +15,12 @@
 					li(v-html="$t('checkout.welcome.hero.instruction2', [data.user.email])")
 				p.text-color-secondary.mt-3.mb-0 {{ $t('checkout.welcome.hero.outro') }}
 
-				Button.block.mx-auto.mt-3(
-					class="lg:mt-6"
-					:label="$t('checkout.welcome.accessContent')"
-				)
+				.block.mt-3.text-center(class="lg:mt-6")
+					a.no-underline(
+						:href="accessUrl"
+						:title="$t('checkout.welcome.accessContent')"
+					)
+						Button(:label="$t('checkout.welcome.accessContent')")
 
 				.flex.flex-wrap.justify-content-center.gap-3.font-light.text-xs.mt-3(class="lg:mt-4")
 					.flex.align-items-center.gap-1.white-space-nowrap.text-green-500
@@ -98,10 +100,12 @@
 
 						p.text-sm.my-0.mx-auto.max-w-13rem(class="lg:text-base") {{ $t('checkout.welcome.steps.step3.description') }}
 
-				Button.block.mx-auto.mt-3(
-					class="lg:mt-6"
-					:label="$t('checkout.welcome.accessContent')"
-				)
+				.block.mt-3.text-center(class="lg:mt-6")
+					a.no-underline(
+						:href="accessUrl"
+						:title="$t('checkout.welcome.accessContent')"
+					)
+						Button(:label="$t('checkout.welcome.accessContent')")
 
 	footer.layout__footer.my-2.text-xs.text-center.text-gray-400(class="lg:my-6") {{ $t('general.poweredBy') }}&nbsp;
 		a.no-underline.text-gray-400(
@@ -125,7 +129,7 @@ const router = useRouter();
 const route = useRoute();
 const logo = useLogo();
 const checkoutSharedId = computed(() => route.params.id);
-const magicToken = computed(() => route.query.magicToken);
+const magicToken = ref();
 const {
 	load,
 	result,
@@ -134,6 +138,7 @@ const {
 	refetch
 } = useLazyQuery(publicFetchStudentCheckoutPurchase);
 const data = computed(() => result.value?.publicFetchStudentCheckoutPurchase);
+const accessUrl = computed(() => `${data.value?.organization.url}/auth/sign-in?magicToken=${magicToken.value}`);
 const organization = computed(() => {
 	const org = data.value?.organization;
 
@@ -189,10 +194,14 @@ function getExpirationDate(expirationRule) {
 }
 
 onBeforeMount(async () => {
-	if (magicToken.value) {
+	const mt = route.query.magicToken;
+
+	if (mt) {
+		magicToken.value = mt;
+
 		load(publicFetchStudentCheckoutPurchase, {
 			checkoutSharedId: checkoutSharedId.value,
-			magicToken: magicToken.value
+			magicToken: mt
 		});
 
 		return;
