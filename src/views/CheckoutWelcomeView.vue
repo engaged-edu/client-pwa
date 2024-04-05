@@ -1,6 +1,6 @@
 <template lang="pug">
 .layout.my-0.mx-auto.w-full.overflow-hidden.flex.flex-column
-	ProgressSpinner.mt-8(v-if="loading")
+	ProgressSpinner.mt-8(v-if="loading || !data")
 	template(v-else)
 		img.layout__logo.mx-auto.my-3(:src="organization.logoUrl")
 
@@ -129,7 +129,8 @@ const magicToken = computed(() => route.query.magicToken);
 const {
 	result,
 	loading,
-	onResult
+	onResult,
+	refetch
 } = useQuery(publicFetchStudentCheckoutPurchase, {
 	checkoutSharedId: checkoutSharedId.value,
 	magicToken: magicToken.value
@@ -189,6 +190,19 @@ function getExpirationDate(expirationRule) {
 	}
 }
 
+onBeforeMount(async () => {
+	if (magicToken.value) {
+		return;
+	}
+
+	await nextTick();
+
+	router.push({
+		name: 'checkout',
+		params: { id: checkoutSharedId.value }
+	});
+});
+
 onResult((res) => {
 	router.replace({ query: null });
 
@@ -197,6 +211,12 @@ onResult((res) => {
 	}
 
 	const payload = res.data.publicFetchStudentCheckoutPurchase;
+
+	if (!res.loading && !payload) {
+		window.setTimeout(refetch, 3000);
+
+		return;
+	}
 
 	products.value = payload.checkout.invoiceItems.map((item) => {
 		const isProduct = item?.type === InvoiceItemType.Product;

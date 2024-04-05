@@ -286,8 +286,6 @@ async function setPayment(currentPayment) {
 		return;
 	}
 
-	payment.value = currentPayment;
-
 	if (currentPayment.status === PaymentStatus.Paid) {
 		router.push({
 			name: 'checkout-welcome',
@@ -297,6 +295,8 @@ async function setPayment(currentPayment) {
 
 		return;
 	}
+
+	payment.value = currentPayment;
 
 	if (currentPayment.paymentMethod !== PaymentMethod.Pix) {
 		return;
