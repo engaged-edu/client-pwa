@@ -119,14 +119,14 @@ const invoice = computed(() => {
 	const total = checkoutData.value?.invoiceTotalAmount || 0;
 	const content = {
 		id: checkoutData.value?._id,
-		createdAt: checkoutData.value?.createdAt,
+		createdAt: checkoutData.value?.sharedCreatedAt,
 		updatedAt: checkoutData.value?.updatedAt,
 		status: checkoutData.value?.status,
 		expirationDate: checkoutData.value?.expirationDate,
 		methods: {
-			creditCard: checkoutData.value?.paymentMethodsConfig.creditCard?.enabled || false,
-			bankSlip: checkoutData.value?.paymentMethodsConfig.bankSlip?.enabled || false,
-			pix: checkoutData.value?.paymentMethodsConfig.pix?.enabled || false
+			creditCard: checkoutData.value?.paymentMethodsConfig.creditCard,
+			bankSlip: checkoutData.value?.paymentMethodsConfig.bankSlip,
+			pix: checkoutData.value?.paymentMethodsConfig.pix
 		},
 		currency: checkoutData.value?.currency,
 		discounts: totalDiscount,

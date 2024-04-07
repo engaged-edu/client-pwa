@@ -20,6 +20,10 @@ const i18n = createI18n({
 	},
 	datetimeFormats: {
 		'pt-BR': {
+			friendly: {
+				month: 'short',
+				day: 'numeric'
+			},
 			short: {
 				year: 'numeric',
 				month: 'numeric',

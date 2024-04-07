@@ -6,7 +6,8 @@ export { useLogo } from './logo';
 export { useValidations } from './validations';
 import {
 	PaymentMethod,
-	PaymentStatus
+	PaymentStatus,
+	InvoicePaymentLinkExpirationRuleType
 } from '@/gql.ts';
 
 export function useFormatText() {
@@ -34,6 +35,52 @@ export function useFormatText() {
 			console.error(`format ${type} doesn't exist`);
 
 			return text;
+		}
+	};
+}
+
+export function useDate() {
+	const invoice = inject('invoice');
+
+	return {
+		isExpired(expirationRule) {
+			if (!expirationRule) {
+				return false;
+			}
+
+			switch (expirationRule.type) {
+				case InvoicePaymentLinkExpirationRuleType.DaysAfterCreation: {
+					const expirationDate = new Date(invoice.value.createdAt);
+
+					expirationDate.setDate(expirationDate.getDate() + expirationRule.days);
+
+					return expirationDate < new Date();
+				}
+
+				case InvoicePaymentLinkExpirationRuleType.SpecificDate: {
+					return new Date(expirationRule.date) < new Date();
+				}
+
+				default: {
+					return false;
+				}
+			}
+		},
+
+		getExpirationDate(expirationRule) {
+			switch (expirationRule.type) {
+				case InvoicePaymentLinkExpirationRuleType.DaysAfterCreation: {
+					const expirationDate = new Date(invoice.value.createdAt);
+
+					expirationDate.setDate(expirationDate.getDate() + expirationRule.days);
+
+					return expirationDate;
+				}
+
+				case InvoicePaymentLinkExpirationRuleType.SpecificDate: {
+					return new Date(expirationRule.date);
+				}
+			}
 		}
 	};
 }

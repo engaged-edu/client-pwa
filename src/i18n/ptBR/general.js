@@ -33,6 +33,7 @@ export default {
 	showAllData: 'Ver todos os dados',
 	showContent: 'Mostrar conteúdo',
 	typeYourInfo: 'Digite seus dados',
+	unavailableAt: 'Indisponível em {0}',
 	until: 'até',
 	yes: 'Sim'
 };

@@ -3206,6 +3206,7 @@ export enum LogSource {
   AdminUpdateUserPaymentProfile = 'ADMIN_UPDATE_USER_PAYMENT_PROFILE',
   CreateCheckoutInvoiceAccessesJob = 'CREATE_CHECKOUT_INVOICE_ACCESSES_JOB',
   CreateScheduledPaymentsJob = 'CREATE_SCHEDULED_PAYMENTS_JOB',
+  ExpirePaymentJob = 'EXPIRE_PAYMENT_JOB',
   ProcessCheckoutPaymentJob = 'PROCESS_CHECKOUT_PAYMENT_JOB',
   PublicCancelCheckoutPayment = 'PUBLIC_CANCEL_CHECKOUT_PAYMENT',
   PublicCancelInvoicePaymentLinkPayment = 'PUBLIC_CANCEL_INVOICE_PAYMENT_LINK_PAYMENT',
@@ -6033,7 +6034,9 @@ export type PublicCancelInvoicePaymentLinkPaymentResponse = {
 export type PublicCreateCheckoutPaymentResponse = {
   __typename?: 'PublicCreateCheckoutPaymentResponse';
   checkout: Checkout;
+  magicToken: Scalars['String'];
   payment: Payment;
+  purchaseId: Scalars['String'];
 };
 
 export type PublicCreatePaymentFromInvoicePaymentLinkResponse = {
@@ -6900,8 +6903,8 @@ export type QueryPublicFetchInvoicePaymentLinkUserCardsArgs = {
 
 export type QueryPublicFetchStudentCheckoutPurchaseArgs = {
   checkoutSharedId: Scalars['String'];
+  magicToken?: Maybe<Scalars['String']>;
   studentUserEmail?: Maybe<Scalars['String']>;
-  studentUserId?: Maybe<Scalars['String']>;
 };
 
 
@@ -12313,7 +12316,7 @@ export type AdminFetchPurchasesQuery = (
       & Pick<Purchase, '_id' | 'createdAt' | 'updatedAt' | 'status' | 'invoiceTotalAmount'>
       & { payment: (
         { __typename?: 'BankSlipPayment' }
-        & Pick<BankSlipPayment, 'paymentMethod' | 'amount' | 'scheduleTotalInstallments'>
+        & Pick<BankSlipPayment, 'paymentMethod' | 'amount' | 'status' | 'scheduleTotalInstallments'>
         & { invoice?: Maybe<(
           { __typename?: 'Invoice' }
           & Pick<Invoice, 'expirationDate'>
@@ -12322,6 +12325,7 @@ export type AdminFetchPurchasesQuery = (
           & Pick<User, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
         )>, userPaymentProfile?: Maybe<(
           { __typename?: 'UserPaymentProfile' }
+          & Pick<UserPaymentProfile, 'name'>
           & { user: (
             { __typename?: 'StudentUser' }
             & Pick<StudentUser, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
@@ -12332,7 +12336,7 @@ export type AdminFetchPurchasesQuery = (
         )> }
       ) | (
         { __typename?: 'CreditCardPayment' }
-        & Pick<CreditCardPayment, 'paymentMethod' | 'amount' | 'scheduleTotalInstallments'>
+        & Pick<CreditCardPayment, 'paymentMethod' | 'amount' | 'status' | 'scheduleTotalInstallments'>
         & { invoice?: Maybe<(
           { __typename?: 'Invoice' }
           & Pick<Invoice, 'expirationDate'>
@@ -12341,6 +12345,7 @@ export type AdminFetchPurchasesQuery = (
           & Pick<User, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
         )>, userPaymentProfile?: Maybe<(
           { __typename?: 'UserPaymentProfile' }
+          & Pick<UserPaymentProfile, 'name'>
           & { user: (
             { __typename?: 'StudentUser' }
             & Pick<StudentUser, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
@@ -12351,7 +12356,7 @@ export type AdminFetchPurchasesQuery = (
         )> }
       ) | (
         { __typename?: 'MoneyPayment' }
-        & Pick<MoneyPayment, 'paymentMethod' | 'amount' | 'scheduleTotalInstallments'>
+        & Pick<MoneyPayment, 'paymentMethod' | 'amount' | 'status' | 'scheduleTotalInstallments'>
         & { invoice?: Maybe<(
           { __typename?: 'Invoice' }
           & Pick<Invoice, 'expirationDate'>
@@ -12360,6 +12365,7 @@ export type AdminFetchPurchasesQuery = (
           & Pick<User, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
         )>, userPaymentProfile?: Maybe<(
           { __typename?: 'UserPaymentProfile' }
+          & Pick<UserPaymentProfile, 'name'>
           & { user: (
             { __typename?: 'StudentUser' }
             & Pick<StudentUser, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
@@ -12370,7 +12376,7 @@ export type AdminFetchPurchasesQuery = (
         )> }
       ) | (
         { __typename?: 'PixPayment' }
-        & Pick<PixPayment, 'paymentMethod' | 'amount' | 'scheduleTotalInstallments'>
+        & Pick<PixPayment, 'paymentMethod' | 'amount' | 'status' | 'scheduleTotalInstallments'>
         & { invoice?: Maybe<(
           { __typename?: 'Invoice' }
           & Pick<Invoice, 'expirationDate'>
@@ -12379,6 +12385,7 @@ export type AdminFetchPurchasesQuery = (
           & Pick<User, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
         )>, userPaymentProfile?: Maybe<(
           { __typename?: 'UserPaymentProfile' }
+          & Pick<UserPaymentProfile, 'name'>
           & { user: (
             { __typename?: 'StudentUser' }
             & Pick<StudentUser, '_id' | 'email' | 'name' | 'phoneNumber' | 'phoneNumberCountry'>
