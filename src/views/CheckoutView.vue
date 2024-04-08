@@ -330,7 +330,7 @@ function checkPurchase(purchase) {
 		return;
 	}
 
-	if ([PurchaseStatus.Open, PurchaseStatus.Late].includes(purchase.status)) {
+	if ([PurchaseStatus.Open, PurchaseStatus.Late].includes(purchase.status) && purchase.payment.status === PaymentStatus.WaitingPayment) {
 		const goToFeedback = async () => {
 			router.push({
 				name: Object.keys(methods).find((key) => methods[key] === purchase.payment.paymentMethod),
@@ -347,8 +347,8 @@ function checkPurchase(purchase) {
 		};
 
 		confirmDialog.require({
-			header: i18n.t('payment.pendingPaymentTitle'),
-			message: i18n.t('payment.pendingPaymentDescription'),
+			header: i18n.t('payment.pendingPurchaseTitle'),
+			message: i18n.t('payment.pendingPurchaseDescription'),
 			accept: goToFeedback,
 			onHide: goToFeedback,
 			acceptLabel: i18n.t('general.ok'),
