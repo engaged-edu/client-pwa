@@ -58,24 +58,27 @@ const props = defineProps({
 	type: { type: String, required: true },
 	methods: { type: Array, required: true }
 });
-const invoice = inject('invoice');
-const router = useRouter();
-const route = useRoute();
-const { largeScreen } = useBreakpoints();
-const { isExpired, getExpirationDate } = useDate();
 const methodRoutes = {
 	creditCard: `${props.type}-method-credit-card`,
 	bankSlip: `${props.type}-method-bank-slip`,
 	pix: `${props.type}-method-pix`
 };
-const firstPossibleTab = ref(Object.entries(props.methods).find(([key, value]) => value.enabled)[0]);
+const invoice = inject('invoice');
+const router = useRouter();
+const route = useRoute();
+const { largeScreen } = useBreakpoints();
+const { isExpired, getExpirationDate } = useDate();
+const isPossibleTab = (method) => method.enabled && !isExpired(method?.expirationRule);
+const firstPossibleTab = ref((Object.entries(props.methods).find(([key, value]) => isPossibleTab(value)) || [])[0]);
 const currentTab = computed(() => Object.keys(methodRoutes).find((tab) => methodRoutes[tab] === route.name));
 
-if (!route.name.includes('method') || !props.methods[currentTab.value].enabled) {
+if ((!route.name.includes('method') || !isPossibleTab(props.methods[currentTab.value])) && firstPossibleTab.value) {
 	router.push({
 		name: methodRoutes[firstPossibleTab.value],
 		query: route.query
 	});
+} else {
+	router.push({ name: props.type });
 }
 </script>
 

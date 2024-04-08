@@ -1,4 +1,6 @@
 <template lang="pug">
+ConfirmDialog
+
 .layout.my-0.mx-auto.px-3.w-full.overflow-hidden.flex.flex-column(:class="stepUnavailable || 'layout--lg-bottom'")
 	ProgressSpinner.mt-8(v-if="$props.loading")
 	template(v-else)
@@ -142,6 +144,9 @@ template(v-if="!stepUnavailable")
 
 <script>
 import { useTitle, useFavicon } from '@vueuse/core';
+import { useConfirm } from 'primevue/useconfirm';
+import ConfirmDialog from 'primevue/confirmdialog';
+import { i18n } from '@/i18n';
 import { useLogo } from '@/composables/utils';
 import { useBreakpoints } from '@/composables/breakpoints';
 import { InvoicePaymentLinkStatus } from '@/gql.ts';
@@ -162,6 +167,7 @@ export default {
 		const route = useRoute();
 		const logo = useLogo();
 		const { largeScreen } = useBreakpoints();
+		const confirmDialog = useConfirm();
 		const status = inject('status');
 		const organization = inject('organization');
 		const invoice = inject('invoice');
@@ -194,6 +200,18 @@ export default {
 		}
 
 		function handleSubmit() {
+			if (!route.name.includes('method')) {
+				confirmDialog.require({
+					header: i18n.t('payment.unavailableMethodsTitle'),
+					message: i18n.t('payment.unavailableMethodsDescription'),
+					acceptLabel: i18n.t('general.ok'),
+					rejectClass: 'hidden',
+					acceptClass: 'p-button-primary'
+				});
+
+				return;
+			}
+
 			summaryVisible.value = false;
 			emit('submit');
 		}

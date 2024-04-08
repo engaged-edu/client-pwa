@@ -60,6 +60,8 @@ export default {
 	totalPayment: 'Total do pagamento',
 	unavailableLink: 'Link indisponível',
 	unavailableLinkDescription: 'Este link não está mais disponível para compras.',
+	unavailableMethodsTitle: 'Opções de pagamento indisponíveis',
+	unavailableMethodsDescription: 'Não há opções de pagamento disponíveis.\n\nEntre em contato conosco!',
 	useOtherMethod: 'Utilizar outro método de pagamento',
 	youArePaying: 'Você está pagando',
 	youArePayingInfo: 'Você está pagando {0} de uma fatura com o valor total de {1}'
