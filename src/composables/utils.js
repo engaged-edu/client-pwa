@@ -49,14 +49,6 @@ export function useDate() {
 			}
 
 			switch (expirationRule.type) {
-				case InvoicePaymentLinkExpirationRuleType.DaysAfterCreation: {
-					const expirationDate = new Date(invoice.value.createdAt);
-
-					expirationDate.setDate(expirationDate.getDate() + expirationRule.days);
-
-					return expirationDate < new Date();
-				}
-
 				case InvoicePaymentLinkExpirationRuleType.SpecificDate: {
 					return new Date(expirationRule.date) < new Date();
 				}
@@ -69,14 +61,6 @@ export function useDate() {
 
 		getExpirationDate(expirationRule) {
 			switch (expirationRule.type) {
-				case InvoicePaymentLinkExpirationRuleType.DaysAfterCreation: {
-					const expirationDate = new Date(invoice.value.createdAt);
-
-					expirationDate.setDate(expirationDate.getDate() + expirationRule.days);
-
-					return expirationDate;
-				}
-
 				case InvoicePaymentLinkExpirationRuleType.SpecificDate: {
 					return new Date(expirationRule.date);
 				}
