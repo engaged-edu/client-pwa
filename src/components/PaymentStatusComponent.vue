@@ -52,6 +52,8 @@ Toast
 						v-html="$t('payment.installmentOption', [payment.installments, $n((payment.amount / payment.installments) / 100, payment.currency)])"
 					)
 					div(v-if="isStatus(PaymentStatus.WaitingPayment)") {{ $t('payment.expiration') }}: {{ $d(payment.expirationDate, 'short') }}
+						div(v-if="isMethod(PaymentMethod.Pix) && invoice.methods.pix?.expirationRule.type === InvoicePaymentLinkExpirationRuleType.MinutesAfterCreation") {{ $t('general.atTime') }} {{ $d(payment.expirationDate, 'time') }}&nbsp;
+							span.font-semibold (#[TimeLeft.font-semibold(:time="payment.expirationDate")])
 					div(v-else-if="isStatus(PaymentStatus.Paid)") {{ $t('payment.paidAt') }}: {{ $d(payment.updatedAt, 'short') }}
 
 			template(v-if="isStatus(PaymentStatus.WaitingPayment)")
@@ -163,7 +165,11 @@ import { useClipboard } from '@vueuse/core';
 import { i18n } from '@/i18n';
 import { useBreakpoints } from '@/composables/breakpoints';
 import { useCreditCardForm } from '@/composables/creditCard';
-import { PaymentMethod, PaymentStatus } from '@/gql.ts';
+import {
+	PaymentMethod,
+	PaymentStatus,
+	InvoicePaymentLinkExpirationRuleType
+} from '@/gql.ts';
 
 const toast = useToast();
 const { largeScreen } = useBreakpoints();

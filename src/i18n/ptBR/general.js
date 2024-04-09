@@ -1,5 +1,6 @@
 export default {
 	address: 'Endereço',
+	atTime: 'às',
 	available: 'Disponível',
 	cnpj: 'CNPJ',
 	copied: 'Copiado!',
@@ -23,6 +24,7 @@ export default {
 		legal: 'Você é',
 		phoneNumber: 'Seu telefone'
 	},
+	minute: '{n} minuto|{n} minutos',
 	no: 'Não',
 	notSupported: 'Não suportado',
 	ok: 'Ok',
@@ -30,10 +32,12 @@ export default {
 	phone: 'Telefone',
 	poweredBy: 'Powered by',
 	safeEnv: 'Ambiente 100% seguro',
+	second: '{n} segundo|{n} segundos',
 	showAllData: 'Ver todos os dados',
 	showContent: 'Mostrar conteúdo',
 	typeYourInfo: 'Digite seus dados',
 	unavailableAt: 'Indisponível em {0}',
 	until: 'até',
+	withinTime: 'em',
 	yes: 'Sim'
 };

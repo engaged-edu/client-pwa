@@ -24,6 +24,10 @@ const i18n = createI18n({
 				month: 'short',
 				day: 'numeric'
 			},
+			time: {
+				hour: 'numeric',
+				minute: 'numeric'
+			},
 			short: {
 				year: 'numeric',
 				month: 'numeric',
