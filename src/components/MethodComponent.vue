@@ -68,17 +68,19 @@ const router = useRouter();
 const route = useRoute();
 const { largeScreen } = useBreakpoints();
 const { isExpired, getExpirationDate } = useDate();
-const isPossibleTab = (method) => method.enabled && !isExpired(method?.expirationRule);
+const isPossibleTab = (method) => method?.enabled && !isExpired(method?.expirationRule);
 const firstPossibleTab = ref((Object.entries(props.methods).find(([key, value]) => isPossibleTab(value)) || [])[0]);
 const currentTab = computed(() => Object.keys(methodRoutes).find((tab) => methodRoutes[tab] === route.name));
 
-if ((!route.name.includes('method') || !isPossibleTab(props.methods[currentTab.value])) && firstPossibleTab.value) {
-	router.push({
-		name: methodRoutes[firstPossibleTab.value],
-		query: route.query
-	});
-} else {
-	router.push({ name: props.type });
+if (!currentTab.value || !isPossibleTab(props.methods[currentTab.value])) {
+	if (firstPossibleTab.value) {
+		router.push({
+			name: methodRoutes[firstPossibleTab.value],
+			query: route.query
+		});
+	} else {
+		router.push({ name: props.type });
+	}
 }
 </script>
 
