@@ -1,6 +1,6 @@
 <template lang="pug">
 ConfirmDialog
-
+pre {{ pixWatcher }}
 CheckoutLayout(
 	ref="$CheckoutLayout"
 	:loading="isLoading"
@@ -177,8 +177,9 @@ const {
 	refetch: refetchPurchase,
 	onResult: onResultPurchase
 } = useLazyQuery(publicFetchStudentCheckoutPurchase);
-const { watchPix } = useWatchPix(refetchPurchase, allowLoader);
-const emailChecked = ref(false);
+const { watchPix, clearPixWatcher } = useWatchPix(refetchPurchase, allowLoader);
+const pixWatcher = ref();
+const emailChecked = ref();
 
 async function handleSubmit() {
 	const {
@@ -266,6 +267,8 @@ function handleCancelPayment() {
 		header: i18n.t('payment.confirmCancelPayment'),
 		message: i18n.t('payment.confirmCancelPaymentDescription'),
 		accept: () => {
+			clearPixWatcher();
+
 			cancelPayment({
 				checkoutSharedId: checkoutSharedId.value,
 				paymentId: payment.value._id

@@ -101,19 +101,27 @@ export function useMasks() {
 }
 
 export function useWatchPix(refetch, allowLoader) {
+	const timeoutIDs = [];
+
 	return {
 		watchPix(payment) {
 			if (!payment || !(payment.paymentMethod === PaymentMethod.Pix && payment.status === PaymentStatus.WaitingPayment)) {
 				return;
 			}
 
-			window.setTimeout(async () => {
+			timeoutIDs.push(window.setTimeout(async () => {
 				allowLoader.value = false;
 
 				await refetch();
 
 				allowLoader.value = true;
-			}, 5000);
+			}, 5000));
+		},
+
+		clearPixWatcher() {
+			timeoutIDs.forEach((id) => {
+				clearTimeout(id);
+			});
 		}
 	};
 }
