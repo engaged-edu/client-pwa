@@ -1,9 +1,9 @@
 <template lang="pug">
 .flex.flex-column.align-items-center.gap-3.mb-4
-	.text-xs {{ $t('payment.youArePaying') }}
-	.text-base.font-bold {{ $t('cur', [invoice.amount, invoice.currency]) }}
-	.text-xs(v-if="$route.name.includes('payment-link')") {{ $t('payment.ofTotal', [$t('cur', [invoice.total, invoice.currency])]) }}
+	.text-base.font-bold {{ products[0].name }}
+	.text-xs.text-center.ellipsis.ellipsis-3(v-if="products[0].description") {{ products[0].description }}
 	Button.surface-card(
+		v-if="products.length > 1"
 		text
 		plain
 		raised
@@ -18,6 +18,7 @@
 
 <script setup>
 const invoice = inject('invoice');
+const products = inject('products');
 
 defineProps({
 	handleShowSummary: {
