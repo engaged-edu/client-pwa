@@ -40,8 +40,6 @@ export function useFormatText() {
 }
 
 export function useDate() {
-	const invoice = inject('invoice');
-
 	return {
 		isExpired(expirationRule) {
 			if (!expirationRule) {
@@ -62,7 +60,11 @@ export function useDate() {
 		getExpirationDate(expirationRule) {
 			switch (expirationRule.type) {
 				case InvoicePaymentLinkExpirationRuleType.SpecificDate: {
-					return new Date(expirationRule.date);
+					const expirationDate = new Date(expirationRule.date);
+
+					expirationDate.setDate(expirationDate.getDate() + 1);
+
+					return expirationDate;
 				}
 			}
 		}

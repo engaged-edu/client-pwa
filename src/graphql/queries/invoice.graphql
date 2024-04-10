@@ -106,6 +106,18 @@ query publicFetchInvoicePaymentLink(
 		}
 		pix {
 			enabled
+			expirationRule {
+				type
+				... on InvoicePaymentLinkDaysAfterCreationExpirationRule {
+					days
+				}
+				... on InvoicePaymentLinkMinutesAfterCreationExpirationRule {
+					minutes
+				}
+				... on InvoicePaymentLinkSpecificDateExpirationRule {
+					date
+				}
+			}
 		}
 		creditCard {
 			enabled
