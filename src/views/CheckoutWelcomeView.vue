@@ -32,7 +32,7 @@
 					.flex.align-items-center.gap-1.white-space-nowrap.text-green-500
 						i-mdi-check-circle-outline.text-lg
 						| {{ $t('checkout.welcome.confirmedPurchase') }} #[span.font-bold \#{{ data.payment.purchase._id }}]
-					.flex.align-items-center.gap-1.white-space-nowrap.text-blue-500
+					.flex.align-items-center.gap-1.white-space-nowrap.text-blue-500(v-if="data.payment.paymentMethod === PaymentMethod.CreditCard")
 						i-mdi-list-box-outline.text-lg
 						| {{ $t('checkout.welcome.softDescriptor') }}: #[span.font-bold {{ organization.softDescriptor }}]
 
@@ -131,7 +131,8 @@ import {
 	InvoiceItemType,
 	ProductType,
 	AccessExpirationRuleType,
-	TimeUnit
+	TimeUnit,
+	PaymentMethod
 } from '@/gql.ts';
 
 const router = useRouter();
