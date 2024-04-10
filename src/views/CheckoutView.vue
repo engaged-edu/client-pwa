@@ -1,6 +1,6 @@
 <template lang="pug">
 ConfirmDialog
-pre {{ pixWatcher }}
+
 CheckoutLayout(
 	ref="$CheckoutLayout"
 	:loading="isLoading"
@@ -30,6 +30,7 @@ CheckoutLayout(
 		PaymentStatusComponent(
 			v-if="payment?._id || currentStep === 'unavailable'"
 			:handle-cancel-payment="handleCancelPayment"
+			:handle-payment-expired="handlePaymentExpired"
 		)
 </template>
 
@@ -284,6 +285,10 @@ function handleCancelPayment() {
 		rejectClass: 'p-button-secondary p-button-outlined',
 		acceptClass: 'p-button-danger'
 	});
+}
+
+function handlePaymentExpired() {
+	currentStep.value = 'initial';
 }
 
 async function setPayment(currentPayment) {

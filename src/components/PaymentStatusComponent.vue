@@ -1,13 +1,14 @@
 <template lang="pug">
 Toast
+ConfirmDialog
 
 .payment-status.border-round-xl.shadow-1.relative.mt-5.py-5.px-3(
 	class="lg:py-7 lg:px-8"
-	:class="{ 'surface-0 border-700': !payment?._id, 'bg-yellow-50 border-yellow-500': isStatus(PaymentStatus.WaitingPayment), 'bg-green-50 border-green-500': isStatus(PaymentStatus.Paid) }"
+	:class="{ 'surface-0 border-700': !payment?._id, 'bg-yellow-50 border-yellow-500': isStatus(PaymentStatus.WaitingPayment), 'bg-green-50 border-green-500': isStatus(PaymentStatus.Paid), 'bg-gray-50 border-gray-800': isStatus(PaymentStatus.Expired) }"
 )
 	.payment-status__icon.border-circle.text-white.w-3rem.h-3rem.flex.justify-content-center.align-items-center.absolute.top-0.left-50(
 		class="lg:w-5rem lg:h-5rem"
-		:class="{ 'surface-700': !payment?._id, 'bg-yellow-500': isStatus(PaymentStatus.WaitingPayment), 'bg-green-500': isStatus(PaymentStatus.Paid) }"
+		:class="{ 'surface-700': !payment?._id, 'bg-yellow-500': isStatus(PaymentStatus.WaitingPayment), 'bg-green-500': isStatus(PaymentStatus.Paid), 'bg-gray-800': isStatus(PaymentStatus.Expired) }"
 	)
 		IconOk.text-5xl(
 			v-if="isStatus(PaymentStatus.Paid)"
@@ -51,9 +52,9 @@ Toast
 						v-if="isMethod(PaymentMethod.CreditCard)"
 						v-html="$t('payment.installmentOption', [payment.installments, $n((payment.amount / payment.installments) / 100, payment.currency)])"
 					)
-					div(v-if="isStatus(PaymentStatus.WaitingPayment)") {{ $t('payment.expiration') }}: {{ $d(payment.expirationDate, 'short') }}
+					div(v-if="isStatus(PaymentStatus.WaitingPayment) || isStatus(PaymentStatus.Expired)") {{ $t('payment.expiration') }}: {{ $d(payment.expirationDate, 'short') }}
 						div(v-if="isMethod(PaymentMethod.Pix) && invoice.methods.pix?.expirationRule.type === InvoicePaymentLinkExpirationRuleType.MinutesAfterCreation") {{ $t('general.atTime') }} {{ $d(payment.expirationDate, 'time') }}&nbsp;
-							span.font-semibold (#[TimeLeft.font-semibold(:time="payment.expirationDate")])
+							span.font-semibold(v-if="!isStatus(PaymentStatus.Expired)") (#[TimeLeft.font-semibold(:time="payment.expirationDate")])
 					div(v-else-if="isStatus(PaymentStatus.Paid)") {{ $t('payment.paidAt') }}: {{ $d(payment.updatedAt, 'short') }}
 
 			template(v-if="isStatus(PaymentStatus.WaitingPayment)")
@@ -133,7 +134,7 @@ Toast
 						severity="primary"
 						:size="largeScreen || 'small'"
 						:label="$t('payment.useOtherMethod')"
-						@click="handleCancelPayment"
+						@click="$props.handleCancelPayment"
 					)
 						template(#icon)
 							IconLeft.p-button-icon-left
@@ -159,9 +160,11 @@ Toast
 </template>
 
 <script setup>
-import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { useConfirm } from 'primevue/useconfirm';
 import { useClipboard } from '@vueuse/core';
+import Toast from 'primevue/toast';
+import ConfirmDialog from 'primevue/confirmdialog';
 import { i18n } from '@/i18n';
 import { useBreakpoints } from '@/composables/breakpoints';
 import { useCreditCardForm } from '@/composables/creditCard';
@@ -171,7 +174,18 @@ import {
 	InvoicePaymentLinkExpirationRuleType
 } from '@/gql.ts';
 
+const props = defineProps({
+	handleCancelPayment: {
+		type: Function,
+		required: true
+	},
+	handlePaymentExpired: {
+		type: Function,
+		required: true
+	}
+});
 const toast = useToast();
+const confirmDialog = useConfirm();
 const { largeScreen } = useBreakpoints();
 const invoice = inject('invoice');
 const payment = inject('payment');
@@ -185,13 +199,7 @@ const {
 	source: payment.value?.code,
 	legacy: true
 });
-
-defineProps({
-	handleCancelPayment: {
-		type: Function,
-		required: true
-	}
-});
+const expiredDialog = ref(false);
 
 function isMethod(paymentMethod) {
 	return payment.value.paymentMethod === paymentMethod;
@@ -216,6 +224,26 @@ function handleCopyCode(value) {
 		});
 	}
 }
+
+watch(() => payment.value?.status, (newStatus, oldStatus) => {
+	if (newStatus === oldStatus || expiredDialog.value) {
+		return;
+	}
+
+	if (isStatus(PaymentStatus.Expired) && isMethod(PaymentMethod.Pix)) {
+		expiredDialog.value = true;
+
+		confirmDialog.require({
+			header: i18n.t('payment.pixExpiredTitle'),
+			message: i18n.t('payment.pixExpiredDescription'),
+			accept: props.handlePaymentExpired,
+			onHide: props.handlePaymentExpired,
+			acceptLabel: i18n.t('general.ok'),
+			rejectClass: 'hidden',
+			acceptClass: 'p-button-primary'
+		});
+	}
+});
 </script>
 
 <style lang="stylus">

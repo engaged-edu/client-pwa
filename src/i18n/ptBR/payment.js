@@ -44,6 +44,8 @@ export default {
 	pendingPurchaseTitle: 'Conclua sua compra',
 	pendingPurchaseDescription: 'Identificamos uma compra em andamento com o e-mail informado.\n\nConclua a compra ou clique em "Utilizar outro método de pagamento" para escolher pagar de outra forma.',
 	pixCode: 'Código PIX',
+	pixExpiredTitle: 'PIX expirado',
+	pixExpiredDescription: 'O PIX expirou. Não se preocupe, você pode selecionar uma nova forma de pagamento clicando no botão "OK" abaixo. \n\nSe você já efetuou o pagamento, por favor, ignore esta mensagem.',
 	pixInstructions: [
 		'Clique em "<strong>Finalizar pagamento</strong>" para gerar o código e o QR Code.',
 		'Acesse o app do seu banco ou internet banking de preferência.',
