@@ -57,7 +57,7 @@
 
 							p.text-sm.m-0.mt-3.ellipsis.ellipsis-3(v-if="product.description") {{ product.description }}
 
-							ul.font-semibold.line-height-3.p-0.pl-3.m-0.mt-3(v-if="!!product.accesses && product.showAccesses")
+							ul.text-sm.font-semibold.line-height-3.p-0.pl-3.m-0.mt-3(v-if="!!product.accesses && product.showAccesses")
 								li(
 									v-for="access in product?.accesses"
 									:key="access"
