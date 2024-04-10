@@ -6,7 +6,7 @@
 
 		.surface-0.p-3.text-color-secondary.line-height-3(class="lg:p-6")
 			.layout__box
-				h1.font-bold.text-center.text-xl.text-green-500.my-0(class="lg:text-4xl") {{ $t('checkout.welcome.title', [data.user.name]) }}
+				h1.font-bold.text-center.text-xl.text-green-500.my-0(class="lg:text-4xl") {{ $t('checkout.welcome.title', [data.user.name.split(' ')[0]]) }}
 
 				p.text-color-secondary.mt-3.mb-0 {{ $t('checkout.welcome.hero.intro') }}
 				p.mt-3.mb-0 {{ $t('checkout.welcome.hero.instructionTitle') }}:
