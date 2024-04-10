@@ -11,11 +11,17 @@
 				p.text-color-secondary.mt-3.mb-0 {{ $t('checkout.welcome.hero.intro') }}
 				p.mt-3.mb-0 {{ $t('checkout.welcome.hero.instructionTitle') }}:
 				ul.m-0.p-0.pl-3
-					li(v-html="$t('checkout.welcome.hero.instruction1', [$t('checkout.welcome.accessContent')])")
+					li(
+						v-if="hasAccesses"
+						v-html="$t('checkout.welcome.hero.instruction1', [$t('checkout.welcome.accessContent')])"
+					)
 					li(v-html="$t('checkout.welcome.hero.instruction2', [data.user.email])")
 				p.text-color-secondary.mt-3.mb-0 {{ $t('checkout.welcome.hero.outro') }}
 
-				.block.mt-3.text-center(class="lg:mt-6")
+				.block.mt-3.text-center(
+					v-if="hasAccesses"
+					class="lg:mt-6"
+				)
 					a.no-underline(
 						:href="accessUrl"
 						:title="$t('checkout.welcome.accessContent')"
@@ -68,7 +74,10 @@
 								@click="product.showAccesses = !product.showAccesses"
 							)
 
-		.surface-0.p-3.text-gray-600.line-height-3(class="lg:p-6")
+		.surface-0.p-3.text-gray-600.line-height-3(
+			v-if="hasAccesses"
+			class="lg:p-6"
+		)
 			.layout__box
 				h1.font-bold.text-center.text-xl.my-0(class="lg:text-4xl") {{ $t('checkout.welcome.steps.title') }}
 
@@ -152,6 +161,7 @@ const organization = computed(() => {
 });
 const paidAt = computed(() => data.value?.payment.statusAt);
 const products = ref([]);
+const hasAccesses = ref(false);
 
 function getExpirationDate(expirationRule) {
 	if (!expirationRule) {
@@ -243,6 +253,7 @@ onResult((res) => {
 			};
 
 			if (item.product.type === ProductType.Access) {
+				hasAccesses.value = true;
 				product.showAccesses = false;
 				product.accesses = item.product.accesses.map((access) => `${access.course.name} - ${access.room.name}`);
 			}
