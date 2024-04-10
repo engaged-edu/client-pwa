@@ -15,6 +15,45 @@ mutation publicCreatePaymentFromInvoicePaymentLink(
 		invoicePaymentLink {
 			_id
 			status
+			pix {
+				enabled
+				expirationRule {
+					type
+					... on InvoicePaymentLinkDaysAfterCreationExpirationRule {
+						days
+					}
+					... on InvoicePaymentLinkMinutesAfterCreationExpirationRule {
+						minutes
+					}
+					... on InvoicePaymentLinkSpecificDateExpirationRule {
+						date
+					}
+				}
+			}
+			creditCard {
+				enabled
+				installmentsRule {
+					type
+					... on InvoicePaymentLinkCreditCardUpToInstallmentsRule {
+						upTo
+					}
+					... on InvoicePaymentLinkCreditCardSpecificInstallmentsInstallmentsRule {
+						installments
+					}
+				}
+			}
+			bankSlip {
+				enabled
+				expirationRule {
+					type
+					... on InvoicePaymentLinkDaysAfterCreationExpirationRule {
+						days
+					}
+					... on InvoicePaymentLinkSpecificDateExpirationRule {
+						date
+					}
+				}
+			}
 		}
 		invoice {
 			paidAmount
@@ -49,7 +88,6 @@ mutation publicCreatePaymentFromInvoicePaymentLink(
 				expirationDate
 				qrCodeUrl
 			}
-
 		}
 	}
 }

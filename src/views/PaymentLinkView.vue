@@ -82,6 +82,7 @@ const {
 } = useQuery(publicFetchInvoicePaymentLink, { accessToken });
 const status = ref(null);
 const payment = ref(null);
+const paymentMethodsConfig = ref(null);
 const paymentLinkData = computed(() => paymentLinkResult.value?.publicFetchInvoicePaymentLink);
 const products = computed(() => paymentLinkData.value?.invoice?.items.map((item) => {
 	const isProduct = item?.type === InvoiceItemType.Product;
@@ -117,10 +118,10 @@ const invoice = computed(() => {
 		updatedAt: paymentLinkData.value?.updatedAt,
 		status: paymentLinkData.value?.status,
 		expirationDate: paymentLinkData.value?.expirationDate,
-		methods: {
-			creditCard: paymentLinkData.value?.creditCard.enabled || false,
-			bankSlip: paymentLinkData.value?.bankSlip.enabled || false,
-			pix: paymentLinkData.value?.pix.enabled || false
+		methods: paymentMethodsConfig.value || {
+			creditCard: paymentLinkData.value?.creditCard,
+			bankSlip: paymentLinkData.value?.bankSlip,
+			pix: paymentLinkData.value?.pix
 		},
 		currency: paymentLinkData.value?.invoice?.currency,
 		discounts: totalDiscount,
@@ -282,6 +283,12 @@ onCreatedPayment(async (result) => {
 
 		return;
 	}
+
+	paymentMethodsConfig.value = {
+		creditCard: data.invoicePaymentLink.creditCard,
+		bankSlip: data.invoicePaymentLink.bankSlip,
+		pix: data.invoicePaymentLink.pix
+	};
 
 	await setPayment(data.payment);
 

@@ -90,6 +90,7 @@ const {
 } = useQuery(publicFetchCheckout, { checkoutSharedId: checkoutSharedId.value });
 const status = ref(null);
 const payment = ref(null);
+const paymentMethodsConfig = ref(null);
 const checkoutData = computed(() => checkoutResult.value?.publicFetchCheckout);
 const products = computed(() => checkoutData.value.invoiceItems.map((item) => {
 	const isProduct = item?.type === InvoiceItemType.Product;
@@ -123,7 +124,7 @@ const invoice = computed(() => {
 		updatedAt: checkoutData.value?.updatedAt,
 		status: checkoutData.value?.status,
 		expirationDate: checkoutData.value?.expirationDate,
-		methods: {
+		methods: paymentMethodsConfig.value || {
 			creditCard: checkoutData.value?.paymentMethodsConfig.creditCard,
 			bankSlip: checkoutData.value?.paymentMethodsConfig.bankSlip,
 			pix: checkoutData.value?.paymentMethodsConfig.pix
@@ -418,6 +419,7 @@ onCreatedPayment(async (result) => {
 	}
 
 	magicToken.value = data.magicToken;
+	paymentMethodsConfig.value = data.checkout.paymentMethodsConfig;
 
 	await setPayment(data.payment);
 

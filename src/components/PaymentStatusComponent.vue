@@ -173,8 +173,8 @@ import {
 
 const toast = useToast();
 const { largeScreen } = useBreakpoints();
-const payment = inject('payment');
 const invoice = inject('invoice');
+const payment = inject('payment');
 const percentage = computed(() => invoice.value.paid / invoice.value.total * 100);
 const { currentInstallment } = useCreditCardForm(invoice);
 const {
