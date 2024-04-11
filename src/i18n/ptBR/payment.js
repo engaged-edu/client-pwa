@@ -56,7 +56,7 @@ export default {
 	processingPurchase: 'Estamos processando sua compra',
 	purchaseCompletedTitle: 'Compra concluída com o e-mail informado',
 	purchaseCompletedDescription: 'Identificamos uma compra já associada a este endereço de e-mail.\n\nVerifique sua caixa de entrada e, caso necessário, insira um outro e-mail para prosseguir com sua compra.',
-	showSummary: 'Ver resumo dos itens',
+	showSummary: 'Ver todos os itens',
 	terms: 'A EngagED está processando o pagamento de {0}. {1} Ao prosseguir você concorda com os {2}, políticas de {3} e {4}.',
 	title: 'Link de Pagamento',
 	totalPayment: 'Total do pagamento',

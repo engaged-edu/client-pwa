@@ -1,7 +1,7 @@
 <template lang="pug">
-.flex.flex-column.align-items-center.gap-3.mb-4
+.flex.flex-column.align-items-center.gap-3.mb-4.text-center
 	.text-base.font-bold {{ products[0].name }}
-	.text-xs.text-center.ellipsis.ellipsis-3(v-if="products[0].description") {{ products[0].description }}
+	.text-xs.ellipsis.ellipsis-3(v-if="products[0].description") {{ products[0].description }}
 	Button.surface-card(
 		v-if="products.length > 1"
 		text
