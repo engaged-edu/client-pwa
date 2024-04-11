@@ -1,6 +1,5 @@
 <template lang="pug">
 Toast
-ConfirmDialog
 
 .payment-status.border-round-xl.shadow-1.relative.mt-5.py-5.px-3(
 	class="lg:py-7 lg:px-8"
@@ -164,7 +163,6 @@ import { useToast } from 'primevue/usetoast';
 import { useConfirm } from 'primevue/useconfirm';
 import { useClipboard } from '@vueuse/core';
 import Toast from 'primevue/toast';
-import ConfirmDialog from 'primevue/confirmdialog';
 import { i18n } from '@/i18n';
 import { useBreakpoints } from '@/composables/breakpoints';
 import { useCreditCardForm } from '@/composables/creditCard';
