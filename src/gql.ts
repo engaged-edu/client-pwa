@@ -12336,7 +12336,7 @@ export type AdminFetchPurchasesQuery = (
         )> }
       ) | (
         { __typename?: 'CreditCardPayment' }
-        & Pick<CreditCardPayment, 'paymentMethod' | 'amount' | 'status' | 'scheduleTotalInstallments'>
+        & Pick<CreditCardPayment, 'installments' | 'paymentMethod' | 'amount' | 'status' | 'scheduleTotalInstallments'>
         & { invoice?: Maybe<(
           { __typename?: 'Invoice' }
           & Pick<Invoice, 'expirationDate'>
