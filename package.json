@@ -3,10 +3,11 @@
   "version": "1.1.0",
   "private": true,
   "scripts": {
-	"start": "node server.mjs",
+	"serve": "node dist/server.mjs",
     "predev": "yarn hooks && yarn gql",
     "dev": "vite --host",
     "build": "vite build",
+    "postbuild": "chmod +x bin/postbuild.sh && ./bin/postbuild.sh",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore",
     "hooks": "cp -a .hooks/. .git/hooks/",

@@ -54,7 +54,7 @@ app.get('/', async (req, res) => {
 	let browserWSEndpoint = null;
 
 	if (!url) {
-		return res.status(400).send('Invalid url param: Example: ?url=https://binge.app');
+		return res.status(400);
 	}
 
 	if (!browserWSEndpoint) {
