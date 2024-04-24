@@ -1,25 +1,62 @@
 <template lang="pug">
 Teleport(to="head")
-	meta(property="og:type" content="website")
-	meta(name="twitter:card" content="summary_large_image")
+	meta(
+		property="og:type"
+		content="website"
+	)
+	meta(
+		name="twitter:card"
+		content="summary_large_image"
+	)
 
 	template(v-if="head?.title")
 		title {{ head.title }}
-		meta(property="og:title" :content="head.title")
-		meta(name="twitter:title" :content="head.title")
+		meta(
+			property="og:title"
+			:content="head.title"
+		)
+		meta(
+			name="twitter:title"
+			:content="head.title"
+		)
 
 	template(v-if="head?.description")
-		meta(name="description" :content="head.description")
-		meta(property="og:description" :content="head.description")
-		meta(name="twitter:description" :content="head.description")
+		meta(
+			name="description"
+			:content="head.description"
+		)
+		meta(
+			property="og:description"
+			:content="head.description"
+		)
+		meta(
+			name="twitter:description"
+			:content="head.description"
+		)
 
 	template(v-if="head?.favicon")
-		link(rel="icon" type="image/png" sizes="32x32" :href="head.favicon")
-		link(rel="icon" type="image/png" sizes="256x256" :href="head.favicon")
+		link(
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			:href="head.favicon"
+		)
+		link(
+			rel="icon"
+			type="image/png"
+			sizes="256x256"
+			:href="head.favicon"
+		)
 
 	template(v-if="head?.image")
-		meta(property="og:image" :content="head.image")
-		meta(name="twitter:image" :content="head.image")
+		meta(
+			property="og:image"
+			:content="head.image"
+		)
+		meta(
+			name="twitter:image"
+			:content="head.image"
+		)
 
 RouterView
 </template>
