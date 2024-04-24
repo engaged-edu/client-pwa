@@ -143,11 +143,10 @@ template(v-if="!stepUnavailable")
 </template>
 
 <script>
-import { useTitle, useFavicon } from '@vueuse/core';
 import { useConfirm } from 'primevue/useconfirm';
 import ConfirmDialog from 'primevue/confirmdialog';
 import { i18n } from '@/i18n';
-import { useLogo } from '@/composables/utils';
+import { useLogo, useHead } from '@/composables/utils';
 import { useBreakpoints } from '@/composables/breakpoints';
 import { InvoicePaymentLinkStatus } from '@/gql.ts';
 
@@ -166,11 +165,13 @@ export default {
 	setup(props, { expose, emit }) {
 		const route = useRoute();
 		const logo = useLogo();
+		const { setHead } = useHead();
 		const { largeScreen } = useBreakpoints();
 		const confirmDialog = useConfirm();
 		const status = inject('status');
 		const organization = inject('organization');
 		const invoice = inject('invoice');
+		const products = inject('products');
 		const summaryVisible = ref(false);
 		const dialogVisible = ref(false);
 		const dialogContent = ref({
@@ -230,8 +231,12 @@ export default {
 				document.querySelector('[name="theme-color"]').setAttribute('content', org.color);
 			}
 
-			useTitle(`${org.name} - ${route.meta.title}`);
-			useFavicon(org.logo32Url);
+			setHead({
+				title: `${org.name} - ${products.value[0].name}`,
+				description: products.value[0]?.description,
+				favicon: org.logo32Url,
+				image: org.logo256Url
+			});
 		});
 
 		return {

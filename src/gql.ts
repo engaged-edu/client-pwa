@@ -2429,6 +2429,28 @@ export enum FileStorage {
   FilestackS3 = 'FILESTACK_S3'
 }
 
+export enum FilestackAlignOptions {
+  Bottom = 'bottom',
+  Center = 'center',
+  Left = 'left',
+  Right = 'right',
+  Top = 'top'
+}
+
+export enum FilestackFitOptions {
+  Clip = 'clip',
+  Crop = 'crop',
+  Max = 'max',
+  Scale = 'scale'
+}
+
+export type FilestackResizeTransformOptionsInput = {
+  align?: Maybe<FilestackAlignOptions>;
+  fit?: Maybe<FilestackFitOptions>;
+  height?: Maybe<Scalars['Int']>;
+  width?: Maybe<Scalars['Int']>;
+};
+
 export type FilestackS3File = EntityCommonFieldsInterface & File & {
   __typename?: 'FilestackS3File';
   _id: Scalars['ObjectId'];
@@ -2437,8 +2459,8 @@ export type FilestackS3File = EntityCommonFieldsInterface & File & {
   container: Scalars['String'];
   contentType: Scalars['String'];
   createdAt: Scalars['DateTime'];
-  createdBy: User;
-  createdById: Scalars['String'];
+  createdBy?: Maybe<User>;
+  createdById?: Maybe<Scalars['String']>;
   deletedAt?: Maybe<Scalars['DateTime']>;
   deletedAtServer?: Maybe<Scalars['Boolean']>;
   deletedBy?: Maybe<User>;
@@ -2458,6 +2480,19 @@ export type FilestackS3File = EntityCommonFieldsInterface & File & {
   title?: Maybe<Scalars['String']>;
   updatedAt: Scalars['DateTime'];
   url?: Maybe<Scalars['String']>;
+};
+
+export type FilestackTransformOptionsInput = {
+  output?: Maybe<FilestackTransformOutputOptionsInput>;
+  resize?: Maybe<FilestackResizeTransformOptionsInput>;
+};
+
+export type FilestackTransformOutputOptionsInput = {
+  compress?: Maybe<Scalars['Boolean']>;
+  /** Ex: png, jpg, pdf... */
+  format?: Maybe<Scalars['String']>;
+  /** 0-100 */
+  quality?: Maybe<Scalars['Int']>;
 };
 
 export type FixedFee = {
@@ -3814,6 +3849,7 @@ export type MutationAdminCreateFilestackS3FileArgs = {
   originalPath: Scalars['String'];
   size: Scalars['Float'];
   source: Scalars['String'];
+  transformOptions?: Maybe<FilestackTransformOptionsInput>;
   uploadId: Scalars['String'];
   url: Scalars['String'];
 };
@@ -4860,6 +4896,10 @@ export type Organization = {
 
 export type OrganizationAppearance = {
   __typename?: 'OrganizationAppearance';
+  loginBackgroundImg?: Maybe<FilestackS3File>;
+  loginBackgroundImgId?: Maybe<Scalars['String']>;
+  loginBackgroundImgMobile?: Maybe<FilestackS3File>;
+  loginBackgroundImgMobileId?: Maybe<Scalars['String']>;
   logo?: Maybe<FilestackS3File>;
   logoId?: Maybe<Scalars['String']>;
   primaryColor: Scalars['String'];
@@ -4870,6 +4910,7 @@ export type OrganizationAppearance = {
 };
 
 export type OrganizationAppearanceInput = {
+  loginBackgroundImgId?: Maybe<Scalars['String']>;
   logoId?: Maybe<Scalars['String']>;
   primaryColor?: Maybe<Scalars['String']>;
   squareLogo32Id?: Maybe<Scalars['String']>;
@@ -6151,6 +6192,7 @@ export type Query = {
   adminFetchLogs: PaginatedLogResponse;
   adminFetchMember?: Maybe<Member>;
   adminFetchMembers: PaginatedMemberResponse;
+  adminFetchOrganization?: Maybe<Organization>;
   adminFetchOrganizationCurrentDate: FetchOrganizationCurrentDateResponse;
   adminFetchOrganizations: PaginatedOrganizationResponse;
   adminFetchPayment?: Maybe<Payment>;
@@ -6514,6 +6556,11 @@ export type QueryAdminFetchMembersArgs = {
   organizationId: Scalars['String'];
   paginationArgs?: Maybe<PagePaginationInput>;
   userIds?: Maybe<Array<Scalars['String']>>;
+};
+
+
+export type QueryAdminFetchOrganizationArgs = {
+  organizationId: Scalars['String'];
 };
 
 
@@ -8406,6 +8453,12 @@ export type FetchOrganizationFragment = (
     )>, squareLogo256?: Maybe<(
       { __typename?: 'FilestackS3File' }
       & FetchFileFragment
+    )>, loginBackgroundImg?: Maybe<(
+      { __typename?: 'FilestackS3File' }
+      & FetchFileFragment
+    )>, loginBackgroundImgMobile?: Maybe<(
+      { __typename?: 'FilestackS3File' }
+      & FetchFileFragment
     )> }
   )> }
 );
@@ -9510,6 +9563,7 @@ export type AdminUpdateOrganizationMutationVariables = Exact<{
   appearance?: Maybe<OrganizationAppearanceInput>;
   subdomains?: Maybe<Array<Scalars['String']> | Scalars['String']>;
   domains?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+  payment?: Maybe<OrganizationPaymentInput>;
   emailReplyToAddress?: Maybe<Scalars['String']>;
 }>;
 
@@ -10098,6 +10152,7 @@ export type AdminCreateFilestackS3FileMutationVariables = Exact<{
   container: Scalars['String'];
   acl: FileAcl;
   organizationId: Scalars['String'];
+  transformOptions?: Maybe<FilestackTransformOptionsInput>;
 }>;
 
 
@@ -11321,6 +11376,25 @@ export type AdminFetchMembersQuery = (
   ) }
 );
 
+export type AdminFetchOrganizationQueryVariables = Exact<{
+  organizationId: Scalars['String'];
+}>;
+
+
+export type AdminFetchOrganizationQuery = (
+  { __typename?: 'Query' }
+  & { adminFetchOrganization?: Maybe<(
+    { __typename?: 'Organization' }
+    & { payment?: Maybe<(
+      { __typename?: 'OrganizationPayment' }
+      & { creditCard?: Maybe<(
+        { __typename?: 'OrganizationPaymentCreditCard' }
+        & Pick<OrganizationPaymentCreditCard, 'softDescriptor'>
+      )> }
+    )> }
+  )> }
+);
+
 export type AdminFetchCertificateTemplatesQueryVariables = Exact<{
   organizationId: Scalars['String'];
 }>;
@@ -12336,7 +12410,7 @@ export type AdminFetchPurchasesQuery = (
         )> }
       ) | (
         { __typename?: 'CreditCardPayment' }
-        & Pick<CreditCardPayment, 'paymentMethod' | 'amount' | 'status' | 'scheduleTotalInstallments'>
+        & Pick<CreditCardPayment, 'installments' | 'paymentMethod' | 'amount' | 'status' | 'scheduleTotalInstallments'>
         & { invoice?: Maybe<(
           { __typename?: 'Invoice' }
           & Pick<Invoice, 'expirationDate'>

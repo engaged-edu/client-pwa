@@ -10,6 +10,20 @@ import {
 	InvoicePaymentLinkExpirationRuleType
 } from '@/gql.ts';
 
+const head = ref({ title: 'carregando...' });
+
+export function useHead() {
+	return {
+		head,
+		getHead() {
+			return head;
+		},
+		setHead(newHead) {
+			head.value = newHead;
+		}
+	};
+}
+
 export function useFormatText() {
 	const format = {
 		cpf(v) {

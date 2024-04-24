@@ -2293,6 +2293,11 @@ vue-i18n@9:
     "@intlify/shared" "9.7.0"
     "@vue/devtools-api" "^6.5.0"
 
+vue-meta@^3.0.0-alpha.2:
+  version "3.0.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/vue-meta/-/vue-meta-3.0.0-alpha.2.tgz#38b7c507b082a14902ea0b5155837164ee65ea1c"
+  integrity sha512-mLDB/vGjn2Q58IFKs5Dtp/STWZ0sEbkdM67u+YXuMreK5EjNHnqhcylQb+xn50pwxCdQD98nGgJlEXkh16Hqug==
+
 vue-router@^4.2.5:
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.2.5.tgz#b9e3e08f1bd9ea363fdd173032620bc50cf0e98a"
