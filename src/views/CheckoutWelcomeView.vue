@@ -150,7 +150,8 @@
 
 <script setup>
 import { useLazyQuery } from '@vue/apollo-composable';
-import { useLogo } from '@/composables/utils';
+import { i18n } from '@/i18n';
+import { useLogo, useHead } from '@/composables/utils';
 import { publicFetchStudentCheckoutPurchase } from '@/graphql';
 import {
 	InvoiceItemType,
@@ -163,6 +164,7 @@ import {
 const router = useRouter();
 const route = useRoute();
 const logo = useLogo();
+const { setHead } = useHead();
 const checkoutSharedId = computed(() => route.params.id);
 const magicToken = ref();
 const {
@@ -181,6 +183,7 @@ const organization = computed(() => {
 		id: org?._id,
 		name: org?.name,
 		logoUrl: logo.getLogo(org?.appearance),
+		favicon: logo.getLogo32(org?.appearance),
 		color: org?.appearance?.primaryColor,
 		softDescriptor: `Pg *Ed ${org?.payment?.creditCard.softDescriptor || ''}`
 	};
@@ -252,7 +255,7 @@ onBeforeMount(async () => {
 });
 
 onResult((res) => {
-	router.replace({ query: null });
+	// router.replace({ query: null });
 
 	if (res.loading) {
 		return;
@@ -297,6 +300,11 @@ onResult((res) => {
 			amount: item.amount * item.quantity
 		};
 	}) || [];
+
+	setHead({
+		title: i18n.t('checkout.welcome.title', [data.value.user.name.split(' ')[0]]),
+		favicon: organization.value.favicon
+	});
 });
 </script>
 
