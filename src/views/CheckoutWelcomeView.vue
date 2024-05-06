@@ -48,7 +48,6 @@
 							class="hover:underline"
 						) {{ data.organization.url }}
 
-
 				p.mt-3.mb-0 {{ $t('checkout.welcome.hero.outro') }}
 
 				.flex.flex-wrap.justify-content-center.gap-3.font-light.text-xs.mt-3(class="lg:mt-4")
