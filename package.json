@@ -6,7 +6,7 @@
     "predev": "yarn hooks && yarn gql",
     "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview --host",
+    "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore",
     "hooks": "cp -a .hooks/. .git/hooks/",
     "gql": "cp $(grep '^SCHEMA_GQL' .env.local | cut -d '=' -f2) ./src/gql.ts"
