@@ -8,25 +8,48 @@
 			.layout__box
 				h1.font-bold.text-center.text-xl.text-green-500.my-0(class="lg:text-4xl") {{ $t('checkout.welcome.title', [data.user.name.split(' ')[0]]) }}
 
-				p.text-color-secondary.mt-3.mb-0 {{ $t('checkout.welcome.hero.intro') }}
-				p.mt-3.mb-0 {{ $t('checkout.welcome.hero.instructionTitle') }}:
-				ul.m-0.p-0.pl-3
-					li(
-						v-if="hasAccesses"
-						v-html="$t('checkout.welcome.hero.instruction1', [$t('checkout.welcome.accessContent')])"
+				template(v-if="hasAccesses")
+					p.mt-3.mb-0 {{ $t('checkout.welcome.hero.access.p1') }}
+					p.mt-3.mb-0 {{ $t('checkout.welcome.hero.access.p2') }}
+					i18n-t.mt-3.mb-0(
+						keypath="checkout.welcome.hero.access.p3"
+						tag="p"
 					)
-					li(v-html="$t('checkout.welcome.hero.instruction2', [data.user.email])")
-				p.text-color-secondary.mt-3.mb-0 {{ $t('checkout.welcome.hero.outro') }}
+						template(#email)
+							span.font-bold {{ data.user.email }}
 
-				.block.mt-3.text-center(
-					v-if="hasAccesses"
-					class="lg:mt-6"
+				i18n-t.mt-3.mb-0(
+					v-else
+					keypath="checkout.welcome.hero.other"
+					tag="p"
 				)
+					template(#email)
+						span.font-bold {{ data.user.email }}
+
+				.block.mt-3.text-center(v-if="hasAccesses")
 					a.no-underline(
 						:href="accessUrl"
 						:title="$t('checkout.welcome.accessContent')"
 					)
 						Button(:label="$t('checkout.welcome.accessContent')")
+
+				i18n-t.mt-3.mb-0(
+					v-if="hasAccesses"
+					keypath="checkout.welcome.hero.access.p4"
+					tag="p"
+				)
+					template(#email)
+						span.font-bold {{ data.user.email }}
+
+					template(#url)
+						a.no-underline.text-primary(
+							:href="accessUrl"
+							:title="$t('checkout.welcome.accessContent')"
+							class="hover:underline"
+						) {{ data.organization.url }}
+
+
+				p.mt-3.mb-0 {{ $t('checkout.welcome.hero.outro') }}
 
 				.flex.flex-wrap.justify-content-center.gap-3.font-light.text-xs.mt-3(class="lg:mt-4")
 					.flex.align-items-center.gap-1.white-space-nowrap.text-green-500
@@ -116,7 +139,10 @@
 					)
 						Button(:label="$t('checkout.welcome.accessContent')")
 
-	footer.layout__footer.my-2.text-xs.text-center.text-gray-400(class="lg:my-6") {{ $t('general.poweredBy') }}&nbsp;
+	footer.layout__footer.mb-2.text-xs.text-center.text-gray-400(
+		class="lg:mb-6"
+		:class="hasAccesses && 'mt-2 lg:mt-6'"
+	) {{ $t('general.poweredBy') }}&nbsp;
 		a.no-underline.text-gray-400(
 			href="https://engaged.com.br"
 			target="_blank"

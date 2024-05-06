@@ -1,15 +1,18 @@
 export default {
 	welcome: {
-		title: '{0}, parabéns sua compra foi aprovada!',
+		title: 'Parabéns, {0}, a sua transação foi concluída com sucesso!',
 		accessContent: 'Acessar conteúdo',
 		confirmedPurchase: 'Compra confirmada',
 		softDescriptor: 'A cobrança aparecerá na sua fatura como',
 		hero: {
-			intro: 'Ficamos muito felizes em compartilhar esse momento com você!',
-			instructionTitle: 'Algumas informações são importantes compartilhar contigo',
-			instruction1: 'Para acessar o conteúdo, clique no botão <span class="font-bold">"{0}"</span> logo abaixo;',
-			instruction2: 'Também enviamos uma confirmação para o seu e-mail <span class="font-bold">{0}</span>;',
-			outro: 'Logo aqui abaixo listamos o que você adquiriu;'
+			access: {
+				p1: 'Acesse o conteúdo diretamente clicando no botão abaixo.',
+				p2: 'Caso esse seja o seu primeiro acesso em nosso ambiente on-line, você passará pelo processo de definição de senha.',
+				p3: 'Enviamos a confirmação para o endereço de e-mail {email}, com o link de acesso direto ao ambiente on-line.',
+				p4: 'Para você acessar esse ambiente de qualquer lugar, basta acessar o endereço {url} e fazer login com o seu endereço de e-mail {email} e senha já definida.'
+			},
+			other: 'Enviamos a confirmação para o endereço de e-mail {email}.',
+			outro: 'Esta é a lista de o que você requisitou:'
 		},
 		steps: {
 			title: 'Confira os próximos passos',
