@@ -255,7 +255,7 @@ onBeforeMount(async () => {
 });
 
 onResult((res) => {
-	// router.replace({ query: null });
+	router.replace({ query: null });
 
 	if (res.loading) {
 		return;
