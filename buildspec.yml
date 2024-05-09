@@ -5,6 +5,8 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
+      - sudo amazon-linux-extras install epel -y
+      - sudo yum install -y chromium
       - yarn install
 
   build:
