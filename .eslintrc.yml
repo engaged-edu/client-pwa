@@ -144,6 +144,7 @@ rules:
   no-console:
     - 2
     - allow:
+      - info
       - warn
       - error
   no-const-assign: 2
