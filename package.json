@@ -3,9 +3,6 @@
   "version": "1.1.1",
   "private": true,
   "main": "index.js",
-  "engines": {
-    "node": ">=20.9.0"
-  },
   "scripts": {
 	"start": "node server.mjs",
     "predev": "yarn hooks && yarn gql",
