@@ -8,14 +8,13 @@ const { PORT } = process.env;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const app = express();
+let browserInstance;
 
 app.use(express.static('dist'));
 app.use(useragent.express());
 
 async function ssr(url) {
-	const pupp = await puppeteer.launch();
-	const browserWSEndpoint = pupp.wsEndpoint();
-	const browser = await puppeteer.connect({ browserWSEndpoint });
+	const browser = browserInstance || await puppeteer.launch();
 
 	try {
 		const page = await browser.newPage();
