@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "node server.mjs",
+    "start": "node index.mjs",
     "predev": "yarn hooks && yarn gql",
     "dev": "vite --host",
     "dev:serve": "nodemon --env-file=.env.local index.mjs",
