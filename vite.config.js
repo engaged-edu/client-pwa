@@ -10,22 +10,22 @@ import Icons from 'unplugin-icons/vite';
 import IconsResolver from 'unplugin-icons/resolver';
 import { unheadVueComposablesImports } from '@unhead/vue';
 
-const globalStyl = path.resolve(__dirname, 'src/styles/global.styl');
+const globalStyl = path.resolve(__dirname, 'client/styles/global.styl');
 
 // https://vitejs.dev/config/shared-options.html
 export default defineConfig({
 	base: '/p/',
 	build: { outDir: 'dist/p' },
-	resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+	resolve: { alias: { '@': fileURLToPath(new URL('./client', import.meta.url)) } },
 	plugins: [
 		vue(),
 		graphqlLoader(),
 		Components({
 			dirs: [
-				'src/components',
-				'src/layouts',
-				'src/views',
-				'src/icons'
+				'client/components',
+				'client/layouts',
+				'client/views',
+				'client/icons'
 			],
 			resolvers: [
 				PrimeVueResolver(),

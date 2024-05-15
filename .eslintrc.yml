@@ -1,6 +1,6 @@
 root: true
 ignorePatterns:
-  - src/styles/**/*.js
+  - client/styles/**/*.js
 extends:
   - plugin:vue/vue3-recommended
   - plugin:vue-pug/vue3-recommended

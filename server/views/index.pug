@@ -1,0 +1,60 @@
+doctype html
+html
+	head
+		if title
+			title= title
+			meta(
+				property="og:title"
+				content=title
+			)
+			meta(
+				name="twitter:title"
+				content=title
+			)
+
+		if description
+			meta(
+				name="description"
+				content=description
+			)
+			meta(
+				property="og:description"
+				content=description
+			)
+			meta(
+				name="twitter:description"
+				content=description
+			)
+
+		if favicon
+			link(
+				rel="icon"
+				type="image/png"
+				sizes="32x32"
+				href=favicon
+			)
+			link(
+				rel="icon"
+				type="image/png"
+				sizes="256x256"
+				href=favicon
+			)
+
+		if image
+			meta(
+				property="og:image"
+				content=image
+			)
+			meta(
+				name="twitter:image"
+				content=image
+			)
+
+	body
+		h1= title
+
+		if description
+			p= description
+
+		if image
+			img(src=image)
