@@ -96,22 +96,41 @@
 </template>
 
 <script setup>
+import { useFacebookPixel } from '@/composables/useFacebookPixel';
 import { usePayerForm } from '@/composables/payer';
+import { useMutation } from '@vue/apollo-composable';
 import { useMasks } from '@/composables/utils';
 import { CountryIsoCode, LegalPersonType } from '@/gql.ts';
+import {
+	publicCallFacebookPixelInitiateCheckoutEvent,
+	publicCallFacebookPixelLeadEvent
+} from '@/graphql';
+
+const { mutate: callFacebookInitEvent } = useMutation(publicCallFacebookPixelInitiateCheckoutEvent);
+const { mutate: callFacebookLeadEvent } = useMutation(publicCallFacebookPixelLeadEvent);
+
+const { trackLeadEvent, trackInitiateCheckout } = useFacebookPixel();
+
+const isInitTracked = ref(false);
+const isLeadTracked = ref(false);
 
 const props = defineProps({
 	handleCheckPurchase: {
 		type: Function,
 		required: true
+	},
+	checkout: {
+		type: Object,
+		required: true
+	},
+	track: {
+		type: Boolean,
+		default: true,
+		required: true
 	}
 });
 const { masks } = useMasks();
-const {
-	form,
-	$v,
-	handleCountry
-} = usePayerForm();
+const { form, $v, handleCountry } = usePayerForm();
 
 function handleCheckEmail() {
 	const $confirmEmail = $v.value.confirmEmail;
@@ -122,6 +141,64 @@ function handleCheckEmail() {
 
 	props.handleCheckPurchase();
 }
+
+const trackLeadAPIEvent = async (phoneNumber, email) => {
+	try {
+		await callFacebookLeadEvent({
+			checkoutId: props.checkout._id,
+			contentName: props.checkout.description,
+			phoneNumber: phoneNumber,
+			email: email
+		});
+	} catch (err) {
+		console.error('Error calling the event:', err);
+	}
+};
+
+async function trackInitEvent() {
+	try {
+		await callFacebookInitEvent({
+			checkoutId: props.checkout._id,
+			contentName: props.checkout.description
+		});
+	} catch (err) {
+		console.error('Error calling the event:', err);
+	}
+}
+
+const checkLeadEvent = () => {
+	const extractNumbers = (input) => input.replace(/\D/gu, '');
+
+	const emailValid = !$v._value.email.$pending && !$v._value.email.$invalid;
+	const phoneValid = !$v._value.phone.$pending && !$v._value.phone.$invalid;
+	const emailNotEmpty = form.email.length > 0;
+	const phoneNotEmpty = extractNumbers(form.phone.phoneNumber).length > 10;
+
+	if (
+		!isLeadTracked.value &&	emailValid && phoneValid && emailNotEmpty && phoneNotEmpty
+	) {
+		trackLeadAPIEvent(`+55${extractNumbers(form.phone.phoneNumber)}`,
+			form.email);
+		trackLeadEvent(props.checkout);
+		isLeadTracked.value = true;
+	}
+};
+
+watch(() => form,
+	(newForm) => {
+		if (
+			Object.values(newForm).some((value) => typeof value === 'string' && value.length > 0)
+		) {
+			if (!isInitTracked.value && props.track) {
+				isInitTracked.value = true;
+				trackInitEvent();
+				trackInitiateCheckout(props.checkout);
+			}
+		}
+
+		checkLeadEvent();
+	},
+	{ deep: true });
 
 defineExpose({
 	getForm() {

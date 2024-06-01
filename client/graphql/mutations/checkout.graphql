@@ -3,12 +3,14 @@ mutation publicCreateCheckoutPayment(
 	$paymentCreationArgs: CheckoutPaymentCreationInput!
 	$upsertStudentUserArgs: CheckoutUpsertStudentInput!
 	$upsertUserPaymentProfileArgs: CheckoutUpsertUserPProfileInput!
+	$facebookPixelIntegrationArgs: ProcessCheckoutFacebookPixelIntegrationArgsInput!
 ) {
 	publicCreateCheckoutPayment(
 		checkoutSharedId: $checkoutSharedId
 		paymentCreationArgs: $paymentCreationArgs
 		upsertStudentUserArgs: $upsertStudentUserArgs
 		upsertUserPaymentProfileArgs: $upsertUserPaymentProfileArgs
+		facebookPixelIntegrationArgs: $facebookPixelIntegrationArgs
 	) {
 		purchaseId
 		magicToken
