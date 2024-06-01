@@ -153,10 +153,7 @@ import { i18n } from '@/i18n';
 import { useLogo, useHead } from '@/composables/utils';
 import { useLazyQuery } from '@vue/apollo-composable';
 
-import {
-	publicFetchStudentCheckoutPurchase,
-	publicFetchCheckout
-} from '@/graphql';
+import { publicFetchStudentCheckoutPurchase } from '@/graphql';
 import {
 	InvoiceItemType,
 	ProductType,

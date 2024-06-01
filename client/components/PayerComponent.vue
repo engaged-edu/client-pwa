@@ -177,8 +177,7 @@ const checkLeadEvent = () => {
 	if (
 		!isLeadTracked.value &&	emailValid && phoneValid && emailNotEmpty && phoneNotEmpty
 	) {
-		trackLeadAPIEvent(`+55${extractNumbers(form.phone.phoneNumber)}`,
-			form.email);
+		trackLeadAPIEvent(`+55${extractNumbers(form.phone.phoneNumber)}`, form.email);
 		trackLeadEvent(props.checkout);
 		isLeadTracked.value = true;
 	}
