@@ -24,4 +24,11 @@ export {
 	publicCreateCheckoutPayment,
 	publicCancelCheckoutPayment
 } from './mutations/checkout.graphql';
+
+export {
+	publicCallFacebookPixelViewContentEvent,
+	publicCallFacebookPixelInitiateCheckoutEvent,
+	publicCallFacebookPixelLeadEvent
+} from './mutations/facebookPixel.graphql';
+
 export default graphQLClient;

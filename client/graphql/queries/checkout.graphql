@@ -16,6 +16,14 @@ query publicFetchCheckout(
 		invoiceItemsAmount
 		invoiceTotalAmount
 		invoiceDiscountedAmount
+		facebookPixels {
+			apiPixelId
+			domainId
+			name
+			createdAt
+			purchaseCallOnPixGeneration
+			purchaseCallOnBankSlipGeneration
+		}
 		invoiceItems {
 			type
 			quantity

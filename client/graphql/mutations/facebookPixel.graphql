@@ -1,0 +1,45 @@
+mutation publicCallFacebookPixelViewContentEvent(
+  $testEventCode: String,
+  $checkoutId: String!,
+  $contentName: String!
+) {
+  publicCallFacebookPixelViewContentEvent(
+    testEventCode: $testEventCode,
+    checkoutId: $checkoutId,
+    contentName: $contentName
+  ) {
+    status
+  }
+}
+
+mutation publicCallFacebookPixelInitiateCheckoutEvent(
+  $testEventCode: String,
+  $checkoutId: String!,
+  $contentName: String!
+) {
+  publicCallFacebookPixelInitiateCheckoutEvent(
+    testEventCode: $testEventCode,
+    checkoutId: $checkoutId,
+    contentName: $contentName
+  ) {
+    status
+  }
+}
+
+mutation publicCallFacebookPixelLeadEvent(
+  $phoneNumber: String,
+  $testEventCode: String,
+  $email: String!,
+  $checkoutId: String!,
+  $contentName: String!
+) {
+  publicCallFacebookPixelLeadEvent(
+    phoneNumber: $phoneNumber,
+    testEventCode: $testEventCode,
+    email: $email,
+    checkoutId: $checkoutId,
+    contentName: $contentName
+  ) {
+    status
+  }
+}

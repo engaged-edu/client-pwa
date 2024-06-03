@@ -13,6 +13,8 @@ CheckoutLayout(
 	template(#identity)
 		PayerComponent(
 			ref="$PayerComponent"
+			:checkout="checkoutData"
+			:track="trackFacebookPixel"
 			:handle-check-purchase="checkEmail"
 		)
 
@@ -52,7 +54,8 @@ import {
 	publicFetchCheckout,
 	publicCreateCheckoutPayment,
 	publicCancelCheckoutPayment,
-	publicFetchStudentCheckoutPurchase
+	publicFetchStudentCheckoutPurchase,
+	publicCallFacebookPixelViewContentEvent
 } from '@/graphql';
 import {
 	CheckoutStatus,
@@ -64,6 +67,9 @@ import {
 	PurchaseStatus,
 	TaxIdType
 } from '@/gql.ts';
+import { onMounted, provide } from 'vue';
+import { useFacebookPixel } from '@/composables/useFacebookPixel';
+import { subscribe } from 'graphql';
 
 const $CheckoutLayout = ref();
 const $PayerComponent = ref();
@@ -81,6 +87,7 @@ const methods = {
 };
 const currentPaymentMethod = computed(() => methods[route.name]);
 const magicToken = ref();
+const trackFacebookPixel = ref(false);
 
 // Fetch Checkout
 const {
@@ -102,7 +109,8 @@ const products = computed(() => checkoutData.value.invoiceItems.map((item) => {
 			name: item.product.name,
 			description: item.product.description,
 			quantity: item.quantity,
-			amount: item.product.prices.find((price) => price._id === item.productPrice)?.billingConfig.unitAmount * item.quantity
+			amount:
+						item.product.prices.find((price) => price._id === item.productPrice)?.billingConfig.unitAmount * item.quantity
 		};
 	}
 
@@ -138,7 +146,7 @@ const invoice = computed(() => {
 	};
 
 	if (content.methods.creditCard) {
-		content.creditCard = checkoutData.value?.paymentMethodsConfig.creditCard;
+		content.creditCard =			checkoutData.value?.paymentMethodsConfig.creditCard;
 	}
 
 	if (content.methods.bankSlip) {
@@ -163,15 +171,13 @@ const {
 } = useMutation(publicCreateCheckoutPayment);
 
 // Cancel Payment
-const {
-	mutate: cancelPayment,
-	loading: loadingCancelPayment
-} = useMutation(publicCancelCheckoutPayment);
+const { mutate: cancelPayment, loading: loadingCancelPayment } = useMutation(publicCancelCheckoutPayment);
 
 // General
 const allowLoader = ref(true);
-const isLoading = computed(() => allowLoader.value && (loadingCheckout.value || loadingCreatePayment.value || loadingCancelPayment.value));
+const isLoading = computed(() => allowLoader.value && (loadingCheckout.value ||	loadingCreatePayment.value || loadingCancelPayment.value));
 const currentStep = ref('initial');
+const purchseEventIstracked = ref(false);
 
 // Purchase
 const {
@@ -182,12 +188,55 @@ const {
 const { watchPix, clearPixWatcher } = useWatchPix(refetchPurchase, allowLoader);
 const pixWatcher = ref();
 const emailChecked = ref();
+const {
+	initializePixel,
+	trackFbViewContent,
+	trackPageView,
+	createCheckoutObject,
+	trackPurchaseEvent,
+	trackSubscribeEvent,
+	trackSinglePurchaseEvent
+} = useFacebookPixel();
+
+const initiateFacebookPixel = (id) => {
+	if (!id) {
+		return;
+	}
+
+	initializePixel(id);
+};
+
+const { mutate: callFacebookPixelEvent } = useMutation(publicCallFacebookPixelViewContentEvent);
+
+const callFacebookPixelViewContentEvent = async (checkoutId, contentName) => {
+	try {
+		await callFacebookPixelEvent({
+			checkoutId: checkoutId,
+			contentName: contentName
+		});
+	} catch (err) {
+		console.error('Error calling the event:', err);
+	}
+};
+
+watch(checkoutData, (newCheckoutData) => {
+	const fbPixels = newCheckoutData.facebookPixels || [];
+
+	if (fbPixels.length > 0) {
+		trackFacebookPixel.value = true;
+		fbPixels.forEach((pixel) => {
+			initiateFacebookPixel(pixel.apiPixelId);
+		});
+		const ckeckoutObject = createCheckoutObject(newCheckoutData);
+
+		trackPageView();
+		trackFbViewContent(ckeckoutObject);
+		callFacebookPixelViewContentEvent(newCheckoutData._id, ckeckoutObject?.checkoutName);
+	}
+});
 
 async function handleSubmit() {
-	const {
-		form: formPayer,
-		$v: $vPayer
-	} = $PayerComponent.value.getForm();
+	const { form: formPayer, $v: $vPayer } = $PayerComponent.value.getForm();
 	const params = {
 		checkoutSharedId: checkoutSharedId.value,
 		paymentCreationArgs: { paymentMethod: currentPaymentMethod.value },
@@ -201,15 +250,18 @@ async function handleSubmit() {
 			type: formPayer.legal,
 			currency: invoice.value.currency,
 			name: formPayer.legal === LegalPersonType.Individual ? formPayer.name : formPayer.companyName
-		}
+		},
+		facebookPixelIntegrationArgs: { contentName: checkoutData.value.description }
 	};
 
 	if (formPayer.country === CountryIsoCode.Br) {
 		params.upsertUserPaymentProfileArgs.taxIds = [
 			{
 				country: formPayer.country,
-				type: formPayer.legal === LegalPersonType.Individual ? TaxIdType.BrCpf : TaxIdType.BrCnpj,
-				value: (formPayer.legal === LegalPersonType.Individual ? formPayer.cpf : formPayer.cnpj).replace(/\D/gu, '')
+				type:
+					formPayer.legal === LegalPersonType.Individual ? TaxIdType.BrCpf : TaxIdType.BrCnpj,
+				value: (formPayer.legal === LegalPersonType.Individual ? formPayer.cpf : formPayer.cnpj
+				).replace(/\D/gu, '')
 			}
 		];
 	}
@@ -223,7 +275,8 @@ async function handleSubmit() {
 	try {
 		await validateForm($vPayer);
 
-		params.upsertStudentUserArgs.phoneNumber = parsePhoneNumber(formPayer.phone.phoneNumber, formPayer.phone.phoneNumberCountry).number;
+		params.upsertStudentUserArgs.phoneNumber = parsePhoneNumber(formPayer.phone.phoneNumber,
+			formPayer.phone.phoneNumberCountry).number;
 	} catch (e) {
 		$CheckoutLayout.value.showDialog(false);
 		document.querySelector('.p-invalid').focus();
@@ -235,11 +288,13 @@ async function handleSubmit() {
 		try {
 			await validateForm($vCreditCard);
 		} catch (e) {
-			$CheckoutLayout.value.showDialog(true, {
-				type: 'error',
-				title: i18n.t('general.fillFormCorrectly'),
-				description: i18n.t('payment.errorAtField', [i18n.t(`payment.creditCard.${$vCreditCard.value.$errors[0].$property}`)])
-			}, 3000);
+			$CheckoutLayout.value.showDialog(true,
+				{
+					type: 'error',
+					title: i18n.t('general.fillFormCorrectly'),
+					description: i18n.t('payment.errorAtField', [i18n.t(`payment.creditCard.${$vCreditCard.value.$errors[0].$property}`)])
+				},
+				3000);
 
 			return;
 		}
@@ -292,9 +347,13 @@ function handlePaymentExpired() {
 }
 
 async function setPayment(currentPayment) {
-	if (!currentPayment || payment.value?.updatedAt > currentPayment.updatedAt) {
+	if (
+		!currentPayment || payment.value?.updatedAt > currentPayment.updatedAt
+	) {
 		return;
 	}
+
+	trackSubscribeEvent(checkoutData.value);
 
 	if (currentPayment.status === PaymentStatus.Paid) {
 		router.push({
@@ -322,10 +381,12 @@ function checkEmail() {
 
 	emailChecked.value = false;
 
-	if (loadPurchase(publicFetchStudentCheckoutPurchase, {
-		checkoutSharedId: checkoutSharedId.value,
-		studentUserEmail: formPayer.email
-	})) {
+	if (
+		loadPurchase(publicFetchStudentCheckoutPurchase, {
+			checkoutSharedId: checkoutSharedId.value,
+			studentUserEmail: formPayer.email
+		})
+	) {
 		return;
 	}
 
@@ -339,7 +400,9 @@ function checkPurchase(purchase) {
 		return;
 	}
 
-	if ([PurchaseStatus.Open, PurchaseStatus.Late].includes(purchase.status) && purchase.payment.status === PaymentStatus.WaitingPayment) {
+	if (
+		[PurchaseStatus.Open, PurchaseStatus.Late].includes(purchase.status) &&		purchase.payment.status === PaymentStatus.WaitingPayment
+	) {
 		const goToFeedback = async () => {
 			router.push({
 				name: Object.keys(methods).find((key) => methods[key] === purchase.payment.paymentMethod),
@@ -364,7 +427,9 @@ function checkPurchase(purchase) {
 			rejectClass: 'hidden',
 			acceptClass: 'p-button-primary'
 		});
-	} else if ([PurchaseStatus.Paid, PurchaseStatus.PartiallyRefunded].includes(purchase.status)) {
+	} else if (
+		[PurchaseStatus.Paid, PurchaseStatus.PartiallyRefunded].includes(purchase.status)
+	) {
 		confirmDialog.require({
 			header: i18n.t('payment.purchaseCompletedTitle'),
 			message: i18n.t('payment.purchaseCompletedDescription'),
@@ -403,6 +468,25 @@ onResultPurchase((result) => {
 		return;
 	}
 
+	const fbpixelsArray = [...checkoutData.value.facebookPixels || []];
+
+	if (!purchseEventIstracked.value) {
+		fbpixelsArray.forEach((pixel) => {
+			if (pixel.purchaseCallOnPixGeneration) {
+				if (purchase.payment.paymentMethod === PaymentMethod.Pix) {
+					trackSinglePurchaseEvent(checkoutData.value, purchase, pixel.apiPixelId);
+				}
+			}
+
+			if (pixel.purchaseCallOnBankSlipGeneration) {
+				if (purchase.payment.paymentMethod === PaymentMethod.BankSlip) {
+					trackSinglePurchaseEvent(checkoutData.value, purchase, pixel.apiPixelId);
+				}
+			}
+		});
+		purchseEventIstracked.value = true;
+	}
+
 	setPayment(currentPayment);
 });
 
@@ -414,11 +498,16 @@ onCreatedPayment(async (result) => {
 	const data = result.data.publicCreateCheckoutPayment;
 
 	if (data.payment.status === PaymentStatus.Refused) {
-		$CheckoutLayout.value.showDialog(true, {
-			type: 'error',
-			title: i18n.t(`enums.PaymentStatus.${data.payment.status}`),
-			description: i18n.t('payment.errorMessage', [data.payment.failCode, data.payment.failMessage])
-		}, 3000);
+		$CheckoutLayout.value.showDialog(true,
+			{
+				type: 'error',
+				title: i18n.t(`enums.PaymentStatus.${data.payment.status}`),
+				description: i18n.t('payment.errorMessage', [
+					data.payment.failCode,
+					data.payment.failMessage
+				])
+			},
+			3000);
 
 		return;
 	}
@@ -435,29 +524,33 @@ onCreatedPayment(async (result) => {
 });
 
 onPaymentFail((result) => {
-	$CheckoutLayout.value.showDialog(true, {
-		type: 'error',
-		title: i18n.t(`errors.${result.graphQLErrors[0].extensions.exception.code}`),
-		description: `code: ${result.graphQLErrors[0].extensions.exception.code}, message: ${result.message}`
-	}, 3000);
+	$CheckoutLayout.value.showDialog(true,
+		{
+			type: 'error',
+			title: i18n.t(`errors.${result.graphQLErrors[0]?.extensions?.exception?.code}`),
+			description: `code: ${result.graphQLErrors[0]?.extensions?.exception?.code}, message: ${result.message}`
+		},
+		3000);
 });
-
 provide('status', status);
 provide('invoice', invoice);
 provide('payment', payment);
 provide('products', products);
 provide('discounts', discounts);
-provide('organization', computed(() => {
-	const org = checkoutData.value?.organization;
+provide('organization',
+	computed(() => {
+		const org = checkoutData.value?.organization;
 
-	return {
-		id: org?._id,
-		name: org?.name,
-		logoUrl: logo.getLogo(org?.appearance),
-		logo32Url: logo.getLogo32(org?.appearance),
-		logo256Url: logo.getLogo256(org?.appearance),
-		color: org?.appearance?.primaryColor,
-		softDescriptor: `Pg *Ed ${org?.payment?.creditCard.softDescriptor || ''}`.trim()
-	};
-}));
+		return {
+			id: org?._id,
+			name: org?.name,
+			logoUrl: logo.getLogo(org?.appearance),
+			logo32Url: logo.getLogo32(org?.appearance),
+			logo256Url: logo.getLogo256(org?.appearance),
+			color: org?.appearance?.primaryColor,
+			softDescriptor: `Pg *Ed ${
+				org?.payment?.creditCard.softDescriptor || ''
+			}`.trim()
+		};
+	}));
 </script>

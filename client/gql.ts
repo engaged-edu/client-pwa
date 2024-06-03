@@ -933,6 +933,8 @@ export type Checkout = {
   currency: Currency;
   description?: Maybe<Scalars['String']>;
   expirationDate?: Maybe<Scalars['DateTime']>;
+  /** The active pixels associated with the checkout, returns an empty array if the integration is not applied */
+  facebookPixels?: Maybe<Array<FacebookPixel>>;
   invoiceDiscountedAmount: Scalars['Int'];
   invoiceDiscounts?: Maybe<Array<InvoiceDiscount>>;
   invoiceItems: Array<InvoiceItem>;
@@ -1543,6 +1545,17 @@ export type CreateCheckoutLog = EntityCommonFieldsInterface & Log & {
   updatedAt: Scalars['DateTime'];
 };
 
+export type CreateFacebookPixelLog = EntityCommonFieldsInterface & Log & {
+  __typename?: 'CreateFacebookPixelLog';
+  _id: Scalars['ObjectId'];
+  after: FacebookPixelLogState;
+  createdAt: Scalars['DateTime'];
+  source?: Maybe<LogSource>;
+  targets: Array<LogTarget>;
+  type: LogType;
+  updatedAt: Scalars['DateTime'];
+};
+
 export type CreateImportLog = EntityCommonFieldsInterface & Log & {
   __typename?: 'CreateImportLog';
   _id: Scalars['ObjectId'];
@@ -1591,6 +1604,17 @@ export type CreateMemberLog = EntityCommonFieldsInterface & Log & {
   __typename?: 'CreateMemberLog';
   _id: Scalars['ObjectId'];
   after: MemberLogState;
+  createdAt: Scalars['DateTime'];
+  source?: Maybe<LogSource>;
+  targets: Array<LogTarget>;
+  type: LogType;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type CreateOrganizationLog = EntityCommonFieldsInterface & Log & {
+  __typename?: 'CreateOrganizationLog';
+  _id: Scalars['ObjectId'];
+  after: OrganizationLogState;
   createdAt: Scalars['DateTime'];
   source?: Maybe<LogSource>;
   targets: Array<LogTarget>;
@@ -2253,6 +2277,14 @@ export enum DisputeStatus {
   Won = 'WON'
 }
 
+export type Domain = {
+  __typename?: 'Domain';
+  _id: Scalars['ObjectId'];
+  createdAt: Scalars['DateTime'];
+  domain: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+};
+
 export type EmbedContentBlockV1 = ContentBlock & {
   __typename?: 'EmbedContentBlockV1';
   _id: Scalars['ObjectId'];
@@ -2316,6 +2348,100 @@ export type EntityCommonFieldsInterface = {
   _id: Scalars['ObjectId'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+};
+
+export type FacebookPixel = {
+  __typename?: 'FacebookPixel';
+  _id: Scalars['ObjectId'];
+  active?: Maybe<Scalars['Boolean']>;
+  apiPixelId: Scalars['String'];
+  apiToken?: Maybe<Scalars['String']>;
+  associationType: FacebookPixelAssociation;
+  createdAt: Scalars['DateTime'];
+  domainId: Scalars['ObjectId'];
+  name?: Maybe<Scalars['String']>;
+  organization?: Maybe<Organization>;
+  purchaseCallOnBankSlipGeneration: Scalars['Boolean'];
+  purchaseCallOnPixGeneration: Scalars['Boolean'];
+  updatedAt: Scalars['DateTime'];
+};
+
+export type FacebookPixelAllCheckoutsAssociation = FacebookPixelAssociation & {
+  __typename?: 'FacebookPixelAllCheckoutsAssociation';
+  type: FacebookPixelAssociationType;
+};
+
+export type FacebookPixelAllCheckoutsAssociationInput = {
+  type?: Maybe<FacebookPixelAssociationType>;
+};
+
+export type FacebookPixelAssociation = {
+  type: FacebookPixelAssociationType;
+};
+
+export type FacebookPixelAssociationDiscriminatorInput = {
+  allCheckoutsAssociation?: Maybe<FacebookPixelAllCheckoutsAssociationInput>;
+  specificCheckoutsAssociation?: Maybe<FacebookPixelSpecificCheckoutsAssociationInput>;
+  type: FacebookPixelAssociationType;
+};
+
+export enum FacebookPixelAssociationType {
+  AllCheckouts = 'ALL_CHECKOUTS',
+  SpecificCheckouts = 'SPECIFIC_CHECKOUTS'
+}
+
+export type FacebookPixelIntegration = EntityCommonFieldsInterface & Integration & {
+  __typename?: 'FacebookPixelIntegration';
+  _id: Scalars['ObjectId'];
+  activeFacebookPixelCount: Scalars['Int'];
+  apply: Scalars['Boolean'];
+  createdAt: Scalars['DateTime'];
+  domains: Array<Domain>;
+  type: OrganizationIntegrationType;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type FacebookPixelLogState = {
+  __typename?: 'FacebookPixelLogState';
+  facebookPixel: FacebookPixel;
+};
+
+export type FacebookPixelOrderByInput = {
+  _id?: Maybe<OrderByDirection>;
+  active?: Maybe<OrderByDirection>;
+  apiPixelId?: Maybe<OrderByDirection>;
+  apiToken?: Maybe<OrderByDirection>;
+  createdAt?: Maybe<OrderByDirection>;
+  domainId?: Maybe<OrderByDirection>;
+  name?: Maybe<OrderByDirection>;
+  updatedAt?: Maybe<OrderByDirection>;
+};
+
+export type FacebookPixelSpecificCheckoutsAssociation = FacebookPixelAssociation & {
+  __typename?: 'FacebookPixelSpecificCheckoutsAssociation';
+  checkoutSharedIds: Array<Scalars['String']>;
+  checkouts: Array<Checkout>;
+  type: FacebookPixelAssociationType;
+};
+
+export type FacebookPixelSpecificCheckoutsAssociationInput = {
+  checkoutSharedIds: Array<Scalars['String']>;
+  type?: Maybe<FacebookPixelAssociationType>;
+};
+
+export type FacebookPixelWhereInput = {
+  _id?: Maybe<ObjectIdFilterInput>;
+  active?: Maybe<BooleanFilterInput>;
+  and?: Maybe<Array<FacebookPixelWhereInput>>;
+  apiPixelId?: Maybe<StringFilterInput>;
+  apiToken?: Maybe<StringFilterInput>;
+  createdAt?: Maybe<DateFilterInput>;
+  domainId?: Maybe<ObjectIdFilterInput>;
+  name?: Maybe<StringFilterInput>;
+  or?: Maybe<Array<FacebookPixelWhereInput>>;
+  purchaseCallOnBankSlipGeneration?: Maybe<BooleanFilterInput>;
+  purchaseCallOnPixGeneration?: Maybe<BooleanFilterInput>;
+  updatedAt?: Maybe<DateFilterInput>;
 };
 
 export type FeatureConfig = {
@@ -2618,6 +2744,19 @@ export type InlineInvoiceItemInput = {
   name: Scalars['String'];
   quantity: Scalars['Int'];
   type: InvoiceItemType;
+};
+
+export type Integration = {
+  _id: Scalars['ObjectId'];
+  apply: Scalars['Boolean'];
+  createdAt: Scalars['DateTime'];
+  type: OrganizationIntegrationType;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type IntegrationOrderByInput = {
+  createdAt?: Maybe<OrderByDirection>;
+  updatedAt?: Maybe<OrderByDirection>;
 };
 
 export type Invoice = {
@@ -3230,12 +3369,16 @@ export enum LogSource {
   AdminCancelPayment = 'ADMIN_CANCEL_PAYMENT',
   AdminCancelPaymentSchedule = 'ADMIN_CANCEL_PAYMENT_SCHEDULE',
   AdminCreateCheckout = 'ADMIN_CREATE_CHECKOUT',
+  AdminCreateFacebookPixel = 'ADMIN_CREATE_FACEBOOK_PIXEL',
+  AdminCreateOrganization = 'ADMIN_CREATE_ORGANIZATION',
   AdminDetachPaymentFromInvoice = 'ADMIN_DETACH_PAYMENT_FROM_INVOICE',
   AdminDetachPaymentScheduleFromInvoice = 'ADMIN_DETACH_PAYMENT_SCHEDULE_FROM_INVOICE',
   AdminGeneratePaymentSchedules = 'ADMIN_GENERATE_PAYMENT_SCHEDULES',
   AdminRefundPayment = 'ADMIN_REFUND_PAYMENT',
   AdminRetryPaymentSchedule = 'ADMIN_RETRY_PAYMENT_SCHEDULE',
   AdminUpdateCheckout = 'ADMIN_UPDATE_CHECKOUT',
+  AdminUpdateFacebookPixel = 'ADMIN_UPDATE_FACEBOOK_PIXEL',
+  AdminUpdateOrganization = 'ADMIN_UPDATE_ORGANIZATION',
   AdminUpdatePayment = 'ADMIN_UPDATE_PAYMENT',
   AdminUpdatePaymentSchedule = 'ADMIN_UPDATE_PAYMENT_SCHEDULE',
   AdminUpdateUserPaymentProfile = 'ADMIN_UPDATE_USER_PAYMENT_PROFILE',
@@ -3279,6 +3422,7 @@ export enum LogTargetType {
   Course = 'COURSE',
   Dispute = 'DISPUTE',
   Enrolment = 'ENROLMENT',
+  FacebookPixel = 'FACEBOOK_PIXEL',
   File = 'FILE',
   Import = 'IMPORT',
   Invoice = 'INVOICE',
@@ -3323,11 +3467,13 @@ export enum LogType {
   CreateCertificate = 'CREATE_CERTIFICATE',
   CreateCertificateTemplateFromCopy = 'CREATE_CERTIFICATE_TEMPLATE_FROM_COPY',
   CreateCheckout = 'CREATE_CHECKOUT',
+  CreateFacebookPixel = 'CREATE_FACEBOOK_PIXEL',
   CreateImport = 'CREATE_IMPORT',
   CreateInvoice = 'CREATE_INVOICE',
   CreateInvoiceAccess = 'CREATE_INVOICE_ACCESS',
   CreateInvoicePaymentLink = 'CREATE_INVOICE_PAYMENT_LINK',
   CreateMember = 'CREATE_MEMBER',
+  CreateOrganization = 'CREATE_ORGANIZATION',
   CreatePayment = 'CREATE_PAYMENT',
   CreatePaymentSchedule = 'CREATE_PAYMENT_SCHEDULE',
   CreatePlanConfig = 'CREATE_PLAN_CONFIG',
@@ -3357,12 +3503,14 @@ export enum LogType {
   UpdateBankAccount = 'UPDATE_BANK_ACCOUNT',
   UpdateCertificate = 'UPDATE_CERTIFICATE',
   UpdateCheckout = 'UPDATE_CHECKOUT',
+  UpdateFacebookPixel = 'UPDATE_FACEBOOK_PIXEL',
   UpdateImport = 'UPDATE_IMPORT',
   UpdateInvoice = 'UPDATE_INVOICE',
   UpdateInvoiceAccess = 'UPDATE_INVOICE_ACCESS',
   UpdateInvoiceDiscount = 'UPDATE_INVOICE_DISCOUNT',
   UpdateInvoicePaymentLink = 'UPDATE_INVOICE_PAYMENT_LINK',
   UpdateMember = 'UPDATE_MEMBER',
+  UpdateOrganization = 'UPDATE_ORGANIZATION',
   UpdatePayment = 'UPDATE_PAYMENT',
   UpdatePaymentSchedule = 'UPDATE_PAYMENT_SCHEDULE',
   UpdatePlanConfig = 'UPDATE_PLAN_CONFIG',
@@ -3514,6 +3662,7 @@ export type Mutation = {
   adminCreateCheckout: Checkout;
   adminCreateCourse: AdminCreateCourseResponse;
   adminCreateEnrolment: Enrolment;
+  adminCreateFacebookPixel: FacebookPixel;
   adminCreateFilestackS3File: FilestackS3File;
   /** Emits multiple certificates from a filled template excel file. */
   adminCreateImportCertificatesV1: ImportCertificate;
@@ -3583,6 +3732,7 @@ export type Mutation = {
   adminUpdateChapter: Chapter;
   adminUpdateCheckout: Checkout;
   adminUpdateCourse: Course;
+  adminUpdateFacebookPixel: FacebookPixel;
   adminUpdateFile: FilestackS3File;
   adminUpdateInvoice: Invoice;
   adminUpdateInvoiceAccess: InvoiceAccess;
@@ -3610,6 +3760,7 @@ export type Mutation = {
   adminUserSignUp: AdminUserAuthResponse;
   authenticateMagicToken: StudentUserAuthResponse;
   logOut: Session;
+  publicCallFacebookPixelViewContentEvent?: Maybe<PublicCallFacebookEventResponse>;
   publicCancelCheckoutPayment?: Maybe<Payment>;
   publicCancelInvoicePaymentLinkPayment: PublicCancelInvoicePaymentLinkPaymentResponse;
   publicCreateCheckoutPayment: PublicCreateCheckoutPaymentResponse;
@@ -3835,6 +3986,21 @@ export type MutationAdminCreateEnrolmentArgs = {
   organizationId: Scalars['String'];
   roomId: Scalars['String'];
   studentUserId: Scalars['String'];
+};
+
+
+export type MutationAdminCreateFacebookPixelArgs = {
+  active?: Maybe<Scalars['Boolean']>;
+  apiPixelId: Scalars['String'];
+  apiToken?: Maybe<Scalars['String']>;
+  associationType: FacebookPixelAssociationDiscriminatorInput;
+  domainId?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  newDomain?: Maybe<Scalars['String']>;
+  organizationId: Scalars['String'];
+  purchaseCallOnBankSlipGeneration: Scalars['Boolean'];
+  purchaseCallOnPixGeneration: Scalars['Boolean'];
+  testEventCode?: Maybe<Scalars['String']>;
 };
 
 
@@ -4406,6 +4572,22 @@ export type MutationAdminUpdateCourseArgs = {
 };
 
 
+export type MutationAdminUpdateFacebookPixelArgs = {
+  active?: Maybe<Scalars['Boolean']>;
+  apiPixelId?: Maybe<Scalars['String']>;
+  apiToken?: Maybe<Scalars['String']>;
+  associationType?: Maybe<FacebookPixelAssociationDiscriminatorInput>;
+  domainId?: Maybe<Scalars['String']>;
+  facebookPixelId: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  newDomain?: Maybe<Scalars['String']>;
+  organizationId: Scalars['String'];
+  purchaseCallOnBankSlipGeneration?: Maybe<Scalars['Boolean']>;
+  purchaseCallOnPixGeneration?: Maybe<Scalars['Boolean']>;
+  testEventCode?: Maybe<Scalars['String']>;
+};
+
+
 export type MutationAdminUpdateFileArgs = {
   altText?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
@@ -4660,6 +4842,14 @@ export type MutationAuthenticateMagicTokenArgs = {
 };
 
 
+export type MutationPublicCallFacebookPixelViewContentEventArgs = {
+  checkoutId: Scalars['String'];
+  sourceName: Scalars['String'];
+  sourceUrl: Scalars['String'];
+  testEventCode?: Maybe<Scalars['String']>;
+};
+
+
 export type MutationPublicCancelCheckoutPaymentArgs = {
   checkoutSharedId: Scalars['String'];
   paymentId: Scalars['String'];
@@ -4886,6 +5076,7 @@ export type Organization = {
   domains: Array<Scalars['String']>;
   emailReplyToAddress: Scalars['String'];
   emailSenderAddress?: Maybe<Scalars['String']>;
+  integrations: OrganizationIntegrations;
   linkedInOrganizationId?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   payment?: Maybe<OrganizationPayment>;
@@ -4926,6 +5117,20 @@ export type OrganizationConfig = {
 export type OrganizationConfigInput = {
   country?: Maybe<CountryIsoCode>;
   timezone?: Maybe<Scalars['String']>;
+};
+
+export enum OrganizationIntegrationType {
+  FacebookPixel = 'FACEBOOK_PIXEL'
+}
+
+export type OrganizationIntegrations = {
+  __typename?: 'OrganizationIntegrations';
+  facebookPixel: FacebookPixelIntegration;
+};
+
+export type OrganizationLogState = {
+  __typename?: 'OrganizationLogState';
+  organization: Organization;
 };
 
 export type OrganizationOrderByInput = {
@@ -5085,6 +5290,15 @@ export type PaginatedEnrolmentResponse = {
   currentPage: Scalars['Int'];
   hasNextPage: Scalars['Boolean'];
   results: Array<Enrolment>;
+  totalPageCount: Scalars['Int'];
+  totalResultCount: Scalars['Int'];
+};
+
+export type PaginatedFacebookPixelResponse = {
+  __typename?: 'PaginatedFacebookPixelResponse';
+  currentPage: Scalars['Int'];
+  hasNextPage: Scalars['Boolean'];
+  results: Array<FacebookPixel>;
   totalPageCount: Scalars['Int'];
   totalResultCount: Scalars['Int'];
 };
@@ -6066,6 +6280,11 @@ export enum ProgressConstraintType {
   AfterCompletion = 'AFTER_COMPLETION'
 }
 
+export type PublicCallFacebookEventResponse = {
+  __typename?: 'PublicCallFacebookEventResponse';
+  status: Scalars['String'];
+};
+
 export type PublicCancelInvoicePaymentLinkPaymentResponse = {
   __typename?: 'PublicCancelInvoicePaymentLinkPaymentResponse';
   invoicePaymentLink: InvoicePaymentLink;
@@ -6174,9 +6393,13 @@ export type Query = {
   adminFetchDenormalizedEnrolments: PaginatedDenormalizedEnrolmentResponse;
   adminFetchEnrolment?: Maybe<Enrolment>;
   adminFetchEnrolments: PaginatedEnrolmentResponse;
+  adminFetchFacebookPixel?: Maybe<FacebookPixel>;
+  adminFetchFacebookPixels?: Maybe<PaginatedFacebookPixelResponse>;
   adminFetchFile?: Maybe<FilestackS3File>;
   adminFetchFiles: PaginatedFileResponse;
   adminFetchGeneratingPaymentScheduleCount: FetchProcessingPaymentScheduleGenCountResponse;
+  adminFetchIntegration?: Maybe<Integration>;
+  adminFetchIntegrations?: Maybe<Array<Integration>>;
   adminFetchInvoice?: Maybe<Invoice>;
   adminFetchInvoiceAccess?: Maybe<InvoiceAccess>;
   adminFetchInvoiceAccesses: PaginatedInvoiceAccessResponse;
@@ -6424,6 +6647,21 @@ export type QueryAdminFetchEnrolmentsArgs = {
 };
 
 
+export type QueryAdminFetchFacebookPixelArgs = {
+  facebookPixelId: Scalars['String'];
+  organizationId: Scalars['String'];
+};
+
+
+export type QueryAdminFetchFacebookPixelsArgs = {
+  facebookPixelIds?: Maybe<Array<Scalars['String']>>;
+  filterArgs?: Maybe<FacebookPixelWhereInput>;
+  orderBy?: Maybe<Array<FacebookPixelOrderByInput>>;
+  organizationId: Scalars['String'];
+  paginationArgs?: Maybe<PagePaginationInput>;
+};
+
+
 export type QueryAdminFetchFileArgs = {
   fileId: Scalars['String'];
   organizationId: Scalars['String'];
@@ -6442,6 +6680,18 @@ export type QueryAdminFetchGeneratingPaymentScheduleCountArgs = {
   invoiceId?: Maybe<Scalars['String']>;
   organizationId: Scalars['String'];
   paymentScheduleSharedId?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryAdminFetchIntegrationArgs = {
+  integrationId: Scalars['String'];
+  organizationId: Scalars['String'];
+};
+
+
+export type QueryAdminFetchIntegrationsArgs = {
+  orderBy?: Maybe<Array<IntegrationOrderByInput>>;
+  organizationId: Scalars['String'];
 };
 
 
@@ -7962,6 +8212,18 @@ export type UpdateCheckoutLog = EntityCommonFieldsInterface & Log & {
   updatedAt: Scalars['DateTime'];
 };
 
+export type UpdateFacebookPixelLog = EntityCommonFieldsInterface & Log & {
+  __typename?: 'UpdateFacebookPixelLog';
+  _id: Scalars['ObjectId'];
+  after: FacebookPixelLogState;
+  before: FacebookPixelLogState;
+  createdAt: Scalars['DateTime'];
+  source?: Maybe<LogSource>;
+  targets: Array<LogTarget>;
+  type: LogType;
+  updatedAt: Scalars['DateTime'];
+};
+
 export type UpdateImportLog = EntityCommonFieldsInterface & Log & {
   __typename?: 'UpdateImportLog';
   _id: Scalars['ObjectId'];
@@ -8027,6 +8289,18 @@ export type UpdateMemberLog = EntityCommonFieldsInterface & Log & {
   _id: Scalars['ObjectId'];
   after: MemberLogState;
   before: MemberLogState;
+  createdAt: Scalars['DateTime'];
+  source?: Maybe<LogSource>;
+  targets: Array<LogTarget>;
+  type: LogType;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type UpdateOrganizationLog = EntityCommonFieldsInterface & Log & {
+  __typename?: 'UpdateOrganizationLog';
+  _id: Scalars['ObjectId'];
+  after: OrganizationLogState;
+  before: OrganizationLogState;
   createdAt: Scalars['DateTime'];
   source?: Maybe<LogSource>;
   targets: Array<LogTarget>;
@@ -10189,6 +10463,79 @@ export type AdminGetHubspotTokenMutation = (
   & Pick<Mutation, 'adminUserGetHubspotToken'>
 );
 
+export type AdminCreateFacebookPixelMutationVariables = Exact<{
+  name?: Maybe<Scalars['String']>;
+  active?: Maybe<Scalars['Boolean']>;
+  apiToken?: Maybe<Scalars['String']>;
+  purchaseCallOnBankSlipGeneration: Scalars['Boolean'];
+  purchaseCallOnPixGeneration: Scalars['Boolean'];
+  associationType: FacebookPixelAssociationDiscriminatorInput;
+  newDomain?: Maybe<Scalars['String']>;
+  domainId?: Maybe<Scalars['String']>;
+  apiPixelId: Scalars['String'];
+  organizationId: Scalars['String'];
+}>;
+
+
+export type AdminCreateFacebookPixelMutation = (
+  { __typename?: 'Mutation' }
+  & { adminCreateFacebookPixel: (
+    { __typename?: 'FacebookPixel' }
+    & Pick<FacebookPixel, '_id' | 'name' | 'active' | 'apiToken' | 'purchaseCallOnBankSlipGeneration' | 'purchaseCallOnPixGeneration'>
+    & { organization?: Maybe<(
+      { __typename?: 'Organization' }
+      & Pick<Organization, '_id'>
+    )>, associationType: (
+      { __typename: 'FacebookPixelAllCheckoutsAssociation' }
+      & Pick<FacebookPixelAllCheckoutsAssociation, 'type'>
+    ) | (
+      { __typename: 'FacebookPixelSpecificCheckoutsAssociation' }
+      & Pick<FacebookPixelSpecificCheckoutsAssociation, 'type' | 'checkoutSharedIds'>
+      & { checkouts: Array<(
+        { __typename?: 'Checkout' }
+        & Pick<Checkout, 'sharedId' | 'status'>
+      )> }
+    ) }
+  ) }
+);
+
+export type AdminUpdateFacebookPixelMutationVariables = Exact<{
+  name?: Maybe<Scalars['String']>;
+  active?: Maybe<Scalars['Boolean']>;
+  apiToken?: Maybe<Scalars['String']>;
+  apiPixelId?: Maybe<Scalars['String']>;
+  purchaseCallOnBankSlipGeneration?: Maybe<Scalars['Boolean']>;
+  purchaseCallOnPixGeneration?: Maybe<Scalars['Boolean']>;
+  associationType?: Maybe<FacebookPixelAssociationDiscriminatorInput>;
+  newDomain?: Maybe<Scalars['String']>;
+  domainId?: Maybe<Scalars['String']>;
+  facebookPixelId: Scalars['String'];
+  organizationId: Scalars['String'];
+}>;
+
+
+export type AdminUpdateFacebookPixelMutation = (
+  { __typename?: 'Mutation' }
+  & { adminUpdateFacebookPixel: (
+    { __typename?: 'FacebookPixel' }
+    & Pick<FacebookPixel, '_id' | 'name' | 'active' | 'apiToken' | 'purchaseCallOnBankSlipGeneration' | 'purchaseCallOnPixGeneration'>
+    & { organization?: Maybe<(
+      { __typename?: 'Organization' }
+      & Pick<Organization, '_id'>
+    )>, associationType: (
+      { __typename: 'FacebookPixelAllCheckoutsAssociation' }
+      & Pick<FacebookPixelAllCheckoutsAssociation, 'type'>
+    ) | (
+      { __typename: 'FacebookPixelSpecificCheckoutsAssociation' }
+      & Pick<FacebookPixelSpecificCheckoutsAssociation, 'type' | 'checkoutSharedIds'>
+      & { checkouts: Array<(
+        { __typename?: 'Checkout' }
+        & Pick<Checkout, 'sharedId' | 'status'>
+      )> }
+    ) }
+  ) }
+);
+
 export type AdminCreateCheckoutMutationVariables = Exact<{
   description?: Maybe<Scalars['String']>;
   expirationDate?: Maybe<Scalars['DateTime']>;
@@ -11395,6 +11742,28 @@ export type AdminFetchOrganizationQuery = (
   )> }
 );
 
+export type AdminFetchFacebookPixelDomainsQueryVariables = Exact<{
+  organizationId: Scalars['String'];
+}>;
+
+
+export type AdminFetchFacebookPixelDomainsQuery = (
+  { __typename?: 'Query' }
+  & { adminFetchOrganization?: Maybe<(
+    { __typename?: 'Organization' }
+    & { integrations: (
+      { __typename?: 'OrganizationIntegrations' }
+      & { facebookPixel: (
+        { __typename?: 'FacebookPixelIntegration' }
+        & { domains: Array<(
+          { __typename?: 'Domain' }
+          & Pick<Domain, '_id' | 'domain'>
+        )> }
+      ) }
+    ) }
+  )> }
+);
+
 export type AdminFetchCertificateTemplatesQueryVariables = Exact<{
   organizationId: Scalars['String'];
 }>;
@@ -11690,6 +12059,79 @@ export type StudentFetchLessonQuery = (
     { __typename?: 'Lesson' }
     & FetchLessonFragment
   )> }
+);
+
+export type AdminFetchFacebookPixelQueryVariables = Exact<{
+  facebookPixelId: Scalars['String'];
+  organizationId: Scalars['String'];
+}>;
+
+
+export type AdminFetchFacebookPixelQuery = (
+  { __typename?: 'Query' }
+  & { adminFetchFacebookPixel?: Maybe<(
+    { __typename?: 'FacebookPixel' }
+    & Pick<FacebookPixel, '_id' | 'createdAt' | 'updatedAt' | 'apiPixelId' | 'domainId' | 'apiToken' | 'active' | 'name' | 'purchaseCallOnPixGeneration' | 'purchaseCallOnBankSlipGeneration'>
+    & { organization?: Maybe<(
+      { __typename?: 'Organization' }
+      & Pick<Organization, '_id'>
+    )>, associationType: (
+      { __typename: 'FacebookPixelAllCheckoutsAssociation' }
+      & Pick<FacebookPixelAllCheckoutsAssociation, 'type'>
+    ) | (
+      { __typename: 'FacebookPixelSpecificCheckoutsAssociation' }
+      & Pick<FacebookPixelSpecificCheckoutsAssociation, 'type' | 'checkoutSharedIds'>
+    ) }
+  )> }
+);
+
+export type AdminFetchFacebookPixelsQueryVariables = Exact<{
+  filterArgs?: Maybe<FacebookPixelWhereInput>;
+  orderBy?: Maybe<Array<FacebookPixelOrderByInput> | FacebookPixelOrderByInput>;
+  paginationArgs?: Maybe<PagePaginationInput>;
+  facebookPixelIds?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+  organizationId: Scalars['String'];
+}>;
+
+
+export type AdminFetchFacebookPixelsQuery = (
+  { __typename?: 'Query' }
+  & { adminFetchFacebookPixels?: Maybe<(
+    { __typename?: 'PaginatedFacebookPixelResponse' }
+    & Pick<PaginatedFacebookPixelResponse, 'currentPage' | 'totalPageCount' | 'totalResultCount' | 'hasNextPage'>
+    & { results: Array<(
+      { __typename?: 'FacebookPixel' }
+      & Pick<FacebookPixel, '_id' | 'createdAt' | 'updatedAt' | 'apiPixelId' | 'domainId' | 'apiToken' | 'active' | 'name' | 'purchaseCallOnPixGeneration' | 'purchaseCallOnBankSlipGeneration'>
+      & { organization?: Maybe<(
+        { __typename?: 'Organization' }
+        & Pick<Organization, '_id'>
+      )>, associationType: (
+        { __typename: 'FacebookPixelAllCheckoutsAssociation' }
+        & Pick<FacebookPixelAllCheckoutsAssociation, 'type'>
+      ) | (
+        { __typename: 'FacebookPixelSpecificCheckoutsAssociation' }
+        & Pick<FacebookPixelSpecificCheckoutsAssociation, 'type' | 'checkoutSharedIds'>
+      ) }
+    )> }
+  )> }
+);
+
+export type AdminFetchIntegrationsQueryVariables = Exact<{
+  orderBy?: Maybe<Array<IntegrationOrderByInput> | IntegrationOrderByInput>;
+  organizationId: Scalars['String'];
+}>;
+
+
+export type AdminFetchIntegrationsQuery = (
+  { __typename?: 'Query' }
+  & { adminFetchIntegrations?: Maybe<Array<(
+    { __typename?: 'FacebookPixelIntegration' }
+    & Pick<FacebookPixelIntegration, 'activeFacebookPixelCount' | '_id' | 'createdAt' | 'updatedAt' | 'type' | 'apply'>
+    & { domains: Array<(
+      { __typename?: 'Domain' }
+      & Pick<Domain, 'domain'>
+    )> }
+  )>> }
 );
 
 export type AdminFetchCheckoutPurchaseSummaryQueryVariables = Exact<{
@@ -11997,6 +12439,13 @@ export type AdminFetchCheckoutLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'CreateFacebookPixelLog' }
+      & Pick<CreateFacebookPixelLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'CreateImportLog' }
       & Pick<CreateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -12027,6 +12476,13 @@ export type AdminFetchCheckoutLogsQuery = (
     ) | (
       { __typename?: 'CreateMemberLog' }
       & Pick<CreateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateOrganizationLog' }
+      & Pick<CreateOrganizationLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -12247,6 +12703,13 @@ export type AdminFetchCheckoutLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'UpdateFacebookPixelLog' }
+      & Pick<UpdateFacebookPixelLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'UpdateImportLog' }
       & Pick<UpdateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -12284,6 +12747,13 @@ export type AdminFetchCheckoutLogsQuery = (
     ) | (
       { __typename?: 'UpdateMemberLog' }
       & Pick<UpdateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateOrganizationLog' }
+      & Pick<UpdateOrganizationLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -12627,6 +13097,13 @@ export type AdminFetchInvoiceLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'CreateFacebookPixelLog' }
+      & Pick<CreateFacebookPixelLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'CreateImportLog' }
       & Pick<CreateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -12667,6 +13144,13 @@ export type AdminFetchInvoiceLogsQuery = (
     ) | (
       { __typename?: 'CreateMemberLog' }
       & Pick<CreateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateOrganizationLog' }
+      & Pick<CreateOrganizationLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -12875,6 +13359,13 @@ export type AdminFetchInvoiceLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'UpdateFacebookPixelLog' }
+      & Pick<UpdateFacebookPixelLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'UpdateImportLog' }
       & Pick<UpdateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -12932,6 +13423,13 @@ export type AdminFetchInvoiceLogsQuery = (
     ) | (
       { __typename?: 'UpdateMemberLog' }
       & Pick<UpdateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateOrganizationLog' }
+      & Pick<UpdateOrganizationLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -13479,6 +13977,13 @@ export type AdminFetchPaymentLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'CreateFacebookPixelLog' }
+      & Pick<CreateFacebookPixelLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'CreateImportLog' }
       & Pick<CreateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -13509,6 +14014,13 @@ export type AdminFetchPaymentLogsQuery = (
     ) | (
       { __typename?: 'CreateMemberLog' }
       & Pick<CreateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateOrganizationLog' }
+      & Pick<CreateOrganizationLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -13748,6 +14260,13 @@ export type AdminFetchPaymentLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'UpdateFacebookPixelLog' }
+      & Pick<UpdateFacebookPixelLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'UpdateImportLog' }
       & Pick<UpdateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -13785,6 +14304,13 @@ export type AdminFetchPaymentLogsQuery = (
     ) | (
       { __typename?: 'UpdateMemberLog' }
       & Pick<UpdateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateOrganizationLog' }
+      & Pick<UpdateOrganizationLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -14041,6 +14567,13 @@ export type AdminFetchPaymentScheduleLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'CreateFacebookPixelLog' }
+      & Pick<CreateFacebookPixelLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'CreateImportLog' }
       & Pick<CreateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -14071,6 +14604,13 @@ export type AdminFetchPaymentScheduleLogsQuery = (
     ) | (
       { __typename?: 'CreateMemberLog' }
       & Pick<CreateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateOrganizationLog' }
+      & Pick<CreateOrganizationLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -14310,6 +14850,13 @@ export type AdminFetchPaymentScheduleLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'UpdateFacebookPixelLog' }
+      & Pick<UpdateFacebookPixelLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'UpdateImportLog' }
       & Pick<UpdateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -14347,6 +14894,13 @@ export type AdminFetchPaymentScheduleLogsQuery = (
     ) | (
       { __typename?: 'UpdateMemberLog' }
       & Pick<UpdateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateOrganizationLog' }
+      & Pick<UpdateOrganizationLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -15307,6 +15861,13 @@ export type AdminFetchWithdrawalLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'CreateFacebookPixelLog' }
+      & Pick<CreateFacebookPixelLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'CreateImportLog' }
       & Pick<CreateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -15337,6 +15898,13 @@ export type AdminFetchWithdrawalLogsQuery = (
     ) | (
       { __typename?: 'CreateMemberLog' }
       & Pick<CreateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateOrganizationLog' }
+      & Pick<CreateOrganizationLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -15576,6 +16144,13 @@ export type AdminFetchWithdrawalLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'UpdateFacebookPixelLog' }
+      & Pick<UpdateFacebookPixelLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'UpdateImportLog' }
       & Pick<UpdateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -15613,6 +16188,13 @@ export type AdminFetchWithdrawalLogsQuery = (
     ) | (
       { __typename?: 'UpdateMemberLog' }
       & Pick<UpdateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateOrganizationLog' }
+      & Pick<UpdateOrganizationLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -15925,6 +16507,13 @@ export type AdminFetchAnticipationLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'CreateFacebookPixelLog' }
+      & Pick<CreateFacebookPixelLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'CreateImportLog' }
       & Pick<CreateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -15955,6 +16544,13 @@ export type AdminFetchAnticipationLogsQuery = (
     ) | (
       { __typename?: 'CreateMemberLog' }
       & Pick<CreateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateOrganizationLog' }
+      & Pick<CreateOrganizationLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -16194,6 +16790,13 @@ export type AdminFetchAnticipationLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'UpdateFacebookPixelLog' }
+      & Pick<UpdateFacebookPixelLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'UpdateImportLog' }
       & Pick<UpdateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -16231,6 +16834,13 @@ export type AdminFetchAnticipationLogsQuery = (
     ) | (
       { __typename?: 'UpdateMemberLog' }
       & Pick<UpdateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateOrganizationLog' }
+      & Pick<UpdateOrganizationLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -16550,6 +17160,13 @@ export type AdminFetchProductLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'CreateFacebookPixelLog' }
+      & Pick<CreateFacebookPixelLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'CreateImportLog' }
       & Pick<CreateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -16580,6 +17197,13 @@ export type AdminFetchProductLogsQuery = (
     ) | (
       { __typename?: 'CreateMemberLog' }
       & Pick<CreateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'CreateOrganizationLog' }
+      & Pick<CreateOrganizationLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
@@ -16806,6 +17430,13 @@ export type AdminFetchProductLogsQuery = (
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
       )> }
     ) | (
+      { __typename?: 'UpdateFacebookPixelLog' }
+      & Pick<UpdateFacebookPixelLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
       { __typename?: 'UpdateImportLog' }
       & Pick<UpdateImportLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
@@ -16843,6 +17474,13 @@ export type AdminFetchProductLogsQuery = (
     ) | (
       { __typename?: 'UpdateMemberLog' }
       & Pick<UpdateMemberLog, '_id' | 'type' | 'createdAt'>
+      & { targets: Array<(
+        { __typename?: 'LogTarget' }
+        & Pick<LogTarget, 'type' | 'role' | 'reference'>
+      )> }
+    ) | (
+      { __typename?: 'UpdateOrganizationLog' }
+      & Pick<UpdateOrganizationLog, '_id' | 'type' | 'createdAt'>
       & { targets: Array<(
         { __typename?: 'LogTarget' }
         & Pick<LogTarget, 'type' | 'role' | 'reference'>
