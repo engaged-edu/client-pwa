@@ -177,8 +177,7 @@ const { mutate: cancelPayment, loading: loadingCancelPayment } = useMutation(pub
 const allowLoader = ref(true);
 const isLoading = computed(() => allowLoader.value && (loadingCheckout.value ||	loadingCreatePayment.value || loadingCancelPayment.value));
 const currentStep = ref('initial');
-const purchaseCallOnPixGeneration = ref(false);
-const purchaseCallOnBankSlipGeneration = ref(false);
+const purchseEventIstracked = ref(false);
 
 // Purchase
 const {
@@ -195,7 +194,8 @@ const {
 	trackPageView,
 	createCheckoutObject,
 	trackPurchaseEvent,
-	trackSubscribeEvent
+	trackSubscribeEvent,
+	trackSinglePurchaseEvent
 } = useFacebookPixel();
 
 const initiateFacebookPixel = (id) => {
@@ -226,14 +226,6 @@ watch(checkoutData, (newCheckoutData) => {
 		trackFacebookPixel.value = true;
 		fbPixels.forEach((pixel) => {
 			initiateFacebookPixel(pixel.apiPixelId);
-
-			if (pixel.purchaseCallOnPixGeneration) {
-				purchaseCallOnPixGeneration.value = true;
-			}
-
-			if (pixel.purchaseCallOnBankSlipGeneration) {
-				purchaseCallOnBankSlipGeneration.value = true;
-			}
 		});
 		const ckeckoutObject = createCheckoutObject(newCheckoutData);
 
@@ -476,16 +468,23 @@ onResultPurchase((result) => {
 		return;
 	}
 
-	if (purchaseCallOnBankSlipGeneration.value) {
-		if (purchase.payment.paymentMethod === PaymentMethod.BankSlip) {
-			trackPurchaseEvent(checkoutData.value, purchase);
-		}
-	}
+	const fbpixelsArray = [...checkoutData.value.facebookPixels || []];
 
-	if (purchaseCallOnPixGeneration.value) {
-		if (purchase.payment.paymentMethod === PaymentMethod.Pix) {
-			trackPurchaseEvent(checkoutData.value, purchase);
-		}
+	if (!purchseEventIstracked.value) {
+		fbpixelsArray.forEach((pixel) => {
+			if (pixel.purchaseCallOnPixGeneration) {
+				if (purchase.payment.paymentMethod === PaymentMethod.Pix) {
+					trackSinglePurchaseEvent(checkoutData.value, purchase, pixel.apiPixelId);
+				}
+			}
+
+			if (pixel.purchaseCallOnBankSlipGeneration) {
+				if (purchase.payment.paymentMethod === PaymentMethod.BankSlip) {
+					trackSinglePurchaseEvent(checkoutData.value, purchase, pixel.apiPixelId);
+				}
+			}
+		});
+		purchseEventIstracked.value = true;
 	}
 
 	setPayment(currentPayment);

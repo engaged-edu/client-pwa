@@ -97,7 +97,29 @@ export function useFacebookPixel() {
 		}
 	}
 
+	function trackSinglePurchaseEvent(data, purchase, pixelId) {
+		if (window.fbq) {
+			const checkoutData = createCheckoutObject(data);
+			const payload = {
+				...checkoutData,
+				sourceUrl: data.sourceUrl || window.location.href,
+				orderId: purchase?._id,
+				checkoutId: purchase?.payment?._id,
+				checkoutName: data?.checkoutName,
+				contentName: 'Tela do Checkout'
+			};
+
+			window.fbq(
+				'trackSingle',
+				pixelId,
+				'Purchase',
+				payload
+			);
+		}
+	}
+
 	return {
+		trackSinglePurchaseEvent,
 		trackPurchaseEvent,
 		trackSubscribeEvent,
 		trackInitiateCheckout,
