@@ -2392,6 +2392,11 @@ export type FetchRecipientStatisticsResponse = {
   paymentCount: Scalars['Int'];
 };
 
+export type FetchRetoolEmbedUrlResponse = {
+  __typename?: 'FetchRetoolEmbedUrlResponse';
+  embedUrl: Scalars['String'];
+};
+
 export type File = {
   _id: Scalars['ObjectId'];
   acl: FileAcl;
@@ -6224,6 +6229,7 @@ export type Query = {
   adminFetchRefunds?: Maybe<PaginatedRefundResponse>;
   adminFetchReport?: Maybe<Report>;
   adminFetchReports: PaginatedReportResponse;
+  adminFetchRetoolEmbedUrl: FetchRetoolEmbedUrlResponse;
   adminFetchRoom?: Maybe<Room>;
   adminFetchRooms: PaginatedRoomResponse;
   adminFetchSplitConfig?: Maybe<SplitConfig>;
@@ -6812,6 +6818,18 @@ export type QueryAdminFetchReportsArgs = {
   organizationId: Scalars['String'];
   paginationArgs?: Maybe<PagePaginationInput>;
   reportIds?: Maybe<Array<Scalars['String']>>;
+};
+
+
+export type QueryAdminFetchRetoolEmbedUrlArgs = {
+  branch?: Maybe<Scalars['String']>;
+  environment?: Maybe<Scalars['String']>;
+  hashParam?: Maybe<Scalars['String']>;
+  landingPageUuid: Scalars['String'];
+  metadata?: Maybe<Scalars['String']>;
+  organizationId: Scalars['String'];
+  releaseVersion?: Maybe<Scalars['String']>;
+  sessionDurationMinutes?: Maybe<Scalars['Int']>;
 };
 
 
@@ -16965,6 +16983,26 @@ export type AdminFetchReportsQuery = (
       { __typename?: 'UsersProgressV1Report' }
       & FetchReports_UsersProgressV1Report_Fragment
     )> }
+  ) }
+);
+
+export type AdminFetchRetoolEmbedUrlQueryVariables = Exact<{
+  organizationId: Scalars['String'];
+  landingPageUuid: Scalars['String'];
+  hashParam?: Maybe<Scalars['String']>;
+  branch?: Maybe<Scalars['String']>;
+  environment?: Maybe<Scalars['String']>;
+  releaseVersion?: Maybe<Scalars['String']>;
+  metadata?: Maybe<Scalars['String']>;
+  sessionDurationMinutes?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type AdminFetchRetoolEmbedUrlQuery = (
+  { __typename?: 'Query' }
+  & { adminFetchRetoolEmbedUrl: (
+    { __typename?: 'FetchRetoolEmbedUrlResponse' }
+    & Pick<FetchRetoolEmbedUrlResponse, 'embedUrl'>
   ) }
 );
 

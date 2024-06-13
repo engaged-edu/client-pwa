@@ -3,7 +3,7 @@
 
 .flex.column-gap-2.mb-4(class="lg:column-gap-4")
 	Button.flex-1.justify-content-around(
-		v-if="$props.methods.creditCard.enabled"
+		v-if="$props.methods.creditCard?.enabled"
 		outlined
 		class="lg:py-4"
 		icon-pos="top"
@@ -16,7 +16,7 @@
 			IconCreditCard
 
 	Button.flex-1.flex.flex-column.justify-content-around(
-		v-if="$props.methods.bankSlip.enabled"
+		v-if="$props.methods.bankSlip?.enabled"
 		outlined
 		class="lg:py-4"
 		:disabled="isExpired($props.methods.bankSlip?.expirationRule)"
@@ -32,7 +32,7 @@
 		) {{ $t('general.unavailableAt', [$d(getExpirationDate($props.methods.bankSlip?.expirationRule), 'friendly')]) }}
 
 	Button.flex-1.flex.flex-column.justify-content-around(
-		v-if="$props.methods.pix.enabled"
+		v-if="$props.methods.pix?.enabled"
 		outlined
 		class="lg:py-4"
 		icon-pos="top"
